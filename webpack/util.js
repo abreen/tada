@@ -4,6 +4,7 @@ const MarkdownIt = require("markdown-it");
 const _ = require("lodash");
 const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { convertMarkdown: curlyQuote } = require("quote-quote");
 
 function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
@@ -157,7 +158,9 @@ function createMarkdown(siteVariables) {
 
         if (tokens[idx].nesting === 1) {
           const sectionTitle =
-            matches && matches[1] && markdown.utils.escapeHtml(matches[1]);
+            matches &&
+            matches[1] &&
+            markdown.utils.escapeHtml(curlyQuote(matches[1]));
           if (sectionTitle) {
             return `<section><h2>${sectionTitle}</h2>\n`;
           } else {
@@ -191,7 +194,7 @@ function createMarkdown(siteVariables) {
 
           let html = `<div class="${classNames.join(" ")}">`;
           if (title) {
-            html += `<p class="title">${markdown.utils.escapeHtml(title)}</p>\n`;
+            html += `<p class="title">${markdown.utils.escapeHtml(curlyQuote(title))}</p>\n`;
           }
           return html;
         } else {

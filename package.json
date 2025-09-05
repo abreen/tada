@@ -36,6 +36,7 @@
     "markdown-it-multimd-table": "^4.2.3",
     "mini-css-extract-plugin": "^2.9.4",
     "prettier": "^3.6.2",
+    "quote-quote": "^1.2.0",
     "raw-loader": "^4.0.2",
     "sass": "^1.91.0",
     "sass-loader": "^16.0.5",
