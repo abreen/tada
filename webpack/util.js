@@ -263,35 +263,42 @@ function parseFrontMatter(rawContent, ext) {
   }
 }
 
-function readableDate(str) {
-  if (str == null || str == "") {
+function readableDate(date) {
+  if (date == null || date == "") {
     return "";
   }
 
-  const date = new Date(str);
-  const timestamp = Date.UTC(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate() + 1,
-    0,
-    0,
-    0,
-  );
-  const date2 = new Date(timestamp);
-
-  const offsetHours = date.getTimezoneOffset() / 60;
-  if (offsetHours > 0) {
-    date2.setDate(date.getDate() + 1);
-  } else if (offsetHours < 0) {
-    date2.setDate(date.getDate() - 1);
+  if (!(date instanceof Date)) {
+    date = new Date(date);
   }
 
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  return formatter.format(date2);
+  const str = date.toISOString();
+  const year = str.slice(0, 4);
+  let month = str.slice(5, 7);
+  if (month[0] === "0") {
+    month = month[1];
+  }
+  let day = str.slice(8, 10);
+  if (day[0] === "0") {
+    day = day[1];
+  }
+
+  const months = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December",
+  };
+
+  return `${months[month]} ${day}, ${year}`;
 }
 
 function isoDate(str) {

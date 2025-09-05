@@ -2,6 +2,7 @@ title: Welcome
 author: Alex Breen
 avatar: alex
 description: A testing page for <%= site.fullCourseName %>.
+published: 2025-09-05
 
 Here's an example index page.
 
