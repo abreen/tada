@@ -1,4 +1,4 @@
-# `tada`
+# `tada` 🎉
 
 A flexible static site. Generates HTML and JS using Webpack.
 
