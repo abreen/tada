@@ -8,6 +8,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
     site: siteVariables,
+    base: siteVariables.base,
+    basePath: siteVariables.basePath,
     page: pageVariables,
     content,
     isoDate,
