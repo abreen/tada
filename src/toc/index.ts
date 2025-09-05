@@ -1,0 +1,266 @@
+import { debounce } from "../util";
+
+const LATENCY_MS = 50;
+const MIN_COMPLEXITY = 20;
+const HIGHLIGHT_DURATION_MS = 1500;
+
+type HeadingLevel = "1" | "2" | "3" | "4" | "5" | "6";
+type AlertType = "warning" | "note";
+
+type AlertItem = { type: AlertType; title: string };
+type HeadingItem = { level: HeadingLevel; text: string; id: string };
+
+type Props = {
+  items: (HeadingItem | AlertItem)[];
+  headingsAndAlerts: (HTMLHeadingElement | HTMLDivElement)[];
+};
+
+function createContainer(renderedElement: HTMLElement) {
+  const nav = document.createElement("nav");
+  nav.className = "toc";
+  nav.appendChild(renderedElement);
+
+  const div = document.createElement("div");
+  div.className = "toc-container";
+  div.appendChild(nav);
+
+  return div;
+}
+
+function removeContainer(parent: HTMLElement) {
+  parent.querySelector(".toc-container")?.remove();
+}
+
+function containerExists(parent: HTMLElement) {
+  return !!parent.querySelector(".toc-container");
+}
+
+function getCurrentListItem(parent: HTMLElement): HTMLLIElement | null {
+  return parent.querySelector(".toc-container .current");
+}
+
+function getElementTop(element: HTMLElement): number {
+  const rect = element.getBoundingClientRect();
+  return rect.top - document.body.getBoundingClientRect().top;
+}
+
+function scrollIntoView(element: HTMLElement) {
+  const y = getElementTop(element) + 1;
+  window.scrollTo({ top: y });
+}
+
+function removeClass(el: HTMLElement, className: string) {
+  el.classList.remove(className);
+  if (!el.className) {
+    el.removeAttribute("class");
+  }
+}
+
+let highlightEl: HTMLElement | null = null;
+let highlightTimeout: number | null = null;
+function highlightBriefly(element: HTMLElement) {
+  if (highlightEl && highlightEl != element) {
+    if (highlightTimeout) {
+      window.clearTimeout(highlightTimeout);
+      highlightTimeout = null;
+    }
+    removeClass(highlightEl, "is-highlighted");
+  }
+  element.classList.add("is-highlighted");
+  highlightEl = element;
+  highlightTimeout = window.setTimeout(() => {
+    removeClass(element, "is-highlighted");
+    highlightTimeout = null;
+  }, HIGHLIGHT_DURATION_MS);
+}
+
+function renderTable(
+  parent: HTMLElement,
+  { items, headingsAndAlerts }: Props,
+): HTMLAnchorElement[] {
+  if (containerExists(parent)) {
+    removeContainer(parent);
+  }
+
+  const rendered: HTMLAnchorElement[] = [];
+  let lastHeadingLevel = "1";
+  const ul = document.createElement("ul");
+
+  items.forEach((item, i) => {
+    const li = document.createElement("li");
+
+    if ("level" in item) {
+      const heading = item as HeadingItem;
+      const a = document.createElement("a");
+      a.innerText = heading.text;
+      a.href = `#${heading.id}`;
+
+      a.onclick = (e: MouseEvent) => {
+        e.preventDefault();
+        scrollIntoView(headingsAndAlerts[i]);
+        highlightBriefly(headingsAndAlerts[i]);
+      };
+
+      rendered.push(a);
+
+      li.className = `heading-item level${heading.level}`;
+      lastHeadingLevel = heading.level;
+      li.appendChild(a);
+    } else {
+      const alert = item as AlertItem;
+      const a = document.createElement("a");
+      a.innerText = alert.title;
+      a.href = "#";
+
+      a.onclick = (e: MouseEvent) => {
+        e.preventDefault();
+        scrollIntoView(headingsAndAlerts[i]);
+        highlightBriefly(headingsAndAlerts[i]);
+      };
+
+      rendered.push(a);
+
+      li.className = `alert-item level${lastHeadingLevel} ${alert.type}`;
+      li.appendChild(a);
+    }
+
+    ul.appendChild(li);
+  });
+
+  const container = createContainer(ul);
+  parent.appendChild(container);
+
+  return rendered;
+}
+
+function getHeadingElements(parent: HTMLElement): HTMLHeadingElement[] {
+  return Array.from(parent.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+}
+
+function getHeadingsAndAlerts(
+  parent: HTMLElement,
+): (HTMLHeadingElement | HTMLDivElement)[] {
+  return Array.from(
+    parent.querySelectorAll(
+      "h1, h2, h3, h4, h5, h6, main > div.alert, main section > div.alert",
+    ),
+  );
+}
+
+/* Calculate how much to offset scroll calculations based on floating header */
+function getHeaderOffset() {
+  const element = document.querySelector("header details summary");
+  if (!element) {
+    return 0;
+  }
+
+  return element.getBoundingClientRect().height;
+}
+
+function elementToTableItem(
+  el: HTMLHeadingElement | HTMLDivElement,
+): HeadingItem | AlertItem | null {
+  if (el.tagName.toLowerCase() == "div") {
+    return alertToTableItem(el);
+  } else {
+    return headingToTableItem(el);
+  }
+}
+
+function headingToTableItem(el: HTMLHeadingElement): HeadingItem {
+  const level = el.tagName[1] as HeadingLevel;
+  return { level, id: el.id, text: el.innerText };
+}
+
+function alertToTableItem(el: HTMLElement): AlertItem | null {
+  const classes = el.className
+    .split(" ")
+    .map((cl) => cl.trim())
+    .filter((cl) => cl != "alert");
+
+  const firstClass = classes[0];
+  if (firstClass === "warning" || firstClass === "note") {
+    let title = el.querySelector(".title")?.innerHTML;
+    if (!title) {
+      if (firstClass === "warning") {
+        title = "Warning";
+      } else {
+        title = "Note";
+      }
+    }
+
+    return { type: firstClass, title };
+  }
+
+  return null;
+}
+
+function complexity(headings: HTMLHeadingElement[]): number {
+  let c = 0;
+  for (const el of headings) {
+    const level = parseInt(el.tagName[1], 10);
+    if (level == 1) {
+      c += 10;
+    } else if (level == 2 || level == 3) {
+      c += 5;
+    } else if (level == 4 || level == 5 || level == 6) {
+      c += 2;
+    }
+  }
+  return c;
+}
+
+export default () => {
+  // guaranteed to be in order from document
+  const headings = getHeadingElements(document.body);
+
+  if (!headings.length || complexity(headings) < MIN_COMPLEXITY) {
+    return;
+  } else {
+    document.body.classList.add("toc-is-active");
+  }
+
+  const headingsAndAlerts = getHeadingsAndAlerts(document.body);
+  const items = headingsAndAlerts
+    .map(elementToTableItem)
+    .filter((obj) => obj != null);
+
+  // keep track of the elements just rendered
+  const elements = renderTable(document.body, { items, headingsAndAlerts });
+
+  function handleScroll() {
+    const headerOffset = getHeaderOffset();
+
+    // find the first element not out of view & obscured by floating header
+    let i = 0;
+    while (
+      i < headingsAndAlerts.length &&
+      getElementTop(headingsAndAlerts[i]) < window.scrollY - headerOffset
+    ) {
+      i++;
+    }
+
+    if (i === headingsAndAlerts.length) {
+      i = headingsAndAlerts.length - 1;
+    }
+    if (i === -1) {
+      i = 0;
+    }
+
+    const existingItem = getCurrentListItem(document.body);
+    if (existingItem) {
+      existingItem.classList.remove("current");
+    }
+
+    // update the corresponding <li> in the table of contents
+    elements[i].parentElement?.classList.add("current");
+  }
+  const debounced = debounce(handleScroll, LATENCY_MS);
+  window.addEventListener("scroll", debounced, { passive: true });
+  window.addEventListener("load", debounced);
+
+  return () => {
+    window.removeEventListener("scroll", debounced);
+    window.removeEventListener("load", debounced);
+  };
+};

@@ -1,0 +1,181 @@
+:root {
+  --toc-width: 250px;
+  --toc-gap: 48px;
+}
+
+.toc-container {
+  position: fixed;
+  top: var(--header-collapsed-height);
+  width: 100%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.toc {
+  width: var(--main-width);
+  margin: 0 auto;
+  position: relative;
+  pointer-events: all;
+  line-height: 1.7;
+}
+
+.toc ul {
+  position: absolute;
+  right: calc(-1 * var(--toc-width) - var(--toc-gap));
+  width: var(--toc-width);
+
+  margin: 0;
+  padding: 0;
+}
+
+.toc ul li {
+  list-style-type: none;
+  width: var(--toc-width);
+  overflow-wrap: break-word;
+}
+
+.toc ul a {
+  text-decoration: none;
+  border: none;
+}
+
+@media (hover: hover) {
+  .toc ul li:hover {
+    color: var(--fg2-color);
+  }
+}
+
+.toc ul li.current {
+  // list-style-type: square;
+  font-weight: 600;
+}
+
+.toc ul li.level1,
+.toc ul li.level2,
+.toc ul li.level3,
+.toc ul li.level4,
+.toc ul li.level5,
+.toc ul li.level6 {
+}
+
+.toc ul li.level1 {
+  font-size: var(--font-size-smaller);
+}
+
+.toc ul li.level2 {
+  font-size: var(--font-size-smaller);
+}
+
+.toc ul li.level3 {
+  font-size: var(--font-size-small);
+  margin-left: 8px;
+}
+
+.toc ul li.level4 {
+  font-size: var(--font-size-small);
+  margin-left: 16px;
+}
+
+.toc ul li.level5 {
+  font-size: var(--font-size-small);
+  margin-left: 18px;
+}
+
+.toc ul li.level6 {
+  font-size: var(--font-size-small);
+  margin-left: 22px;
+}
+
+.toc ul li.alert-item {
+  position: relative;
+}
+
+.toc ul li.alert-item.warning a::before {
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  vertical-align: sub;
+  margin-right: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toc ul li.alert-item.warning a::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+@media (hover: hover) {
+  .toc ul li.alert-item.warning:hover a::before,
+  .toc ul li.alert-item.warning a:hover::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+@media (hover: hover) and (prefers-color-scheme: dark) {
+  .toc ul li.alert-item.warning:hover a::before,
+  .toc ul li.alert-item.warning a:hover::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+.toc ul li.alert-item.note a::before {
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  vertical-align: sub;
+  margin-right: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toc ul li.alert-item.note a::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+@media (hover: hover) {
+  .toc ul li.alert-item.note:hover a::before,
+  .toc ul li.alert-item.note a:hover::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+@media (hover: hover) and (prefers-color-scheme: dark) {
+  .toc ul li.alert-item.note:hover a::before,
+  .toc ul li.alert-item.note a:hover::before {
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+@media print {
+  .toc {
+    display: none;
+  }
+}
+
+/*
+ * Change to left-aligned to fit the table of contents better
+ */
+@media only screen and (max-width: 1600px) {
+  body.toc-is-active main,
+  body.toc-is-active .toc {
+    width: calc(100vw - var(--toc-width) - 2 * var(--toc-gap));
+  }
+
+  body.toc-is-active main {
+    max-width: inherit;
+    margin-left: 0;
+  }
+
+  body.toc-is-active .toc {
+    margin-left: var(--gap);
+  }
+}
+
+/*
+ * Hide the table of contents
+ */
+@media only screen and (max-width: 900px) {
+  body.toc-is-active main {
+    width: auto;
+  }
+
+  body.toc-is-active .toc ul {
+    display: none;
+  }
+}
