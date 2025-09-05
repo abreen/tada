@@ -4,6 +4,6 @@
   "courseTitle": "Introduction to CS",
   "fullCourseName": "CS-101 at Acme University",
   "themeColor": "#1ca591",
-  "base": "https://institution.edu/",
-  "internalDomains": ["institution.edu"]
+  "base": "http://abreen.io/tada/",
+  "internalDomains": ["abreen.io"]
 }
