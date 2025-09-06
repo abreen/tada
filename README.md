@@ -4,8 +4,8 @@ A flexible static site. Generates HTML and JS using Webpack.
 
 ## Setup
 
-You need Node and NPM. See the `package.json` file's `engines` property for the
-required versions.
+You need [Node.js][node] version 18 or greater (or whatever
+is currently in the `package.json` file's `engines` property).
 
 1. In this directory, do `npm install` to fetch dependencies
 2. Examine the `content/` directory
@@ -91,3 +91,4 @@ templates][lodash].
 
 [lodash]: https://lodash.info/doc/template
 [minisearch]: https://lucaong.github.io/minisearch/
+[node]: https://nodejs.org/
