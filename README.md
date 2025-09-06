@@ -5,12 +5,13 @@ A flexible static site. Generates HTML and JS using Webpack.
 
 ## Setup
 
-You need [Node.js][node] version 22 or greater.
+You need [Node.js][node] version 22 or greater. After installing,
+verify versions with `node --version` and `npm --version`.
 
 1. In this directory, do `npm install` to fetch dependencies
-2. Examine the `content/` directory (it contains the site content)
-3. Examine `src/template.html`
-3. Examine `site.dev.json` and `site.prod.json` (they contain build-time variables)
+2. While that runs, examine the `content/` directory
+3. Examine `src/template.html` (uses [Lodash template syntax][lodash])
+3. Examine `site.dev.json` and `site.prod.json` (build-time variables)
 4. Examine `scripts` property of `package.json`
 
 Here are the available scripts:
@@ -56,14 +57,42 @@ The static site is built and saved to `dist/`.
 - `src/` contains the site's JavaScript code
 - All files in `public/` are copied directly into `dist/`
 
+Each file in `content/` should start with "front matter" (a YAML-formatted
+list of variables parsed using the [`front-matter`][front-matter] library).
+
+
 ### HTML
 
 HTML content is inserted into the `<main>` element.
+
+* All HTML comments are removed during processing
+* HTML comments starting with two hyphens (`<!--`) appear in the final page
+* But comments with three hyphens (`<!---`) **are removed**
+
+Example front matter:
+
+```html
+<!---
+title: Title of Page
+author: Author name
+-->
+
+<p>Foo <b>bar</b> <i>baz</i> <a href="google.com">Google</a></p>
+```
 
 ### Markdown
 
 Markdown is converted to HTML using the [MarkdownIt][markdownit] library
 and inserted into the `<main>` element.
+
+Example front matter:
+
+```markdown
+title: Title of Page
+author: Author name
+
+Foo **bar** _baz_ [Google](google.com)
+```
 
 These MarkdownIt plugins are installed by default:
 
