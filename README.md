@@ -193,3 +193,4 @@ templates][lodash].
 [lodash]: https://lodash.info/doc/template
 [minisearch]: https://lucaong.github.io/minisearch/
 [node]: https://nodejs.org/
+[front-matter]: https://www.npmjs.com/package/front-matter
