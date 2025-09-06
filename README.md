@@ -65,7 +65,6 @@ list of variables parsed using the [`front-matter`][front-matter] library).
 
 HTML content is inserted into the `<main>` element.
 
-* All HTML comments are removed during processing
 * HTML comments starting with two hyphens (`<!--`) appear in the final page
 * But comments with three hyphens (`<!---`) **are removed**
 
