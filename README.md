@@ -156,6 +156,19 @@ is overridden here by "See the FAQ".
 * There are two variations: `note` and `warning`
 * Override the default title by specifying the optional text
 
+#### [markdown-it-external-links](https://www.npmjs.com/package/markdown-it-external-links)
+
+Adds the `.external` CSS class to links that fall outside of the domains specified
+in the `internalDomains` site variable. See `site.dev.json` and `site.prod.json`.
+
+#### [markdown-it-footnote](https://www.npmjs.com/package/markdown-it-footnote)
+
+Adds support for footnotes.
+
+#### [markdown-it-multimd-table](https://www.npmjs.com/package/markdown-it-multimd-table)
+
+Adds support for tables.
+
 
 ### PDFs (in progress)
 
@@ -193,3 +206,4 @@ templates][lodash].
 [minisearch]: https://lucaong.github.io/minisearch/
 [node]: https://nodejs.org/
 [front-matter]: https://www.npmjs.com/package/front-matter
+[markdownit]: https://www.npmjs.com/package/markdown-it
