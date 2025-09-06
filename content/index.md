@@ -2,9 +2,10 @@ title: Welcome
 author: Alex Breen
 avatar: alex
 description: A testing page for <%= site.fullCourseName %>.
+template: article
 published: 2025-09-05
 
-Here's an example index page.[^1] This one was written using Markdown.
+Here's an example article page.[^1] This one was written using Markdown.
 However you can write in "raw" HTML, [see this page](html.html).
 
 A code block:
@@ -99,10 +100,16 @@ Don't run with scissors.
 ##### Heading level 5
 
 Aenean ac mi a leo hendrerit vehicula. Nulla auctor condimentum tortor, eu
-rhoncus erat tristique eu. Proin in arcu sollicitudin purus euismod faucibus.
+rhoncus erat tristique eu. Proin in arcu sollicitudin purus euismod faucibus.[^2]
 Maecenas vel vulputate dolor, facilisis imperdiet urna. Sed aliquet sit amet
 purus ut porta. Sed viverra molestie enim, eu congue ipsum molestie vitae.
-Aenean egestas nibh ac metus sagittis, eu finibus ligula consectetur.[^2]
+Aenean egestas nibh ac metus sagittis, eu finibus ligula consectetur.
+
+---
+
+Sed accumsan luctus convallis. Vestibulum cursus quam orci, non tincidunt
+mi consectetur ut. Phasellus eget euismod ligula. Fusce vel risus ut mauris
+molestie fringilla. Aenean ac ante orci.
 
 ###### Heading level 6
 
@@ -110,9 +117,7 @@ In quis ante at nibh viverra laoreet ut nec tortor. Integer semper tristique
 ante id ornare. Aenean iaculis vehicula varius. Quisque pharetra odio id
 accumsan finibus. Phasellus vel lobortis massa. Nam condimentum, lectus nec
 egestas vestibulum, purus leo ullamcorper neque, a vehicula eros tortor eget
-eros. Sed accumsan luctus convallis. Vestibulum cursus quam orci, non tincidunt
-mi consectetur ut. Phasellus eget euismod ligula. Fusce vel risus ut mauris
-molestie fringilla. Aenean ac ante orci.
+eros.
 
 [^1]: An example page is a page with examples. Got it?
 [^2]: In hac habitasse platea dictumst. Ut aliquet nisi a arcu accumsan congue.

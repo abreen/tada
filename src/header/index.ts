@@ -143,7 +143,15 @@ export default () => {
   }
   window.addEventListener("click", handleWindowClick);
 
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === "Escape" && !isCollapsing) {
+      collapse();
+    }
+  }
+  window.addEventListener("keydown", handleKeyDown);
+
   return () => {
+    window.removeEventListener("keydown", handleKeyDown);
     window.removeEventListener("click", handleWindowClick);
     details.removeEventListener("click", handleDetailsClick);
     summary.removeEventListener("click", handleClick);

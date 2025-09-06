@@ -1,0 +1,6 @@
+<%= render('_top.html') %>
+<div class="info">
+  <% if (page.author && page.avatar) { %> <%= render('_author.html') %> <% } %>
+</div>
+
+<%= content %> <%= render('_bottom.html') %>

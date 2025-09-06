@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
+const { compileTemplates } = require("./templates");
 
 function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
@@ -20,6 +21,7 @@ function createTemplateParameters(pageVariables, siteVariables, content) {
 
 /** Create one HtmlWebpackPlugin for each input file in content/ */
 function createHtmlPlugins(siteVariables) {
+  const templates = compileTemplates();
   const contentDir = getContentDir();
   const contentFiles = getContentFiles(contentDir);
 
@@ -120,8 +122,7 @@ function capitalize(str) {
 }
 
 function createMarkdown(siteVariables) {
-  const markdown = new MarkdownIt({ html: true, typographer: true });
-  return markdown
+  const markdown = new MarkdownIt({ html: true, typographer: true })
     .use(require("markdown-it-anchor"), { tabIndex: false })
     .use(require("markdown-it-footnote"))
     .use(require("markdown-it-multimd-table"))
@@ -204,6 +205,33 @@ function createMarkdown(siteVariables) {
         }
       },
     });
+
+  /*
+   * Customize markdown-it-footnote renderer
+   */
+  markdown.renderer.rules.footnote_block_open = () =>
+    '<footer class="footnotes"><p class="title">Footnotes</p><ol>';
+
+  markdown.renderer.rules.footnote_block_close = () => "</ol></footer>";
+
+  // Remove unused CSS class
+  const footnoteOpen = markdown.renderer.rules.footnote_open;
+  markdown.renderer.rules.footnote_open = (...args) =>
+    footnoteOpen(...args).replace(' class="footnote-item"', "");
+
+  // Change appearance of reference
+  const caption = markdown.renderer.rules.footnote_caption;
+  markdown.renderer.rules.footnote_caption = (...args) => {
+    const str = caption(...args);
+    return str.slice(1, str.length - 1) + "↓";
+  };
+
+  // Change appearance of backreference
+  const anchor = markdown.renderer.rules.footnote_anchor;
+  markdown.renderer.rules.footnote_anchor = (...args) =>
+    anchor(...args).replace("\u21a9\uFE0E", "↑");
+
+  return markdown;
 }
 
 function parseFrontMatterAndContent(raw, ext) {

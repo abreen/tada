@@ -1,0 +1,91 @@
+[
+  {
+    "title": "Info",
+    "links": [
+      {
+        "text": "Home",
+        "href": "/index.html"
+      },
+      {
+        "text": "Syllabus",
+        "href": "/syllabus.html"
+      }
+    ]
+  },
+  {
+    "title": "Topics",
+    "links": [
+      {
+        "text": "Link 1",
+        "href": "/link1"
+      },
+      {
+        "text": "Link 2",
+        "href": "/link2"
+      },
+      {
+        "text": "Link 3",
+        "href": "/link3",
+        "disabled": true
+      },
+      {
+        "text": "Link 4",
+        "href": "/link4"
+      }
+    ]
+  },
+  {
+    "title": "Assignments",
+    "links": [
+      {
+        "text": "Problem Set 1",
+        "href": "/ps1"
+      },
+      {
+        "text": "Problem Set 2",
+        "href": "/ps2",
+        "disabled": true
+      },
+      {
+        "text": "Problem Set 3",
+        "href": "/ps3",
+        "disabled": true
+      },
+      {
+        "text": "Problem Set 4",
+        "href": "/ps4",
+        "disabled": true
+      },
+      {
+        "text": "Problem Set 5",
+        "href": "/ps5",
+        "disabled": true
+      }
+    ]
+  },
+  {
+    "title": "Links",
+    "links": [
+      {
+        "text": "Link 1",
+        "href": "http://example.com"
+      },
+      {
+        "text": "Link 2",
+        "href": "http://example.com"
+      },
+      {
+        "text": "Link 3",
+        "href": "http://example.com"
+      },
+      {
+        "text": "Link 4",
+        "href": "http://example.com"
+      },
+      {
+        "text": "Link 5",
+        "href": "http://example.com"
+      }
+    ]
+  }
+]

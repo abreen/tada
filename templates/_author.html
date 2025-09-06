@@ -1,0 +1,17 @@
+<aside class="author">
+  <figure>
+    <img
+      src="<%= basePath %>/avatars/<%= page.avatar %>.jpg"
+      alt="Picture of <%= page.author %>"
+      class="avatar"
+    />
+    <figcaption><%= page.author %></figcaption>
+  </figure>
+</aside>
+<% if (page.published) { %>
+<p class="publish-date">
+  <time datetime="<%= isoDate(page.published) %>"
+    ><%= readableDate(page.published) %></time
+  >
+</p>
+<% } %>

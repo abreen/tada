@@ -45,7 +45,9 @@
             <div>
               <p>Info</p>
               <ul>
-                <li><a href="<%= basePath %>/index.html">Home</a></li>
+                <li class="current">
+                  <a href="<%= basePath %>/index.html">Home</a>
+                </li>
                 <li><a href="<%= basePath %>/syllabus.html">Syllabus</a></li>
                 <li><a href="<%= basePath %>/schedule.html">Schedule</a></li>
                 <li><a href="<%= basePath %>/policies.html">Policies</a></li>
@@ -56,7 +58,11 @@
               <ul>
                 <li><a href="<%= basePath %>/link1/">Link 1</a></li>
                 <li><a href="<%= basePath %>/link2/">Link 2</a></li>
-                <li><a href="<%= basePath %>/link3/">Link 3</a></li>
+                <li>
+                  <a class="disabled" aria-disabled tabindex="-1" href="#"
+                    >Link 3</a
+                  >
+                </li>
                 <li><a href="<%= basePath %>/link4/">Link 4</a></li>
               </ul>
             </div>

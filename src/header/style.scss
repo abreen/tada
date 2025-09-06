@@ -52,6 +52,10 @@ header nav ul {
   margin: 8px 0 0 0;
 }
 
+header nav li.current {
+  list-style-type: disclosure-closed;
+}
+
 header nav a {
   border: none;
   display: block;

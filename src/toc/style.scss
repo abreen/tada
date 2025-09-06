@@ -11,12 +11,15 @@
   pointer-events: none;
 }
 
+// TODO refactor to grid
+// overflow on toc properly
+
 .toc {
   width: var(--main-width);
   margin: 0 auto;
   position: relative;
   pointer-events: all;
-  line-height: 1.7;
+  line-height: 1.2;
 }
 
 .toc ul {
@@ -32,11 +35,19 @@
   list-style-type: none;
   width: var(--toc-width);
   overflow-wrap: break-word;
+  margin-bottom: 0.3rem;
+}
+
+.toc ul li:first-of-type.level1 {
+  border-bottom: 1px solid var(--fg-color);
+  font-weight: 600;
 }
 
 .toc ul a {
   text-decoration: none;
   border: none;
+  display: block;
+  padding: 3px 3px;
 }
 
 @media (hover: hover) {
@@ -46,8 +57,7 @@
 }
 
 .toc ul li.current {
-  list-style-type: square;
-  font-weight: 600;
+  list-style-type: disclosure-closed;
 }
 
 .toc ul li.level1,
@@ -67,7 +77,7 @@
 }
 
 .toc ul li.level3 {
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-smaller);
   margin-left: 8px;
 }
 
@@ -78,12 +88,12 @@
 
 .toc ul li.level5 {
   font-size: var(--font-size-small);
-  margin-left: 18px;
+  margin-left: 24px;
 }
 
 .toc ul li.level6 {
   font-size: var(--font-size-small);
-  margin-left: 22px;
+  margin-left: 32px;
 }
 
 .toc ul li.alert-item {
@@ -91,28 +101,28 @@
 }
 
 .toc ul li.alert-item.warning a::before {
-  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
   vertical-align: sub;
   margin-right: 4px;
 }
 
 @media (prefers-color-scheme: dark) {
   .toc ul li.alert-item.warning a::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) {
   .toc ul li.alert-item.warning:hover a::before,
   .toc ul li.alert-item.warning a:hover::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) and (prefers-color-scheme: dark) {
   .toc ul li.alert-item.warning:hover a::before,
   .toc ul li.alert-item.warning a:hover::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
