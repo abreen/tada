@@ -4,7 +4,8 @@ avatar: alex
 description: A testing page for <%= site.fullCourseName %>.
 published: 2025-09-05
 
-Here's an example index page.
+Here's an example index page.[^1] This one was written using Markdown.
+However you can write in "raw" HTML, [see this page](html.html).
 
 A code block:
 
@@ -101,8 +102,7 @@ Aenean ac mi a leo hendrerit vehicula. Nulla auctor condimentum tortor, eu
 rhoncus erat tristique eu. Proin in arcu sollicitudin purus euismod faucibus.
 Maecenas vel vulputate dolor, facilisis imperdiet urna. Sed aliquet sit amet
 purus ut porta. Sed viverra molestie enim, eu congue ipsum molestie vitae.
-Aenean egestas nibh ac metus sagittis, eu finibus ligula consectetur. In hac
-habitasse platea dictumst. Ut aliquet nisi a arcu accumsan congue.
+Aenean egestas nibh ac metus sagittis, eu finibus ligula consectetur.[^2]
 
 ###### Heading level 6
 
@@ -114,3 +114,5 @@ eros. Sed accumsan luctus convallis. Vestibulum cursus quam orci, non tincidunt
 mi consectetur ut. Phasellus eget euismod ligula. Fusce vel risus ut mauris
 molestie fringilla. Aenean ac ante orci.
 
+[^1]: An example page is a page with examples. Got it?
+[^2]: In hac habitasse platea dictumst. Ut aliquet nisi a arcu accumsan congue.

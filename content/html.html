@@ -1,0 +1,28 @@
+<!---
+title: HTML testing page
+author: Alex Breen
+avatar: alex
+description: An HTML-specific testing page for <%= site.fullCourseName %>.
+-->
+
+<p>Here&rsquo;s a page written in &ldquo;raw&rdquo; HTML.</p>
+
+<!-- HTML comments starting with two hyphens appear in the final page. -->
+
+<div class="alert note">
+  <p class="title">About HTML comments</p>
+  <p>See the source code of this page to see how HTML comments are handled.</p>
+</div>
+
+<!--- But comments with three hyphens are removed during processing. -->
+
+<p>The front matter looks like this:</p>
+
+<pre>
+&lt;!---
+title: HTML testing page
+author: Alex Breen
+avatar: alex
+description: An HTML-specific testing page for &lt;%= site.fullCourseName %&gt;.
+--&gt;
+</pre>

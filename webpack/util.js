@@ -81,7 +81,7 @@ function renderContent(filePath, siteVariables) {
 }
 
 function stripHtmlComments(str) {
-  return str.replace(/<!---?[\s\S]*?-->/g, "");
+  return str.replace(/<!---[\s\S]*?-->/g, "");
 }
 
 function getContentDir() {
