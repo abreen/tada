@@ -11,8 +11,8 @@
     "format": "npx prettier --write \"**/*.(t|j)s\" \"**/*.html\" \"**/*.scss\" \"**/*.json\""
   },
   "engines": {
-    "node": ">=18.0.0 <21",
-    "npm": ">=8.0.0"
+    "node": ">=22",
+    "npm": ">=10"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

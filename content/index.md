@@ -18,11 +18,11 @@ public class App {
 
 Here's a `<details>` element:
 
-::: details Title for details element
+<<< details Title for details element
 
 Here's what's inside the details element!
 
-:::
+<<<
 
 Now here's an alert, with the `warning` style:
 

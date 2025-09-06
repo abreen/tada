@@ -131,6 +131,7 @@ function createMarkdown(siteVariables) {
       internalDomains: siteVariables.internalDomains,
     })
     .use(require("markdown-it-container"), "details", {
+      marker: "<",
       validate: function (params) {
         return params.trim().match(/^details\s+(.*)$/);
       },
@@ -150,6 +151,7 @@ function createMarkdown(siteVariables) {
       },
     })
     .use(require("markdown-it-container"), "section", {
+      marker: ":",
       validate: function (params) {
         return params.trim().match(/^section\s+(.*)$/);
       },

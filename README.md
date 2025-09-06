@@ -2,14 +2,15 @@
 
 A flexible static site. Generates HTML and JS using Webpack.
 
+
 ## Setup
 
-You need [Node.js][node] version 18 or greater (or whatever
-is currently in the `package.json` file's `engines` property).
+You need [Node.js][node] version 22 or greater.
 
 1. In this directory, do `npm install` to fetch dependencies
-2. Examine the `content/` directory
-3. Examine `site.dev.json` and `site.prod.json`
+2. Examine the `content/` directory (it contains the site content)
+3. Examine `src/template.html`
+3. Examine `site.dev.json` and `site.prod.json` (they contain build-time variables)
 4. Examine `scripts` property of `package.json`
 
 Here are the available scripts:
@@ -18,6 +19,9 @@ Here are the available scripts:
 
 Build the site for local development (using `config.dev.js` and `site.dev.json`)
 into the `dist/` directory.
+
+> [!NOTE]
+> Change the `site.base` and `site.basePath` variables as needed.
 
 ### `npm run serve`
 
@@ -40,6 +44,9 @@ For example, you can then upload `dist/` to S3 or a public-facing web server.
 
 Invoke Prettier to fix code formatting across all files.
 
+> [!TIP]
+> We intentionally use the default Pretter config, so there's no `.prettierrc` file.
+
 
 ## Building
 
@@ -55,7 +62,72 @@ HTML content is inserted into the `<main>` element.
 
 ### Markdown
 
-Markdown is converted to HTML and inserted into the `<main>` element.
+Markdown is converted to HTML using the [MarkdownIt][markdownit] library
+and inserted into the `<main>` element.
+
+These MarkdownIt plugins are installed by default:
+
+#### [markdown-it-anchor](https://www.npmjs.com/package/markdown-it-anchor)
+
+Adds `id` attribute to headings.
+
+#### [markdown-it-container](https://www.npmjs.com/package/markdown-it-container)
+
+Used to implement 3 different kinds of Markdown blocks:
+
+1. `<details>` element (collapsible/expandible)
+2. `<section>` element (logical grouping with a `<h2>` heading)
+3. Alerts (`<div class="alert">`)
+
+To define a `<details>` element, use this syntax:
+
+```
+<<< details Title for the details element
+
+The content in the element, initially hidden
+
+<<<
+```
+
+* The text after `details` is used for the `<summary>` element and always shows
+* Don't forget the closing `<<<`
+
+To define a `<section>` element, use this syntax:
+
+```
+::: section Text for `<h2>` heading
+
+Any content...
+
+:::
+```
+
+Finally, to define an alert element, use this syntax:
+
+```
+!!! warning
+
+Any content...
+
+!!!
+```
+
+This is usually rendered as yellow box with a warning icon.
+
+```
+!!! note See the FAQ
+
+You may want to review [the FAQ][faq].
+
+!!!
+```
+
+The `note` alert is usually blue. The default title of "Note"
+is overridden here by "See the FAQ".
+
+* There are two variations: `note` and `warning`
+* Override the default title by specifying the optional text
+
 
 ### PDFs (in progress)
 
