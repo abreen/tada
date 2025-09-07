@@ -15,6 +15,8 @@ type Index = number;
 type Cell = 0 | 1;
 type Grid = Cell[][];
 
+type State = { grid: Grid; sleeping: boolean };
+
 function renderGrid(grid: Grid, elements: HTMLHRElement[]) {
   const content = grid
     .map((row) => row.map((cell) => (cell === 0 ? "○" : "●")).join(" "))
@@ -81,20 +83,50 @@ function equals(a: Grid, b: Grid) {
   return true;
 }
 
+function inViewport(element: HTMLElement) {
+  const rect = element.getBoundingClientRect();
+  const windowHeight =
+    window.innerHeight || document.documentElement.clientHeight;
+  const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+
+  return (
+    rect.top <= windowHeight &&
+    rect.bottom >= 0 &&
+    rect.left <= windowWidth &&
+    rect.right >= 0
+  );
+}
+
+function anyElementsInViewport(elements: HTMLHRElement[]) {
+  return elements.some(inViewport);
+}
+
 export default () => {
   const elements = getThematicBreakElements(document.body);
   if (elements == null || !elements.length) {
     return;
   }
 
-  let grid: Grid = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
+  const state: State = {
+    grid: [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    sleeping: !anyElementsInViewport(elements),
+  };
 
   function handleStep() {
+    const { grid } = state;
+
+    if (!anyElementsInViewport(elements)) {
+      state.sleeping = true;
+      return;
+    } else {
+      state.sleeping = false;
+    }
+
     const newGrid = grid.map((arr) => arr.slice());
 
     for (let x = 0; x < grid.length; x++) {
@@ -120,11 +152,11 @@ export default () => {
     }
 
     renderGrid(newGrid, elements);
-    grid = newGrid;
+    state.grid = newGrid;
   }
 
-  randomDisturbance(grid);
-  renderGrid(grid, elements);
+  randomDisturbance(state.grid);
+  renderGrid(state.grid, elements);
   let timeout = window.setInterval(handleStep, STEP_DURATION_MS);
 
   return () => {
