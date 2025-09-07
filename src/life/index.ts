@@ -63,7 +63,7 @@ function randomDisturbance(grid: Grid) {
 
     grid[x][y] = 1;
     neighbors(grid, x, y, (x2, y2) => {
-      if (Math.random() > 0.5) {
+      if (Math.random() > 0.3) {
         grid[x2][y2] = 1;
       }
     });
