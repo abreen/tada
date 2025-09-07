@@ -1,0 +1,31 @@
+:root {
+  --thematic-break-margin: 300px;
+}
+
+hr {
+  border: none;
+  height: var(--thematic-break-margin);
+  padding-top: 64px;
+  border: none;
+  text-align: center;
+  letter-spacing: -2px;
+  line-height: 15px;
+  color: var(--fg2-color);
+  background: linear-gradient(
+    170deg,
+    var(--bg2-color) 0%,
+    var(--bg-color) 25%,
+    var(--bg-color) 100%
+  );
+}
+
+hr::after {
+  content: attr(data-grid);
+  white-space: pre;
+}
+
+@media print {
+  hr::after {
+    display: none;
+  }
+}

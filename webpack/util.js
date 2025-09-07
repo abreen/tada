@@ -125,7 +125,6 @@ function createMarkdown(siteVariables) {
   const markdown = new MarkdownIt({ html: true, typographer: true })
     .use(require("markdown-it-anchor"), { tabIndex: false })
     .use(require("markdown-it-footnote"))
-    .use(require("markdown-it-multimd-table"))
     .use(require("markdown-it-external-links"), {
       externalClassName: "external",
       externalTarget: "_blank",
@@ -230,6 +229,55 @@ function createMarkdown(siteVariables) {
   const anchor = markdown.renderer.rules.footnote_anchor;
   markdown.renderer.rules.footnote_anchor = (...args) =>
     anchor(...args).replace("\u21a9\uFE0E", "↑");
+
+  /*
+   * Customize lists (add wrapper element)
+   */
+  const proxy = (tokens, idx, options, env, self) =>
+    self.renderToken(tokens, idx, options);
+
+  const itemOpen = markdown.renderer.rules.list_item_open || proxy;
+  markdown.renderer.rules.list_item_open = (
+    tokens,
+    idx,
+    options,
+    env,
+    self,
+  ) => {
+    return (
+      itemOpen(tokens, idx, options, env, self) +
+      '<span class="styled-list-item">'
+    );
+  };
+
+  const itemClose = markdown.renderer.rules.list_item_close || proxy;
+  markdown.renderer.rules.list_item_close = (...args) => {
+    return "</span>" + itemClose(...args);
+  };
+
+  const bulletListOpen = markdown.renderer.rules.bullet_list_open || proxy;
+  markdown.renderer.rules.bullet_list_open = (
+    tokens,
+    idx,
+    options,
+    env,
+    self,
+  ) => {
+    tokens[idx].attrJoin("class", "styled-list");
+    return bulletListOpen(tokens, idx, options, env, self);
+  };
+
+  const orderedListOpen = markdown.renderer.rules.ordered_list_open || proxy;
+  markdown.renderer.rules.ordered_list_open = (
+    tokens,
+    idx,
+    options,
+    env,
+    self,
+  ) => {
+    tokens[idx].attrJoin("class", "styled-list");
+    return orderedListOpen(tokens, idx, options, env, self);
+  };
 
   return markdown;
 }

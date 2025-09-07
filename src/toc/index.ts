@@ -7,11 +7,11 @@ const HIGHLIGHT_DURATION_MS = 1500;
 type HeadingLevel = "1" | "2" | "3" | "4" | "5" | "6";
 type AlertType = "warning" | "note";
 
-type AlertItem = { type: AlertType; title: string };
-type HeadingItem = { level: HeadingLevel; text: string; id: string };
+type Alert = { type: AlertType; title: string };
+type Heading = { level: HeadingLevel; text: string; id: string };
 
 type Props = {
-  items: (HeadingItem | AlertItem)[];
+  items: (Heading | Alert)[];
   headingsAndAlerts: (HTMLHeadingElement | HTMLDivElement)[];
 };
 
@@ -90,7 +90,7 @@ function renderTable(
     const li = document.createElement("li");
 
     if ("level" in item) {
-      const heading = item as HeadingItem;
+      const heading = item as Heading;
       const a = document.createElement("a");
       a.innerText = heading.text;
       a.href = `#${heading.id}`;
@@ -107,7 +107,7 @@ function renderTable(
       lastHeadingLevel = heading.level;
       li.appendChild(a);
     } else {
-      const alert = item as AlertItem;
+      const alert = item as Alert;
       const a = document.createElement("a");
       a.innerText = alert.title;
       a.href = "#";
@@ -157,22 +157,12 @@ function getHeaderOffset() {
   return element.getBoundingClientRect().height;
 }
 
-function elementToTableItem(
-  el: HTMLHeadingElement | HTMLDivElement,
-): HeadingItem | AlertItem | null {
-  if (el.tagName.toLowerCase() == "div") {
-    return alertToTableItem(el);
-  } else {
-    return headingToTableItem(el);
-  }
-}
-
-function headingToTableItem(el: HTMLHeadingElement): HeadingItem {
+function headingToTableItem(el: HTMLHeadingElement): Heading {
   const level = el.tagName[1] as HeadingLevel;
   return { level, id: el.id, text: el.innerText };
 }
 
-function alertToTableItem(el: HTMLElement): AlertItem | null {
+function alertToTableItem(el: HTMLElement): Alert | null {
   const classes = el.className
     .split(" ")
     .map((cl) => cl.trim())
@@ -222,7 +212,15 @@ export default () => {
 
   const headingsAndAlerts = getHeadingsAndAlerts(document.body);
   const items = headingsAndAlerts
-    .map(elementToTableItem)
+    .map((el) => {
+      if (el.tagName.toLowerCase() == "div") {
+        // element is a <div class="alert">
+        return alertToTableItem(el);
+      } else {
+        // element is a heading
+        return headingToTableItem(el);
+      }
+    })
     .filter((obj) => obj != null);
 
   // keep track of the elements just rendered
@@ -248,12 +246,11 @@ export default () => {
     }
 
     const existingItem = getCurrentListItem(document.body);
-    if (existingItem) {
-      existingItem.classList.remove("current");
-    }
+    const nextItem = elements[i]?.parentElement;
 
-    // update the corresponding <li> in the table of contents
-    elements[i].parentElement?.classList.add("current");
+    if (nextItem != null && nextItem !== existingItem) {
+      switchCurrent(existingItem, nextItem);
+    }
   }
   const debounced = debounce(handleScroll, LATENCY_MS);
   window.addEventListener("scroll", debounced, { passive: true });
@@ -264,3 +261,13 @@ export default () => {
     window.removeEventListener("load", debounced);
   };
 };
+
+function switchCurrent(
+  oldCurrent: HTMLElement | null,
+  newCurrent: HTMLElement,
+) {
+  if (oldCurrent) {
+    oldCurrent.classList.remove("current");
+  }
+  newCurrent.classList.add("current");
+}

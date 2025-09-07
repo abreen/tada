@@ -64,12 +64,32 @@ Here's text outside of a section.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tempus elit in
 neque mollis, ac bibendum est sollicitudin. Mauris consequat ornare orci, non
-finibus mi lacinia non. Ut sit amet venenatis magna, in placerat quam. Ut
-maximus placerat lorem. Curabitur eu mollis ligula. Donec ac maximus ligula.
-Morbi ac massa ac est egestas blandit. Morbi quis tortor lacus. Vestibulum
-hendrerit dolor et felis luctus imperdiet. Aenean hendrerit imperdiet ligula id
-sagittis. Fusce blandit et est vel finibus. Vivamus mollis, sem eget commodo
-pretium, tellus tortor lacinia diam, sit amet accumsan nunc ipsum id orci.
+finibus mi lacinia non. _Ut sit amet venenatis magna, in placerat quam. Ut
+maximus placerat lorem._ Curabitur eu mollis ligula.
+
+Here's an ordered list:
+
+1. First item
+2. Second item
+3. Third item
+
+And here's an unordered list:
+
+- First item
+- Second item
+- Third item
+
+Donec ac maximus ligula. Morbi ac massa ac est egestas blandit. Morbi quis
+tortor lacus. Vestibulum hendrerit dolor et felis luctus imperdiet. Aenean
+hendrerit imperdiet ligula id sagittis. **Fusce blandit** et est vel finibus.
+Vivamus mollis, sem eget commodo pretium, tellus tortor lacinia diam, sit amet
+accumsan nunc ipsum id orci.
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 Phasellus sapien justo, varius ut placerat eget, eleifend sit amet lectus. Ut
 vulputate, ante sit amet fringilla imperdiet, dui neque imperdiet nisi, a
 commodo mi magna vitae tellus.
@@ -80,9 +100,12 @@ Sed nulla velit, placerat in ex a, euismod pretium lacus. Sed sodales leo mattis
 risus mattis dapibus. Sed a iaculis nisi. Vestibulum vel mollis neque. Cras at
 suscipit risus, at tempus arcu. Suspendisse ligula ipsum, vulputate eleifend
 fermentum sed, vulputate pellentesque nulla. Quisque non lectus tincidunt,
-pulvinar urna eget, pulvinar metus. Praesent a neque eu tortor imperdiet
-lacinia. Cras id vehicula urna, non placerat sem. Etiam vel dui quis risus
-efficitur laoreet.
+pulvinar urna eget, _pulvinar metus_.
+
+> Praesent a neque eu tortor imperdiet lacinia. Cras id vehicula urna,
+> non placerat sem.
+
+Etiam vel dui quis risus efficitur laoreet.
 
 #### Heading level 4
 
