@@ -31,7 +31,7 @@
   --gap: 32px;
   --table-padding: 12px;
   --details-padding: 12px;
-  --alert-padding: 16px;
+  --alert-padding: 10px;
   --section-padding: var(--gap);
   --section-border-width: 5px;
   --highlight-border-width: 4px;
@@ -156,6 +156,7 @@ html {
   scrollbar-color: var(--fg2-color) var(--bg-color);
   overscroll-behavior: none;
   scroll-behavior: smooth;
+  background: var(--bg-color);
 }
 
 svg {
@@ -234,6 +235,7 @@ details .content {
 
 @media (hover: hover) {
   details summary:hover {
+    color: var(--fg2-color);
   }
 }
 
@@ -611,7 +613,6 @@ sup.footnote-ref a:active,
   }
 
   main {
-    margin-top: 0 !important;
     max-width: none;
   }
 
@@ -644,12 +645,12 @@ sup.footnote-ref a:active,
 
   .alert {
     background: none;
-    border: var(--control-border-width) solid #000;
+    border: 2px solid #000;
     break-inside: avoid;
   }
 
   main details {
-    border: var(--control-border-width) dotted #000;
+    border: 2px dotted #000;
   }
 
   main details .alert {

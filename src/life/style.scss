@@ -5,6 +5,7 @@
 hr {
   border: none;
   height: var(--thematic-break-margin);
+  margin: var(--section-padding) calc(-1 * var(--section-padding));
   padding-top: 64px;
   border: none;
   text-align: center;

@@ -6,7 +6,7 @@
 }
 
 main {
-  margin-top: var(--header-collapsed-height);
+  padding-top: var(--header-collapsed-height);
 }
 
 header {
@@ -31,6 +31,12 @@ header details summary {
   padding: 8px 0;
   list-style-type: none;
   cursor: pointer;
+}
+
+@media (hover: hover) {
+  header details summary:hover {
+    color: inherit;
+  }
 }
 
 header nav {
@@ -85,7 +91,7 @@ header details input[type="search"] {
 header nav div > p {
   font-style: italic;
   user-select: none;
-  border-bottom: var(--label-border-width) solid var(--fg-color);
+  border-bottom: 1px solid var(--fg-color);
   padding-bottom: 2px;
 }
 
@@ -164,6 +170,10 @@ header summary .title .logo {
 }
 
 @media print {
+  main {
+    padding-top: 0;
+  }
+
   header {
     display: none !important;
   }
