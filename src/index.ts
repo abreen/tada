@@ -6,6 +6,7 @@ import "./search/style.scss";
 import "./header/style.scss";
 import "./highlight/style.scss";
 import "./life/style.scss";
+import "./top/style.scss";
 
 import mountTableOfContents from "./toc/";
 import mountSearch from "./search/";
@@ -13,6 +14,7 @@ import mountHeader from "./header";
 import mountHighlight from "./highlight/";
 import mountPrint from "./print/";
 import mountLife from "./life/";
+import mountTop from "./top/";
 
 document.addEventListener("DOMContentLoaded", () => {
   const components = {
@@ -22,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     highlight: mountHighlight,
     print: mountPrint,
     life: mountLife,
+    top: mountTop,
   };
 
   Object.entries(components).forEach(([name, mount]) => {

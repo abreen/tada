@@ -6,7 +6,7 @@
 }
 
 header {
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
   background: var(--bg-color-translucent);
 
   width: 100%;
@@ -14,7 +14,7 @@ header {
   top: 0;
 
   overflow: hidden;
-  z-index: 100;
+  z-index: 1000;
 
   display: grid;
   grid-template-columns: 1fr;

@@ -1,4 +1,4 @@
-import { debounce } from "../util";
+import { debounce, removeClass } from "../util";
 
 const LATENCY_MS = 50;
 const MIN_COMPLEXITY = 20;
@@ -36,13 +36,6 @@ function scrollIntoView(element: HTMLElement) {
   element.scrollIntoView();
   //const y = getElementTop(element) + 1;
   //window.scrollTo({ top: y });
-}
-
-function removeClass(el: HTMLElement, className: string) {
-  el.classList.remove(className);
-  if (!el.className) {
-    el.removeAttribute("class");
-  }
 }
 
 let highlightEl: HTMLElement | null = null;

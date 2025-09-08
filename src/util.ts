@@ -7,3 +7,10 @@ export function debounce(fn: Function, time: number) {
     }, time);
   };
 }
+
+export function removeClass(el: HTMLElement, className: string) {
+  el.classList.remove(className);
+  if (!el.className) {
+    el.removeAttribute("class");
+  }
+}

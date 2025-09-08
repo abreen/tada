@@ -22,3 +22,31 @@ title: HTML testing page
 description: An HTML-specific testing page for &lt;%= site.fullCourseName %&gt;.
 --&gt;
 </pre>
+
+<p>Here's an example form:</p>
+
+<form>
+  <fieldset>
+    <legend>Personal information</legend>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="user_name" />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="user_email" />
+  </fieldset>
+
+  <fieldset>
+    <legend>Your message</legend>
+
+    <label for="message">Message:</label>
+    <textarea id="message" name="user_message"></textarea>
+  </fieldset>
+
+  <label>
+    <input type="checkbox" name="subscribe" />
+    Subscribe to newsletter
+  </label>
+
+  <input type="submit" value="Send Message" />
+</form>

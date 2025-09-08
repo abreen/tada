@@ -1,0 +1,37 @@
+.back-to-top {
+  position: fixed;
+  top: var(--header-collapsed-height);
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.back-to-top button {
+  padding: 8px 16px;
+  backdrop-filter: blur(10px);
+  background: var(--bg-color-translucent);
+  box-shadow: 0 3px 12px hsl(20deg 40% 20% / 20%);
+  transform: translateY(-300px) scaleX(0%);
+  z-index: 100;
+  display: none;
+}
+
+.back-to-top button.is-hovering {
+  transform: translateY(0) scaleX(100%);
+}
+
+.back-to-top button.is-hovering:hover {
+  background: var(--bg2-color);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .back-to-top button {
+    transition: transform 1s ease-out;
+  }
+}
+
+@media (max-width: 1200px) {
+  .back-to-top button {
+    display: inline;
+  }
+}

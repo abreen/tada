@@ -1,14 +1,9 @@
+import { removeClass } from "../util";
+
 const DURATION_MS = 250;
 
 // CSS properties we control via the style attribute
 const CONTROLLED_PROPERTIES = ["height", "overflow"];
-
-function removeClass(el: HTMLElement, className: string) {
-  el.classList.remove(className);
-  if (!el.className) {
-    el.removeAttribute("class");
-  }
-}
 
 function removeStyle(el: HTMLElement, propertyName: string) {
   el.style.removeProperty(propertyName);
