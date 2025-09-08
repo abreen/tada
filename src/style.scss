@@ -31,7 +31,7 @@
   --table-padding: 12px;
   --details-padding: 12px;
   --alert-padding: 10px;
-  --section-padding: 128px;
+  --section-padding: 64px;
   --highlight-border-width: 4px;
 
   --main-width: 900px;
@@ -391,6 +391,11 @@ h6.is-highlighted {
   padding: var(--alert-padding);
   position: relative;
   border: var(--highlight-border-width) solid var(--bg2-color);
+}
+
+main .alert {
+  box-shadow: -6px 6px 0 var(--bg-color);
+  left: -6px;
 }
 
 .alert.is-highlighted {

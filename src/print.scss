@@ -74,6 +74,11 @@
     break-inside: avoid;
   }
 
+  main .alert {
+    box-shadow: none;
+    left: 0;
+  }
+
   main details {
     border: 2px dotted #000;
   }
