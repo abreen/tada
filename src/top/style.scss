@@ -1,6 +1,6 @@
 .back-to-top {
   position: fixed;
-  top: var(--header-collapsed-height);
+  top: calc(var(--header-collapsed-height) + var(--gap));
   left: 0;
   width: 100%;
   text-align: center;

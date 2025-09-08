@@ -1,5 +1,5 @@
 :root {
-  --header-collapsed-height: 64px;
+  --header-collapsed-height: 45px;
   --header-gap: 16px;
   --theme-color: #1ca591;
   --header-font-size: 18px;
@@ -25,8 +25,11 @@ header {
 }
 
 header details summary {
-  text-align: center;
-  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-collapsed-height);
+  padding: 0;
   list-style-type: none;
   cursor: pointer;
 }

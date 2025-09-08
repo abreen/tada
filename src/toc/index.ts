@@ -32,10 +32,16 @@ function getElementTop(element: HTMLElement): number {
   return rect.top - document.body.getBoundingClientRect().top;
 }
 
-function scrollIntoView(element: HTMLElement) {
-  element.scrollIntoView();
-  //const y = getElementTop(element) + 1;
-  //window.scrollTo({ top: y });
+function scrollIntoView(element: HTMLElement, options?: ScrollIntoViewOptions) {
+  const parent = element.parentElement;
+  if (parent == null) {
+    return;
+  }
+
+  const parentHasScrollbar = parent.scrollHeight > parent.clientHeight;
+  if (parentHasScrollbar) {
+    element.scrollIntoView(options);
+  }
 }
 
 let highlightEl: HTMLElement | null = null;
@@ -233,7 +239,7 @@ export default () => {
 
     if (nextItem != null && nextItem !== existingItem) {
       switchCurrent(existingItem, nextItem);
-      nextItem.scrollIntoView({ block: "center" });
+      scrollIntoView(nextItem, { block: "center" });
     }
   }
   const debounced = debounce(handleScroll, LATENCY_MS);

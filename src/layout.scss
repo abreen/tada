@@ -48,8 +48,13 @@ nav.toc ul {
   position: fixed;
   overflow-y: auto;
   scroll-behavior: smooth;
-  height: 100vh;
-  padding: var(--header-collapsed-height) var(--gap) var(--gap) var(--gap);
+  height: calc(100vh - var(--header-collapsed-height) - var(--gap));
+  padding: 0 0 var(--gap) var(--gap);
+  margin-top: var(--header-collapsed-height);
+}
+
+nav.toc ul li:first-of-type {
+  margin-top: var(--gap);
 }
 
 section {
