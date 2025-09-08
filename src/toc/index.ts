@@ -32,7 +32,7 @@ function getElementTop(element: HTMLElement): number {
   return rect.top - document.body.getBoundingClientRect().top;
 }
 
-function scrollIntoView(element: HTMLElement, options?: ScrollIntoViewOptions) {
+function scrollIfNeeded(element: HTMLElement, options?: ScrollIntoViewOptions) {
   const parent = element.parentElement;
   if (parent == null) {
     return;
@@ -78,17 +78,18 @@ function renderTable(
   items.forEach((item, i) => {
     const li = document.createElement("li");
 
+    const clickHandler = (e: MouseEvent) => {
+      e.preventDefault();
+      headingsAndAlerts[i].scrollIntoView();
+      highlightBriefly(headingsAndAlerts[i]);
+    };
+
     if ("level" in item) {
       const heading = item as Heading;
       const a = document.createElement("a");
       a.innerText = heading.text;
       a.href = `#${heading.id}`;
-
-      a.onclick = (e: MouseEvent) => {
-        e.preventDefault();
-        scrollIntoView(headingsAndAlerts[i]);
-        highlightBriefly(headingsAndAlerts[i]);
-      };
+      a.onclick = clickHandler;
 
       rendered.push(a);
 
@@ -100,12 +101,7 @@ function renderTable(
       const a = document.createElement("a");
       a.innerText = alert.title;
       a.href = "#";
-
-      a.onclick = (e: MouseEvent) => {
-        e.preventDefault();
-        scrollIntoView(headingsAndAlerts[i]);
-        highlightBriefly(headingsAndAlerts[i]);
-      };
+      a.onclick = clickHandler;
 
       rendered.push(a);
 
@@ -239,7 +235,7 @@ export default () => {
 
     if (nextItem != null && nextItem !== existingItem) {
       switchCurrent(existingItem, nextItem);
-      scrollIntoView(nextItem, { block: "center" });
+      scrollIfNeeded(nextItem, { block: "center" });
     }
   }
   const debounced = debounce(handleScroll, LATENCY_MS);
