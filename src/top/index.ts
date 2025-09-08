@@ -1,7 +1,7 @@
 import { removeClass } from "../util";
 
 const TOP_HEIGHT_PX = 64;
-const THRESHOLD_PX = 500;
+const THRESHOLD_PX = 300;
 const HIDE_THRESHOLD_PX = 80;
 
 function getBackToTopButton(parent: HTMLElement): HTMLButtonElement | null {
