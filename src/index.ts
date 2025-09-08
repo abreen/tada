@@ -1,5 +1,6 @@
 import "./style.scss";
 import "./layout.scss";
+import "./print.scss";
 import "./toc/style.scss";
 import "./search/style.scss";
 import "./header/style.scss";

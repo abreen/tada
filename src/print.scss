@@ -7,16 +7,30 @@
 }
 
 @media print {
+  html,
+  body,
+  main,
+  section {
+    background: none !important;
+  }
+
   main {
     padding-top: 0;
   }
 
-  header {
-    display: none;
+  hr::after {
+    content: "* * *" !important;
   }
 
-  hr::after {
-    display: none;
+  hr {
+    background: none !important;
+    height: auto !important;
+    margin: var(--gap) !important;
+    padding: 0 !important;
+  }
+
+  header {
+    display: none !important;
   }
 
   .toc {

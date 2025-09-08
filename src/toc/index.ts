@@ -15,19 +15,12 @@ type Props = {
   headingsAndAlerts: (HTMLHeadingElement | HTMLDivElement)[];
 };
 
-function createContainer(renderedElement: HTMLElement) {
-  const nav = document.createElement("nav");
-  nav.className = "toc";
-  nav.appendChild(renderedElement);
-  return nav;
+function clearContainer(container: HTMLElement) {
+  container?.replaceChildren();
 }
 
-function removeContainer(parent: HTMLElement) {
-  parent.querySelector("nav.toc")?.remove();
-}
-
-function containerExists(parent: HTMLElement) {
-  return !!parent.querySelector("nav.toc");
+function getContainer(parent: HTMLElement): HTMLElement | null {
+  return parent.querySelector("nav.toc");
 }
 
 function getCurrentListItem(parent: HTMLElement): HTMLLIElement | null {
@@ -40,8 +33,9 @@ function getElementTop(element: HTMLElement): number {
 }
 
 function scrollIntoView(element: HTMLElement) {
-  const y = getElementTop(element) + 1;
-  window.scrollTo({ top: y });
+  element.scrollIntoView();
+  //const y = getElementTop(element) + 1;
+  //window.scrollTo({ top: y });
 }
 
 function removeClass(el: HTMLElement, className: string) {
@@ -73,8 +67,9 @@ function renderTable(
   parent: HTMLElement,
   { items, headingsAndAlerts }: Props,
 ): HTMLAnchorElement[] {
-  if (containerExists(parent)) {
-    removeContainer(parent);
+  const container = getContainer(parent);
+  if (container == null) {
+    throw new Error("toc container must exist already");
   }
 
   const rendered: HTMLAnchorElement[] = [];
@@ -122,8 +117,8 @@ function renderTable(
     ul.appendChild(li);
   });
 
-  const container = createContainer(ul);
-  parent.appendChild(container);
+  clearContainer(container);
+  container.appendChild(ul);
 
   return rendered;
 }
