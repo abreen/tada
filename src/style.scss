@@ -7,7 +7,7 @@
   --bg2-color: hsl(20deg 10% 85%);
   --warning-bg-color: hsl(37, 97%, 64%);
   --note-bg-color: hsl(190, 77%, 65%);
-  --gradient-angle: 135deg;
+  --alert-gradient-angle: 135deg;
 
   --font: "Source Serif 4", Times, "Times New Roman", Georgia, serif;
   --system-font:
@@ -19,7 +19,6 @@
   --font-size-smaller: 18px;
   --font-size-small: 15px;
 
-  --print-font-size: 16px;
   --font-weight: 400;
   --line-height: 1.6;
 
@@ -32,8 +31,7 @@
   --table-padding: 12px;
   --details-padding: 12px;
   --alert-padding: 10px;
-  --section-padding: var(--gap);
-  --section-border-width: 5px;
+  --section-padding: 128px;
   --highlight-border-width: 4px;
 
   --main-width: 900px;
@@ -140,8 +138,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.1);
 
-  margin: 0;
-
   background: linear-gradient(
     to bottom,
     var(--bg2-color) 0%,
@@ -151,11 +147,7 @@ body {
 }
 
 html {
-  overflow-y: auto;
-  scrollbar-gutter: stable;
   scrollbar-color: var(--fg2-color) var(--bg-color);
-  overscroll-behavior: none;
-  scroll-behavior: smooth;
   background: var(--bg-color);
 }
 
@@ -409,7 +401,7 @@ h6.is-highlighted {
   border-color: var(--warning-bg-color);
 
   background: linear-gradient(
-    var(--gradient-angle),
+    var(--alert-gradient-angle),
     var(--warning-bg-color) 0%,
     var(--warning-bg-color) 25%,
     var(--bg-color) 100%
@@ -434,7 +426,7 @@ h6.is-highlighted {
   border-color: var(--note-bg-color);
 
   background: linear-gradient(
-    var(--gradient-angle),
+    var(--alert-gradient-angle),
     var(--note-bg-color) 0%,
     var(--note-bg-color) 25%,
     var(--bg-color) 100%
@@ -465,46 +457,11 @@ h6.is-highlighted {
   margin-bottom: 0;
 }
 
-.ibm-plex-mono-regular {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.ibm-plex-mono-regular-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 400;
-  font-style: italic;
-}
-
-/* <weight>: Use a value from 100 to 700
-  <uniquifier>: Use a unique and descriptive class name */
-
-.ibm-plex-sans-abc123 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
-}
-
-main {
-  max-width: var(--main-width);
-  padding: 0 var(--gap) var(--gap) var(--gap);
-  margin: 0 auto;
-}
-
-.block {
-}
-
 section {
-  padding: var(--section-padding)
-    calc(var(--section-padding) - var(--section-border-width));
-  margin: var(--section-padding) calc(-1 * var(--section-padding));
-
   background: linear-gradient(
-    var(--gradient-angle),
+    65deg,
     var(--bg2-color) 0%,
+    var(--bg-color) 80%,
     var(--bg-color) 100%
   );
 }
@@ -576,91 +533,6 @@ sup.footnote-ref a,
 sup.footnote-ref a:active,
 .footnotes .footnote-backref:active {
   background: var(--fg-color);
-}
-
-/* Default: Extra-small devices such as small phones (less than 640px) */
-
-/* Small devices such as large phones (640px and up) */
-@media only screen and (min-width: 640px) {
-}
-
-/* Medium devices such as tablets (768px and up) */
-@media only screen and (min-width: 768px) {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  .label {
-  }
-
-  main {
-  }
-}
-
-/* Large devices such as laptops (1024px and up) */
-@media only screen and (min-width: 1024px) {
-}
-
-/* Largest devices such as desktops (1280px and up) */
-@media only screen and (min-width: 1280px) {
-}
-
-@media print {
-  header {
-    display: none;
-  }
-
-  main {
-    max-width: none;
-  }
-
-  body {
-    font-size: var(--print-font-size);
-    color: #000;
-  }
-
-  pre {
-    font-size: var(--print-font-size);
-    border: none !important;
-    padding: 0 !important;
-  }
-
-  .footnotes {
-    break-inside: avoid;
-  }
-
-  .footnotes .footnote-backref {
-    display: none;
-  }
-
-  sup.footnote-ref a {
-    display: inline;
-    background: none;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-  }
-
-  .alert {
-    background: none;
-    border: 2px solid #000;
-    break-inside: avoid;
-  }
-
-  main details {
-    border: 2px dotted #000;
-  }
-
-  main details .alert {
-    border: none;
-    padding: 0;
-  }
-
-  section {
-    border: 2px solid lightgray;
-  }
 }
 
 @view-transition {

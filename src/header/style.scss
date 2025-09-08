@@ -5,10 +5,6 @@
   --header-font-size: 18px;
 }
 
-main {
-  padding-top: var(--header-collapsed-height);
-}
-
 header {
   backdrop-filter: blur(12px);
   background: var(--bg-color-translucent);
@@ -167,14 +163,4 @@ header summary .title .logo {
   margin-right: 4px;
   font-size: 15px;
   font-weight: 600;
-}
-
-@media print {
-  main {
-    padding-top: 0;
-  }
-
-  header {
-    display: none !important;
-  }
 }

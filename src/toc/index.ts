@@ -19,24 +19,19 @@ function createContainer(renderedElement: HTMLElement) {
   const nav = document.createElement("nav");
   nav.className = "toc";
   nav.appendChild(renderedElement);
-
-  const div = document.createElement("div");
-  div.className = "toc-container";
-  div.appendChild(nav);
-
-  return div;
+  return nav;
 }
 
 function removeContainer(parent: HTMLElement) {
-  parent.querySelector(".toc-container")?.remove();
+  parent.querySelector("nav.toc")?.remove();
 }
 
 function containerExists(parent: HTMLElement) {
-  return !!parent.querySelector(".toc-container");
+  return !!parent.querySelector("nav.toc");
 }
 
 function getCurrentListItem(parent: HTMLElement): HTMLLIElement | null {
-  return parent.querySelector(".toc-container .current");
+  return parent.querySelector("nav.toc .current");
 }
 
 function getElementTop(element: HTMLElement): number {
@@ -250,6 +245,7 @@ export default () => {
 
     if (nextItem != null && nextItem !== existingItem) {
       switchCurrent(existingItem, nextItem);
+      nextItem.scrollIntoView({ block: "center" });
     }
   }
   const debounced = debounce(handleScroll, LATENCY_MS);

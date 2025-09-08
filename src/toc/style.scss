@@ -1,45 +1,23 @@
 :root {
-  --toc-width: 250px;
   --toc-gap: 48px;
 }
 
-.toc-container {
-  position: fixed;
-  top: var(--header-collapsed-height);
-  width: 100%;
-  user-select: none;
-  pointer-events: none;
-}
-
-// TODO refactor to grid
-// overflow on toc properly
-
 .toc {
-  width: var(--main-width);
-  margin: 0 auto;
-  position: relative;
-  pointer-events: all;
   line-height: 1.2;
 }
 
 .toc ul {
-  position: absolute;
-  right: calc(-1 * var(--toc-width) - var(--toc-gap));
-  width: var(--toc-width);
-
   margin: 0;
   padding: 0;
 }
 
 .toc ul li {
   list-style-type: none;
-  width: var(--toc-width);
   overflow-wrap: break-word;
   margin-bottom: 0.3rem;
 }
 
 .toc ul li:first-of-type.level1 {
-  border-bottom: 1px solid var(--fg-color);
   font-weight: 600;
 }
 
@@ -149,43 +127,5 @@
   .toc ul li.alert-item.note:hover a::before,
   .toc ul li.alert-item.note a:hover::before {
     content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
-  }
-}
-
-@media print {
-  .toc {
-    display: none;
-  }
-}
-
-/*
- * Change to left-aligned to fit the table of contents better
- */
-@media only screen and (max-width: 1600px) {
-  body.toc-is-active main,
-  body.toc-is-active .toc {
-    width: calc(100vw - var(--toc-width) - 2 * var(--toc-gap));
-  }
-
-  body.toc-is-active main {
-    max-width: inherit;
-    margin-left: 0;
-  }
-
-  body.toc-is-active .toc {
-    margin-left: var(--gap);
-  }
-}
-
-/*
- * Hide the table of contents
- */
-@media only screen and (max-width: 900px) {
-  body.toc-is-active main {
-    width: auto;
-  }
-
-  body.toc-is-active .toc ul {
-    display: none;
   }
 }

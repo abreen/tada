@@ -13,9 +13,9 @@ hr {
   line-height: 13px;
   color: var(--fg2-color);
   background: linear-gradient(
-    170deg,
+    160deg,
     var(--bg2-color) 0%,
-    var(--bg-color) 25%,
+    var(--bg-color) 50%,
     var(--bg-color) 100%
   );
 }
@@ -23,10 +23,4 @@ hr {
 hr::after {
   content: attr(data-grid);
   white-space: pre;
-}
-
-@media print {
-  hr::after {
-    display: none;
-  }
 }

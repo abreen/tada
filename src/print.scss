@@ -1,0 +1,75 @@
+/*
+ * Style overrides for printing
+ */
+
+:root {
+  --print-font-size: 16px;
+}
+
+@media print {
+  main {
+    padding-top: 0;
+  }
+
+  header {
+    display: none;
+  }
+
+  hr::after {
+    display: none;
+  }
+
+  .toc {
+    display: none;
+  }
+
+  main {
+    max-width: none;
+  }
+
+  body {
+    font-size: var(--print-font-size);
+    color: #000;
+  }
+
+  pre {
+    font-size: var(--print-font-size);
+    border: none;
+    padding: 0;
+  }
+
+  .footnotes {
+    break-inside: avoid;
+  }
+
+  .footnotes .footnote-backref {
+    display: none;
+  }
+
+  sup.footnote-ref a {
+    display: inline;
+    background: none;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .alert {
+    background: none;
+    border: 2px solid #000;
+    break-inside: avoid;
+  }
+
+  main details {
+    border: 2px dotted #000;
+  }
+
+  main details .alert {
+    border: none;
+    padding: 0;
+  }
+
+  section {
+    border: 2px solid lightgray;
+  }
+}
