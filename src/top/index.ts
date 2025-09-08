@@ -1,4 +1,5 @@
 import { removeClass } from "../util";
+import { get as globalGet } from "../global";
 
 const TOP_HEIGHT_PX = 64;
 const THRESHOLD_PX = 300;
@@ -51,7 +52,10 @@ export default () => {
 
       const diffFromUp = isScrollingUp - window.scrollY;
       if (diffFromUp > THRESHOLD_PX) {
-        show(button);
+        // Don't show "Back to top" if the user clicked on a table of contents link
+        if (!globalGet("tableOfContentsClicked")) {
+          show(button);
+        }
       }
     }
 

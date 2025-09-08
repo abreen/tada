@@ -1,4 +1,5 @@
 import { debounce, removeClass } from "../util";
+import { set as globalSet } from "../global";
 
 const LATENCY_MS = 50;
 const MIN_COMPLEXITY = 20;
@@ -80,7 +81,11 @@ function renderTable(
 
     const clickHandler = (e: MouseEvent) => {
       e.preventDefault();
+
+      // Prevent other components from rendering during this scroll
+      globalSet("tableOfContentsClicked", true);
       headingsAndAlerts[i].scrollIntoView();
+
       highlightBriefly(headingsAndAlerts[i]);
     };
 
@@ -212,6 +217,8 @@ export default () => {
   const elements = renderTable(document.body, { items, headingsAndAlerts });
 
   function handleScroll() {
+    globalSet("tableOfContentsClicked", false);
+
     const headerOffset = getHeaderOffset();
 
     // find the first element not out of view & obscured by floating header
