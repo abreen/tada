@@ -313,6 +313,7 @@ table {
   font-size: var(--font-size-smaller);
   border-collapse: collapse;
   overflow: scroll;
+  margin: 1rem 0;
 }
 
 thead {
@@ -322,12 +323,11 @@ thead {
 th,
 td {
   padding: var(--table-padding);
-  border-bottom: 1px solid var(--fg-color);
+  border-bottom: 2px solid var(--theme-color);
 }
 
 th {
   font-weight: 600;
-  text-transform: lowercase;
 }
 
 td {
