@@ -20,6 +20,8 @@ header {
   grid-template-columns: 1fr;
 
   font-size: var(--header-font-size);
+
+  view-transition-name: site-header;
 }
 
 header details summary {

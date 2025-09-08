@@ -59,18 +59,19 @@ main table {
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1600px) {
+@media (min-width: 1000px) and (max-width: 1399px) {
   body {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
   }
   body.toc-is-active {
-    grid-template-columns: calc(100vw - 350px) 1fr;
+    grid-template-columns: calc(100vw - 280px) 1fr;
   }
   main {
     overflow-x: visible;
     grid-column: 1;
     grid-row: 1;
+    max-width: 1000px;
   }
   nav.toc {
     display: inherit;
@@ -79,9 +80,9 @@ main table {
   }
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1400px) {
   body {
-    grid-template-columns: 1fr 900px 1fr;
+    grid-template-columns: 1fr 1000px 1fr;
     grid-template-rows: 1fr;
   }
   main {
@@ -94,22 +95,4 @@ main table {
     grid-column: 3;
     grid-row: 1;
   }
-}
-
-/* Default: Extra-small devices such as small phones (less than 640px) */
-
-/* Small devices such as large phones (640px and up) */
-@media only screen and (min-width: 640px) {
-}
-
-/* Medium devices such as tablets (768px and up) */
-@media only screen and (min-width: 768px) {
-}
-
-/* Large devices such as laptops (1024px and up) */
-@media only screen and (min-width: 1024px) {
-}
-
-/* Largest devices such as desktops (1280px and up) */
-@media only screen and (min-width: 1280px) {
 }
