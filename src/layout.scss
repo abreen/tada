@@ -49,8 +49,11 @@ section {
 
 @media (min-width: 1024px) and (max-width: 1600px) {
   body {
-    grid-template-columns: calc(100vw - 350px) 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+  }
+  body.toc-is-active {
+    grid-template-columns: calc(100vw - 350px) 1fr;
   }
   main {
     overflow-x: visible;
