@@ -17,6 +17,12 @@
   z-index: 100;
 }
 
+@media (prefers-color-scheme: dark) {
+  .back-to-top button {
+    box-shadow: 0 3px 8px hsl(20deg 66% 8% / 70%);
+  }
+}
+
 .back-to-top button.is-hovering {
   transform: translateY(0) scaleX(100%);
 }
