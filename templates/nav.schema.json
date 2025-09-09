@@ -1,0 +1,45 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["title", "links"],
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "links": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["text"],
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "internal": {
+              "type": "string",
+              "pattern": "^\\/[-a-zA-Z0-9@:%_\\+.~#?&//=]*$"
+            },
+            "external": {
+              "type": "string",
+              "pattern": "^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]+\\.[a-zA-Z]{2,}([-a-zA-Z0-9@:%_\\+.~#?&//=]*)$"
+            },
+            "disabled": {
+              "type": "boolean"
+            }
+          },
+          "oneOf": [
+            {
+              "required": ["internal"]
+            },
+            {
+              "required": ["external"]
+            }
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

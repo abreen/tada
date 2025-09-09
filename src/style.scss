@@ -36,6 +36,13 @@
 
   --main-width: 900px;
 
+  --icon-external-link: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 5% 8%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  --icon-external-link-dark: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 10% 90%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  --icon-external-link-hover: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 13% 66%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  --icon-external-link-dark-hover: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 20% 60%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  --icon-external-translucent: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 70% 8% / 33%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 70% 8% / 33%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 70% 8% / 33%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  --icon-external-translucent-dark: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 85% 90% / 33%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 85% 90% / 33%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 85% 90% / 33%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+
   color-scheme: light dark;
 }
 
@@ -170,7 +177,7 @@ a {
 
 a.external::after {
   content: "";
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 5% 8%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+  background: var(--icon-external-link);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -180,7 +187,7 @@ a.external::after {
 
 @media (prefers-color-scheme: dark) {
   a.external::after {
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 10% 90%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+    background: var(--icon-external-link-dark);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
@@ -189,7 +196,7 @@ a.external::after {
 
 @media (hover: hover) {
   a.external:hover::after {
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 13% 66%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+    background: var(--icon-external-link-hover);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
@@ -198,7 +205,23 @@ a.external::after {
 
 @media (hover: hover) and (prefers-color-scheme: dark) {
   a.external:hover::after {
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' stroke='hsl(20deg 20% 60%)' stroke-width='2' fill='none' rx='2'/><path d='M9 15 L15 9' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M9 9 H15 V15' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round' fill='none'/></svg>");
+    background: var(--icon-external-link-dark-hover);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+}
+
+a.external.disabled::after {
+  background: var(--icon-external-translucent);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+@media (prefers-color-scheme: dark) {
+  a.external.disabled::after {
+    background: var(--icon-external-translucent-dark);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
