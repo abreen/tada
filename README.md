@@ -97,7 +97,9 @@ author: Author name
 Foo **bar** _baz_ [Google](google.com)
 ```
 
-These MarkdownIt plugins are installed by default:
+Expand to see all MarkdownIt plugins installed by default:
+
+<details>
 
 #### [markdown-it-anchor](https://www.npmjs.com/package/markdown-it-anchor)
 
@@ -174,6 +176,35 @@ Adds support for footnotes.
 Adds support for tables.
 
 
+</details>
+
+
+### Variable substitution
+
+Plain text content (e.g., HTML and Markdown) are processed using [Lodash
+templates][lodash].
+
+- Variables from `site.json` are available under `site` (e.g., `site.courseTitle`)
+- Page variables (from front matter) are available under `page` (e.g., `page.author`)
+
+Lodash allows you to embed variables and JavaScript logic directly in HTML
+templates and plain text content.
+
+- `<%= variable %>`: Outputs and HTML-escapes the value of a variable.
+- `<%- variable %>`: Outputs the unescaped value of a variable (use with caution).
+- `<% code %>`: Runs JavaScript logic (e.g., loops, conditionals, assignments) without output.
+
+You can use any JavaScript expression inside these tags. For example, you can
+write a loop:
+
+```
+<ul>
+<% for (let i = 0; i < 5; i++) { %>
+  <li><%= Math.pow(2, i) %></li>
+<% } %>
+</ul>
+```
+
 ### PDFs (in progress)
 
 Each page of a PDF in `content/` is first converted to a vector image, then
@@ -189,21 +220,6 @@ located at `content/ps1/intro.pdf` would be converted to multiple HTML pages:
 After all content is processed, a search index JSON file is built using
 [MiniSearch][minisearch] and saved to `dist/`. See the client-side code in
 `src/search.ts`.
-
-### Variable substitution
-
-Plain text content (e.g., HTML and Markdown) are be processed using [Lodash
-templates][lodash].
-
-- Variables in `site.json` are available under `site`, e.g., this Markdown code
-  uses the `courseId` variable:
-
-  ```markdown
-  [external]: https://institution.edu/courses/<%= site.courseId %>)
-  ```
-
-- Variables defined at the top of a file are available in the body of the file
-  under `page` (e.g., `page.title`)
 
 
 [lodash]: https://lodash.info/doc/template
