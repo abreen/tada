@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
-const JsonSchemaCompiler = require("ajv");
+const { compile: compileJsonSchema, doValidation } = require("./json-schema");
 
 // Store all templates in memory (don't read template files during build)
 const templates = {};
@@ -11,8 +11,6 @@ const jsonData = {};
 
 // Compiled JSON Schema for the .json files
 const validators = {};
-
-const compiler = new JsonSchemaCompiler();
 
 function getTemplatesDir() {
   return path.resolve(__dirname, "../templates");
@@ -51,13 +49,13 @@ function compileTemplates() {
       const schemaFile = `${path.parse(fileName).name}.schema.json`;
       const schemaPath = path.join(templatesDir, schemaFile);
       if (fs.existsSync(schemaPath)) {
-        compileJsonSchema(schemaPath, fileName);
+        compileAndSetValidator(schemaPath, fileName);
       }
 
       jsonData[fileName] = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
       if (validators[fileName]) {
-        validateSchema(fileName, validators[fileName], jsonData[fileName]);
+        doValidation(validators[fileName], jsonData[fileName], fileName);
       } else {
         console.warn(`warning: missing JSON Schema for ${fileName}`);
       }
@@ -65,19 +63,9 @@ function compileTemplates() {
   });
 }
 
-function compileJsonSchema(schemaPath, fileName) {
+function compileAndSetValidator(schemaPath, fileName) {
   const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
-  validators[fileName] = compiler.compile(schema);
-}
-
-function validateSchema(fileName, validator, json) {
-  const valid = validator(json);
-  if (!valid) {
-    validator.errors.forEach((error) => {
-      console.error(error);
-    });
-    throw new Error(`JSON file failed validation: ${fileName}`);
-  }
+  validators[fileName] = compileJsonSchema(schema);
 }
 
 module.exports = {

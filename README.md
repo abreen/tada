@@ -22,9 +22,6 @@ Here are the available scripts:
 Build the site for local development (using `config.dev.js` and `site.dev.json`)
 into the `dist/` directory.
 
-> [!NOTE]
-> Change the `site.base` and `site.basePath` variables as needed.
-
 ### `npm run serve`
 
 Start a development web server at `http://localhost:8080` which serves the
@@ -40,7 +37,13 @@ available at `http://localhost:8080`.
 
 When you are happy with your changes, use `npm run build` to build the site
 for production (using `config.prod.js` and `site.prod.json`).
-For example, you can then upload `dist/` to S3 or a public-facing web server.
+
+> [!NOTE]
+> Change the `site.base` and `site.basePath` variables as needed.
+> For example, if your site is hosted at `https://institution.edu/cs101/`,
+> set `site.base` to `"https://institution.edu/cs101/"` and
+> `site.basePath` to `"/cs101"`.
+
 
 ###  `npm run format`
 

@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const WebSocket = require("ws");
 const { R, B, L, P, I } = require("./colors");
+const { getDevSiteVariables } = require("./site-variables");
 
 const FLAIR_STRINGS = [
   "Tada",
@@ -39,9 +40,7 @@ function shortenWebpackOutput(output) {
 }
 
 function printSiteVariables() {
-  const variables = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, "site.dev.json"), "utf-8"),
-  );
+  const variables = getDevSiteVariables();
   Object.keys(variables).forEach((name) => {
     console.log(B`${name}` + ":", variables[name]);
   });

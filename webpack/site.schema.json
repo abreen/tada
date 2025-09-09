@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": ["base", "basePath", "internalDomains"],
+  "properties": {
+    "base": {
+      "type": "string",
+      "default": "",
+      "pattern": "^(https?:\\/\\/.*\\/)?$"
+    },
+    "basePath": {
+      "type": "string",
+      "default": "",
+      "pattern": "^(\\/[-a-zA-Z0-9]*)?$"
+    },
+    "internalDomains": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[-.a-zA-Z0-9]+$"
+      }
+    },
+    "courseId": {
+      "type": "string"
+    },
+    "courseCode": {
+      "type": "string"
+    },
+    "courseTitle": {
+      "type": "string"
+    },
+    "fullCourseName": {
+      "type": "string"
+    },
+    "themeColor": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

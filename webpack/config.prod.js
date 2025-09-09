@@ -5,9 +5,10 @@ const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { getDistDir, createHtmlPlugins } = require("./util");
+const { getProdSiteVariables } = require("./site-variables");
 
 const distDir = getDistDir();
-const siteVariables = require("./site.prod.json");
+const siteVariables = getProdSiteVariables();
 
 module.exports = {
   mode: "production",

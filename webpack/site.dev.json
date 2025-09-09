@@ -1,10 +1,9 @@
 {
-  "courseId": 1234,
+  "base": "http://localhost:8080/",
+  "internalDomains": ["localhost.com"],
+  "courseId": "1234",
   "courseCode": "CS-101",
   "courseTitle": "Introduction to CS",
   "fullCourseName": "CS-101 at Acme University",
-  "themeColor": "#1ca591",
-  "base": "http://localhost:8080/",
-  "basePath": "",
-  "internalDomains": ["localhost"]
+  "themeColor": "#1ca591"
 }

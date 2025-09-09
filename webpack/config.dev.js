@@ -4,9 +4,10 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const { getDistDir, createHtmlPlugins } = require("./util");
+const { getDevSiteVariables } = require("./site-variables");
 
 const distDir = getDistDir();
-const siteVariables = require("./site.dev.json");
+const siteVariables = getDevSiteVariables();
 
 const entrypoints = { index: "./src/index.ts" };
 
