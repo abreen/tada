@@ -1,6 +1,7 @@
 import { removeClass } from "../util";
 import { on as globalOn, remove as globalRemove } from "../global";
 
+const PAUSE_DURATION_MS = 3000;
 const TOP_HEIGHT_PX = 64;
 const THRESHOLD_PX = 300;
 const HIDE_THRESHOLD_PX = 80;
@@ -72,16 +73,16 @@ export default () => {
 
     lastScrollY = window.scrollY;
   }
+  document.addEventListener("scroll", handleScroll);
 
   let timeout: number | null = null,
     pause = false;
 
-  function handleTableOfContentsClicked() {
+  function handlePause() {
     if (button != null) {
       hide(button);
     }
 
-    // Prevent button from showing after table of contents is clicked
     pause = true;
 
     if (timeout != null) {
@@ -89,14 +90,12 @@ export default () => {
     }
     timeout = window.setTimeout(() => {
       pause = false;
-    }, 3000);
+    }, PAUSE_DURATION_MS);
   }
-
-  globalOn("tableOfContentsClicked", handleTableOfContentsClicked);
-  document.addEventListener("scroll", handleScroll);
+  globalOn("pauseBackToTop", handlePause);
 
   return () => {
+    globalRemove("pauseBackToTop", handlePause);
     document.removeEventListener("scroll", handleScroll);
-    globalRemove("tableOfContentsClicked", handleTableOfContentsClicked);
   };
 };

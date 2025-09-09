@@ -3,7 +3,7 @@ import { trigger as globalTrigger } from "../global";
 
 const LATENCY_MS = 50;
 const MIN_COMPLEXITY = 20;
-const HIGHLIGHT_DURATION_MS = 1500;
+const HIGHLIGHT_DURATION_MS = 3000;
 
 type HeadingLevel = "1" | "2" | "3" | "4" | "5" | "6";
 type AlertType = "warning" | "note";
@@ -47,7 +47,10 @@ function scrollIfNeeded(element: HTMLElement, options?: ScrollIntoViewOptions) {
 
 let highlightEl: HTMLElement | null = null;
 let highlightTimeout: number | null = null;
-function highlightBriefly(element: HTMLElement) {
+export function highlightBriefly(
+  element: HTMLElement,
+  duration: number = HIGHLIGHT_DURATION_MS,
+) {
   if (highlightEl && highlightEl != element) {
     if (highlightTimeout) {
       window.clearTimeout(highlightTimeout);
@@ -60,7 +63,7 @@ function highlightBriefly(element: HTMLElement) {
   highlightTimeout = window.setTimeout(() => {
     removeClass(element, "is-highlighted");
     highlightTimeout = null;
-  }, HIGHLIGHT_DURATION_MS);
+  }, duration);
 }
 
 function renderTable(
@@ -85,7 +88,7 @@ function renderTable(
       headingsAndAlerts[i].scrollIntoView();
       highlightBriefly(headingsAndAlerts[i]);
 
-      globalTrigger("tableOfContentsClicked");
+      globalTrigger("pauseBackToTop");
     };
 
     if ("level" in item) {

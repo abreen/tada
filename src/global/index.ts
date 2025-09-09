@@ -1,5 +1,5 @@
 type Key = "pauseBackToTop";
-type Event = "tableOfContentsClicked";
+type Event = "pauseBackToTop";
 
 export const INITIAL_STATE = {
   pauseBackToTop: false,
@@ -8,7 +8,7 @@ export const INITIAL_STATE = {
 let state: Record<Key, any> = INITIAL_STATE;
 
 const listeners: Record<Event, Function[]> = {
-  tableOfContentsClicked: [],
+  pauseBackToTop: [],
 };
 
 export function set(key: Key, value: any) {

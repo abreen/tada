@@ -136,6 +136,14 @@ function classNames(obj) {
   return names.join(" ");
 }
 
+function textToId(str) {
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 function createMarkdown(siteVariables) {
   const markdown = new MarkdownIt({ html: true, typographer: true })
     .use(require("markdown-it-anchor"), { tabIndex: false })
@@ -179,7 +187,7 @@ function createMarkdown(siteVariables) {
             matches[1] &&
             markdown.utils.escapeHtml(curlyQuote(matches[1]));
           if (sectionTitle) {
-            return `<section><h2>${sectionTitle}</h2>\n`;
+            return `<section><h2 id="${textToId(sectionTitle)}">${sectionTitle}</h2>\n`;
           } else {
             return "<section>\n";
           }
@@ -237,13 +245,13 @@ function createMarkdown(siteVariables) {
   const caption = markdown.renderer.rules.footnote_caption;
   markdown.renderer.rules.footnote_caption = (...args) => {
     const str = caption(...args);
-    return str.slice(1, str.length - 1) + "↓";
+    return str.slice(1, str.length - 1);
   };
 
   // Change appearance of backreference
   const anchor = markdown.renderer.rules.footnote_anchor;
   markdown.renderer.rules.footnote_anchor = (...args) =>
-    anchor(...args).replace("\u21a9\uFE0E", "↑");
+    anchor(...args).replace("\u21a9\uFE0E", "🡡");
 
   /*
    * Customize lists (add wrapper element)

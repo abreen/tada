@@ -28,7 +28,7 @@ h5,
 h6,
 .alert,
 a {
-  scroll-margin-top: var(--header-collapsed-height);
+  scroll-margin-top: calc(var(--header-collapsed-height) + var(--gap));
 }
 
 main {

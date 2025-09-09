@@ -7,14 +7,18 @@ import "./header/style.scss";
 import "./highlight/style.scss";
 import "./life/style.scss";
 import "./top/style.scss";
+import "./anchor/style.scss";
+import "./footnotes/style.scss";
 
-import mountTableOfContents from "./toc/";
-import mountSearch from "./search/";
+import mountTableOfContents from "./toc";
+import mountSearch from "./search";
 import mountHeader from "./header";
-import mountHighlight from "./highlight/";
-import mountPrint from "./print/";
-import mountLife from "./life/";
-import mountTop from "./top/";
+import mountHighlight from "./highlight";
+import mountPrint from "./print";
+import mountLife from "./life";
+import mountTop from "./top";
+import mountAnchor from "./anchor";
+import mountFootnotes from "./footnotes";
 
 document.addEventListener("DOMContentLoaded", () => {
   const components = {
@@ -25,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     print: mountPrint,
     life: mountLife,
     top: mountTop,
+    anchor: mountAnchor,
+    footnotes: mountFootnotes,
   };
 
   Object.entries(components).forEach(([name, mount]) => {
