@@ -5,7 +5,7 @@ const _ = require("lodash");
 const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
-const { compileTemplates } = require("./templates");
+const { compileTemplates, render } = require("./templates");
 
 function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
@@ -16,12 +16,14 @@ function createTemplateParameters(pageVariables, siteVariables, content) {
     content,
     isoDate,
     readableDate,
+    cx: classNames,
   };
 }
 
 /** Create one HtmlWebpackPlugin for each input file in content/ */
 function createHtmlPlugins(siteVariables) {
-  const templates = compileTemplates();
+  compileTemplates();
+
   const contentDir = getContentDir();
   const contentFiles = getContentFiles(contentDir);
 
@@ -29,16 +31,19 @@ function createHtmlPlugins(siteVariables) {
     const rel = path.relative(contentDir, filePath);
     const name = rel.replace(/\.(md|html)$/, "");
 
-    const { html, pageVariables } = renderContent(filePath, siteVariables);
+    const { content, pageVariables } = renderContent(filePath, siteVariables);
+
+    const templateParameters = createTemplateParameters(
+      pageVariables,
+      siteVariables,
+      content,
+    );
+
+    const html = render("default.html", templateParameters);
 
     return new HtmlWebpackPlugin({
       filename: `${name}.html`,
-      template: path.resolve(__dirname, "..", "src/template.html"),
-      templateParameters: createTemplateParameters(
-        pageVariables,
-        siteVariables,
-        html,
-      ),
+      templateContent: html,
       inject: "head",
     });
   });
@@ -79,7 +84,7 @@ function renderContent(filePath, siteVariables) {
     html = md.render(html);
   }
 
-  return { html, pageVariables: params.page };
+  return { content: html, pageVariables: params.page };
 }
 
 function stripHtmlComments(str) {
@@ -119,6 +124,16 @@ function capitalize(str) {
   }
 
   return str[0].toUpperCase() + str.slice(1);
+}
+
+function classNames(obj) {
+  const names = [];
+  for (const key in obj) {
+    if (!!obj[key]) {
+      names.push(key);
+    }
+  }
+  return names.join(" ");
 }
 
 function createMarkdown(siteVariables) {

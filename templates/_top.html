@@ -31,7 +31,6 @@
   </head>
 
   <body>
-    <a name="top"></a>
     <header style="view-transition-name: site-header">
       <details>
         <summary>
@@ -41,7 +40,9 @@
           >
         </summary>
         <div class="content">
+
           <%= render('_nav.html') %>
+
           <input
             id="search"
             tabindex="0"
@@ -56,6 +57,3 @@
     </header>
     <main>
       <h1><%= page.title %></h1>
-    </main>
-  </body>
-</html>

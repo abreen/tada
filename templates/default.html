@@ -1,1 +1,15 @@
-<%= render('_top.html') %> <%= content %> <%= render('_bottom.html') %>
+<%= render('_top.html') %>
+  <div class="info">
+    <% if (page.author && page.avatar) { %>
+      <%= render('_author.html') %>
+    <% } %>
+    <% if (page.published) { %>
+      <p class="publish-date">
+        <time datetime="<%= isoDate(page.published) %>">
+          <%= readableDate(page.published) %>
+        </time>
+      </p>
+    <% } %>
+  </div>
+  <%= content %>
+<%= render('_bottom.html') %>

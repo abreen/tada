@@ -8,7 +8,7 @@
     "build": "webpack --config webpack/config.prod.js",
     "watch": "node webpack/watch.js",
     "serve": "node webpack/serve.js",
-    "format": "npx prettier --write \"**/*.(t|j)s\" \"**/*.html\" \"**/*.scss\" \"**/*.json\""
+    "format": "npx prettier --write \"**/*.(t|j)s\" \"**/*.scss\" \"**/*.json\""
   },
   "engines": {
     "node": ">=22",

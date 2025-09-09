@@ -1,5 +1,5 @@
 import { removeClass } from "../util";
-import { get as globalGet } from "../global";
+import { on as globalOn, remove as globalRemove } from "../global";
 
 const TOP_HEIGHT_PX = 64;
 const THRESHOLD_PX = 300;
@@ -52,8 +52,7 @@ export default () => {
 
       const diffFromUp = isScrollingUp - window.scrollY;
       if (diffFromUp > THRESHOLD_PX) {
-        // Don't show "Back to top" if the user clicked on a table of contents link
-        if (!globalGet("tableOfContentsClicked")) {
+        if (!pause) {
           show(button);
         }
       }
@@ -74,9 +73,30 @@ export default () => {
     lastScrollY = window.scrollY;
   }
 
+  let timeout: number | null = null,
+    pause = false;
+
+  function handleTableOfContentsClicked() {
+    if (button != null) {
+      hide(button);
+    }
+
+    // Prevent button from showing after table of contents is clicked
+    pause = true;
+
+    if (timeout != null) {
+      window.clearTimeout(timeout);
+    }
+    timeout = window.setTimeout(() => {
+      pause = false;
+    }, 3000);
+  }
+
+  globalOn("tableOfContentsClicked", handleTableOfContentsClicked);
   document.addEventListener("scroll", handleScroll);
 
   return () => {
     document.removeEventListener("scroll", handleScroll);
+    globalRemove("tableOfContentsClicked", handleTableOfContentsClicked);
   };
 };

@@ -4,11 +4,15 @@
     "links": [
       {
         "text": "Home",
-        "href": "/index.html"
+        "internal": "/index.html"
       },
       {
         "text": "Syllabus",
-        "href": "/syllabus.html"
+        "internal": "/syllabus.html"
+      },
+      {
+        "text": "Staff",
+        "internal": "/staff.html"
       }
     ]
   },
@@ -16,21 +20,21 @@
     "title": "Topics",
     "links": [
       {
-        "text": "Link 1",
-        "href": "/link1"
+        "text": "Lectures",
+        "internal": "/lectures"
       },
       {
-        "text": "Link 2",
-        "href": "/link2"
+        "text": "Labs",
+        "internal": "/labs"
       },
       {
-        "text": "Link 3",
-        "href": "/link3",
+        "text": "Glossary",
+        "internal": "/glossary"
+      },
+      {
+        "text": "Interactive",
+        "internal": "/interactive",
         "disabled": true
-      },
-      {
-        "text": "Link 4",
-        "href": "/link4"
       }
     ]
   },
@@ -39,26 +43,26 @@
     "links": [
       {
         "text": "Problem Set 1",
-        "href": "/ps1"
+        "internal": "/ps1"
       },
       {
         "text": "Problem Set 2",
-        "href": "/ps2",
+        "internal": "/ps2",
         "disabled": true
       },
       {
         "text": "Problem Set 3",
-        "href": "/ps3",
+        "internal": "/ps3",
         "disabled": true
       },
       {
         "text": "Problem Set 4",
-        "href": "/ps4",
+        "internal": "/ps4",
         "disabled": true
       },
       {
         "text": "Problem Set 5",
-        "href": "/ps5",
+        "internal": "/ps5",
         "disabled": true
       }
     ]
@@ -68,23 +72,25 @@
     "links": [
       {
         "text": "Link 1",
-        "href": "http://example.com"
+        "external": "http://example.com"
       },
       {
         "text": "Link 2",
-        "href": "http://example.com"
+        "external": "http://example.com"
       },
       {
         "text": "Link 3",
-        "href": "http://example.com"
+        "external": "http://example.com"
       },
       {
         "text": "Link 4",
-        "href": "http://example.com"
+        "external": "http://example.com",
+        "disabled": true
       },
       {
         "text": "Link 5",
-        "href": "http://example.com"
+        "external": "http://example.com",
+        "disabled": true
       }
     ]
   }

@@ -7,6 +7,7 @@ const WebSocket = require("ws");
 const dirsToWatch = [
   path.resolve(__dirname, "../src"),
   path.resolve(__dirname, "../content"),
+  path.resolve(__dirname, "../templates"),
   path.resolve(__dirname, "../public"),
   path.resolve(__dirname),
 ];
