@@ -82,21 +82,29 @@ function renderTable(
   items.forEach((item, i) => {
     const li = document.createElement("li");
 
-    const clickHandler = (e: MouseEvent) => {
-      e.preventDefault();
+    function makeClickHandler(
+      element: HTMLElement,
+      preventDefault: boolean,
+    ): (e: MouseEvent) => void {
+      return (e: MouseEvent) => {
+        globalTrigger("pauseBackToTop");
+        if (preventDefault) {
+          e.preventDefault();
+          element.scrollIntoView();
+        }
+        highlightBriefly(element);
+      };
+    }
 
-      headingsAndAlerts[i].scrollIntoView();
-      highlightBriefly(headingsAndAlerts[i]);
-
-      globalTrigger("pauseBackToTop");
-    };
+    const handlerNormal = makeClickHandler(headingsAndAlerts[i], false);
+    const handlerPreventDefault = makeClickHandler(headingsAndAlerts[i], true);
 
     if ("level" in item) {
       const heading = item as Heading;
       const a = document.createElement("a");
       a.innerText = heading.text;
       a.href = `#${heading.id}`;
-      a.onclick = clickHandler;
+      a.onclick = handlerNormal;
 
       rendered.push(a);
 
@@ -108,7 +116,7 @@ function renderTable(
       const a = document.createElement("a");
       a.innerText = alert.title;
       a.href = "#";
-      a.onclick = clickHandler;
+      a.onclick = handlerPreventDefault;
 
       rendered.push(a);
 

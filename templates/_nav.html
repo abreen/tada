@@ -4,12 +4,14 @@
     <p><%= section.title %></p>
     <ul>
       <% section.links.forEach(function(link) { %>
-        <a
-          class="<%= cx({disabled: link.disabled, external: link.external}) %>"
-          href="<%= link.internal ? `${basePath}${link.internal}` : link.external %>"
-        >
-          <%= link.text %>
-        </a>
+        <li>
+          <a
+            class="<%= cx({disabled: link.disabled, external: link.external}) %>"
+            href="<%= link.internal ? `${basePath}${link.internal}` : link.external %>"
+          >
+            <%= link.text %>
+          </a>
+        </li>
       <% }) %>
     </ul>
   </div>

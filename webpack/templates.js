@@ -39,9 +39,6 @@ function compileTemplates() {
       jsonData[fileName] = JSON.parse(fs.readFileSync(filePath, "utf-8"));
     }
   });
-
-  console.debug("templates: ", Object.keys(templates));
-  console.debug("JSON data: ", Object.keys(jsonData));
 }
 
 module.exports = {

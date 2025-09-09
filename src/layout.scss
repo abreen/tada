@@ -1,8 +1,6 @@
-/*
- * Layout styles, media queries, etc.
- */
-
 html {
+  margin: 0;
+  padding: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
   scrollbar-color: var(--fg2-color) transparent;
@@ -32,7 +30,8 @@ a {
 }
 
 main {
-  padding: var(--header-collapsed-height) var(--gap) var(--gap) var(--gap);
+  padding: calc(var(--header-collapsed-height) + var(--gap)) var(--gap)
+    var(--gap) var(--gap);
   grid-column: 1;
   grid-row: 1;
   overflow-x: hidden;
