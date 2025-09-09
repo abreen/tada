@@ -2,7 +2,7 @@
 
 A flexible static site. Generates HTML and JS using Webpack.
 
-![Tada running in watch mode](tada.jpg)
+![Tada running in watch mode](tada.png)
 
 ## Setup
 
