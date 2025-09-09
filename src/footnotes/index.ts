@@ -37,12 +37,14 @@ export default () => {
 
   const backreferenceElements = getBackreferenceElements(document.body);
   backreferenceElements.forEach((el) => {
-    el.onclick = () => {
+    el.onclick = (e) => {
       const referenceEl = document.getElementById(getIdFromHref(el.href));
       if (referenceEl == null) {
         return;
       }
+      e.preventDefault();
       globalTrigger("pauseBackToTop");
+      referenceEl.scrollIntoView();
       highlightBriefly(referenceEl);
     };
   });

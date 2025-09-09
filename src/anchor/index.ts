@@ -21,7 +21,7 @@ export default () => {
     link.className = "heading-anchor";
     link.href = `#${el.id}`;
     link.setAttribute("aria-label", "Link to this heading");
-    link.innerHTML = "🡧";
+    link.innerHTML = "#";
 
     link.onclick = () => {
       highlightBriefly(el, HIGHLIGHT_DURATION_MS);

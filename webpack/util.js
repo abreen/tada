@@ -251,7 +251,7 @@ function createMarkdown(siteVariables) {
   // Change appearance of backreference
   const anchor = markdown.renderer.rules.footnote_anchor;
   markdown.renderer.rules.footnote_anchor = (...args) =>
-    anchor(...args).replace("\u21a9\uFE0E", "🡡");
+    anchor(...args).replace("\u21a9\uFE0E", "⇡");
 
   /*
    * Customize lists (add wrapper element)
