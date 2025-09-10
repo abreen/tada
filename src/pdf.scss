@@ -1,0 +1,12 @@
+.pdf-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+
+.pdf-container svg {
+  display: block;
+  margin: 0 auto;
+  background: var(--bg-color);
+}

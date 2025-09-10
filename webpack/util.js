@@ -6,6 +6,8 @@ const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
 const { compileTemplates, render } = require("./templates");
+const he = require("he");
+const { extractPdfPageSvgs } = require("./pdf-to-svg");
 
 function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
@@ -21,32 +23,97 @@ function createTemplateParameters(pageVariables, siteVariables, content) {
 }
 
 /** Create one HtmlWebpackPlugin for each input file in content/ */
-function createHtmlPlugins(siteVariables) {
+async function createHtmlPlugins(siteVariables) {
   compileTemplates();
 
   const contentDir = getContentDir();
   const contentFiles = getContentFiles(contentDir);
 
-  return contentFiles.map((filePath) => {
-    const rel = path.relative(contentDir, filePath);
-    const name = rel.replace(/\.(md|html)$/, "");
+  const plugins = [];
 
-    const { content, pageVariables } = renderContent(filePath, siteVariables);
+  for (const filePath of contentFiles) {
+    const { dir, name, ext } = path.parse(filePath);
 
-    const templateParameters = createTemplateParameters(
-      pageVariables,
-      siteVariables,
-      content,
-    );
+    if ([".html", ".md", ".markdown"].includes(ext.toLowerCase())) {
+      const { content, pageVariables } = renderContent(filePath, siteVariables);
+      const templateParameters = createTemplateParameters(
+        pageVariables,
+        siteVariables,
+        content
+      );
+      const html = render("default.html", templateParameters);
+      plugins.push(
+        new HtmlWebpackPlugin({
+          filename: path.format({
+            dir: path.relative(contentDir, dir),
+            base: `${name}.html`,
+          }),
+          templateContent: html,
+          inject: "head",
+        })
+      );
+    } else if (ext.toLowerCase() === ".pdf") {
+      const subPath = path.relative(contentDir, path.join(dir, name));
 
-    const html = render("default.html", templateParameters);
+      const pages = (await extractPdfPageSvgs(filePath)).map((svg, i, arr) => {
+        const hasPrev = i > 0,
+          hasNext = i < arr.length - 1;
+        const pageNum = i + 1;
+        const templateParameters = createTemplateParameters(
+          {
+            filePath,
+            pageNumber: pageNum,
+            prevUrl: hasPrev
+              ? siteVariables.basePath + `${subPath}/page-${pageNum - 1}.html`
+              : null,
+            nextUrl: hasNext
+              ? siteVariables.basePath + `${subPath}/page-${pageNum + 1}.html`
+              : null,
+            title: `${name + ext} (${pageNum} of ${arr.length})`,
+          },
+          siteVariables,
+          svg
+        );
 
-    return new HtmlWebpackPlugin({
-      filename: `${name}.html`,
-      templateContent: html,
-      inject: "head",
-    });
-  });
+        const html = render("pdf.html", templateParameters);
+
+        return new HtmlWebpackPlugin({
+          filename: path.format({
+            dir: subPath,
+            base: `page-${pageNum}.html`,
+          }),
+          templateContent: html,
+          inject: "head",
+        });
+      });
+
+      const indexHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=./page-1.html" />
+    <script>
+      window.location.href = './page-1.html';
+    </script>
+  </head>
+</html>
+`;
+      plugins.push(
+        new HtmlWebpackPlugin({
+          filename: path.format({
+            dir: subPath,
+            base: "index.html",
+          }),
+          templateContent: indexHtml,
+          inject: false,
+        })
+      );
+
+      plugins.push(...pages);
+    }
+  }
+
+  return plugins;
 }
 
 /** Parses the file, renders using template, returns HTML & params used to generate page */
@@ -75,7 +142,7 @@ function renderContent(filePath, siteVariables) {
   const params = createTemplateParameters(
     pageVariablesProcessed,
     siteVariables,
-    strippedContent,
+    strippedContent
   );
 
   let html = _.template(strippedContent)(params);
@@ -105,7 +172,7 @@ function getContentFiles(contentDir) {
       const fullPath = path.join(dir, file);
       if (fs.statSync(fullPath).isDirectory()) {
         return walk(fullPath);
-      } else if (/\.(md|html)$/.test(file)) {
+      } else if (/\.(md|html|pdf)$/.test(file)) {
         return [fullPath];
       }
       return [];
@@ -265,7 +332,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self,
+    self
   ) => {
     return (
       itemOpen(tokens, idx, options, env, self) +
@@ -284,7 +351,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self,
+    self
   ) => {
     tokens[idx].attrJoin("class", "styled-list");
     return bulletListOpen(tokens, idx, options, env, self);
@@ -296,7 +363,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self,
+    self
   ) => {
     tokens[idx].attrJoin("class", "styled-list");
     return orderedListOpen(tokens, idx, options, env, self);

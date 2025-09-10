@@ -1,3 +1,11 @@
 <%= render('_top.html') %>
-  <%= content %>
+  <% if (page.prevUrl) { %>
+    <a class="pdf-prev" href="<%= page.prevUrl %>">Previous page</a>
+  <% } %>
+  <% if (page.nextUrl) { %>
+    <a class="pdf-next" href="<%= page.nextUrl %>">Next page</a>
+  <% } %>
+  <div class="pdf-container">
+    <%= content %>
+  </div>
 <%= render('_bottom.html') %>

@@ -1,4 +1,5 @@
 import "./style.scss";
+import "./pdf.scss";
 import "./layout.scss";
 import "./print.scss";
 import "./toc/style.scss";
