@@ -1,11 +1,28 @@
 <%= render('_top.html') %>
+
+<h1><%= page.titleHtml %></h1>
+
+<div class="tools">
+  <span>Beta feature <i class="warning">️</i> If you experience issues, download the PDF:</span>
+  <a class="download button" href="<%= page.pdfFilePath %>" download="">Download</a>
+</div>
+
+<div class="pdf-container">
+  <div class="prev">
   <% if (page.prevUrl) { %>
-    <a class="pdf-prev" href="<%= page.prevUrl %>">Previous page</a>
+  <button onclick="window.location = '<%= page.prevUrl %>'" aria-label="Previous page">◀</button>
   <% } %>
-  <% if (page.nextUrl) { %>
-    <a class="pdf-next" href="<%= page.nextUrl %>">Next page</a>
-  <% } %>
-  <div class="pdf-container">
-    <%= content %>
   </div>
+
+  <div class="next">
+  <% if (page.nextUrl) { %>
+  <button onclick="window.location = '<%= page.nextUrl %>'" aria-label="Next page">▶</button>
+  <% } %>
+  </div>
+
+  <div class="content">
+  <%= content %>
+  </div>
+</div>
+
 <%= render('_bottom.html') %>

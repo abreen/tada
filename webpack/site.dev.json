@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:8080/",
-  "internalDomains": ["localhost.com"],
+  "internalDomains": ["localhost"],
   "courseId": "1234",
   "courseCode": "CS-101",
   "courseTitle": "Introduction to CS",

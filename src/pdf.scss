@@ -1,12 +1,31 @@
 .pdf-container {
-  display: flex;
-  width: 100%;
-  justify-content: center;
+  margin-top: var(--gap);
 }
 
-
 .pdf-container svg {
-  display: block;
-  margin: 0 auto;
-  background: var(--bg-color);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+body.pdf h1 {
+  font-size: 24px;
+  text-align: center;
+}
+
+.pdf-container .prev button,
+.pdf-container .next button {
+  height: 100%;
+  width: 100%;
+}
+
+body.pdf .tools {
+  text-align: center;
+  font-size: smaller;
+  user-select: none;
+}
+
+body.pdf .tools i.warning::before {
+}
+
+@media (hover: hover) {
 }

@@ -4,17 +4,24 @@ const MarkdownIt = require("markdown-it");
 const _ = require("lodash");
 const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
+const { stripHtml } = require("string-strip-html");
 const { compileTemplates, render } = require("./templates");
-const he = require("he");
 const { extractPdfPageSvgs } = require("./pdf-to-svg");
 
-function createTemplateParameters(pageVariables, siteVariables, content) {
+function createTemplateParameters(
+  pageVariables,
+  layout,
+  siteVariables,
+  content,
+) {
   return {
     site: siteVariables,
     base: siteVariables.base,
     basePath: siteVariables.basePath,
     page: pageVariables,
+    layout,
     content,
     isoDate,
     readableDate,
@@ -28,6 +35,7 @@ async function createHtmlPlugins(siteVariables) {
 
   const contentDir = getContentDir();
   const contentFiles = getContentFiles(contentDir);
+  const distDir = getDistDir();
 
   const plugins = [];
 
@@ -38,8 +46,9 @@ async function createHtmlPlugins(siteVariables) {
       const { content, pageVariables } = renderContent(filePath, siteVariables);
       const templateParameters = createTemplateParameters(
         pageVariables,
+        "default",
         siteVariables,
-        content
+        content,
       );
       const html = render("default.html", templateParameters);
       plugins.push(
@@ -50,15 +59,17 @@ async function createHtmlPlugins(siteVariables) {
           }),
           templateContent: html,
           inject: "head",
-        })
+        }),
       );
     } else if (ext.toLowerCase() === ".pdf") {
       const subPath = path.relative(contentDir, path.join(dir, name));
+      const pdfFilePath = siteVariables.basePath + `${subPath}/${name + ext}`;
 
       const pages = (await extractPdfPageSvgs(filePath)).map((svg, i, arr) => {
         const hasPrev = i > 0,
           hasNext = i < arr.length - 1;
         const pageNum = i + 1;
+        const titleHtml = `<tt>${name + ext}</tt> (${pageNum} of ${arr.length})`;
         const templateParameters = createTemplateParameters(
           {
             filePath,
@@ -69,10 +80,13 @@ async function createHtmlPlugins(siteVariables) {
             nextUrl: hasNext
               ? siteVariables.basePath + `${subPath}/page-${pageNum + 1}.html`
               : null,
-            title: `${name + ext} (${pageNum} of ${arr.length})`,
+            title: stripHtml(titleHtml).result,
+            titleHtml,
+            pdfFilePath,
           },
+          "pdf",
           siteVariables,
-          svg
+          svg,
         );
 
         const html = render("pdf.html", templateParameters);
@@ -106,8 +120,15 @@ async function createHtmlPlugins(siteVariables) {
           }),
           templateContent: indexHtml,
           inject: false,
-        })
+        }),
       );
+
+      // Copy the entire PDF file to dist/
+      const to = path.format({
+        dir: path.join(distDir, subPath),
+        base: name + ext,
+      });
+      plugins.push(new CopyPlugin({ patterns: [{ from: filePath, to }] }));
 
       plugins.push(...pages);
     }
@@ -126,7 +147,7 @@ function renderContent(filePath, siteVariables) {
   const { pageVariables, content } = parseFrontMatterAndContent(raw, ext);
 
   // Handle substitutions inside page variables using siteVariables
-  const siteOnlyParams = createTemplateParameters({}, siteVariables, null);
+  const siteOnlyParams = createTemplateParameters({}, "", siteVariables, null);
   const pageVariablesProcessed = Object.entries(pageVariables)
     .map(([k, v]) => {
       const newValue = _.template(v)(siteOnlyParams);
@@ -141,8 +162,9 @@ function renderContent(filePath, siteVariables) {
 
   const params = createTemplateParameters(
     pageVariablesProcessed,
+    "",
     siteVariables,
-    strippedContent
+    strippedContent,
   );
 
   let html = _.template(strippedContent)(params);
@@ -332,7 +354,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self
+    self,
   ) => {
     return (
       itemOpen(tokens, idx, options, env, self) +
@@ -351,7 +373,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self
+    self,
   ) => {
     tokens[idx].attrJoin("class", "styled-list");
     return bulletListOpen(tokens, idx, options, env, self);
@@ -363,7 +385,7 @@ function createMarkdown(siteVariables) {
     idx,
     options,
     env,
-    self
+    self,
   ) => {
     tokens[idx].attrJoin("class", "styled-list");
     return orderedListOpen(tokens, idx, options, env, self);

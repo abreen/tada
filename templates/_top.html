@@ -14,7 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <% if (site.themeColor) { %>
     <meta name="theme-color" content="<%= site.themeColor %>" />
-    <% } %> <% if (page.description) { %>
+    <% } %>
+    <% if (page.description) { %>
     <meta name="description" content="<%= page.description %>" />
     <% } %>
     <meta property="og:title" content="<%= page.title %>" />
@@ -36,7 +37,7 @@
     <link rel="expect" href="main" blocking="render" />
   </head>
 
-  <body>
+  <body class="<%= layout %>">
     <header style="view-transition-name: site-header">
       <details>
         <summary>
@@ -62,4 +63,3 @@
       </details>
     </header>
     <main>
-      <h1><%= page.title %></h1>
