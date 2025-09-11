@@ -21,7 +21,12 @@ module.exports = async () => {
     mode: "development",
     devtool: "eval-source-map",
     entry: entrypoints,
-    output: { path: distDir, filename: "[name].bundle.js", clean: true },
+    output: {
+      path: distDir,
+      publicPath: siteVariables.basePath,
+      filename: "[name].bundle.js",
+      clean: true,
+    },
     resolve: { extensions: [".ts", ".js", ".json"] },
     module: {
       rules: [

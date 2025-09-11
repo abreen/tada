@@ -14,7 +14,11 @@ module.exports = async () => {
   return {
     mode: "production",
     entry: { index: "./src/index.ts" },
-    output: { path: distDir, filename: "bundle.js" },
+    output: {
+      path: distDir,
+      publicPath: siteVariables.basePath,
+      filename: "bundle.js",
+    },
     resolve: { extensions: [".ts", ".js", ".json"] },
     devtool: false,
     module: {
