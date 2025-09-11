@@ -30,7 +30,7 @@ function hide(button: HTMLButtonElement) {
 export default () => {
   const button = createButton(document.body);
 
-  let lastScrollY = window.scrollY,
+  let lastScrollY = 0,
     isScrollingUp = -1,
     isScrollingDown = -1;
 
@@ -38,6 +38,11 @@ export default () => {
     window.scroll({ top: 0 });
     isScrollingUp = -1;
   };
+
+  //let isWarmingUp = true;
+  //setTimeout(() => {
+  //  isWarmingUp = false;
+  //}, 1000);
 
   function handleScroll() {
     if (button == null) {
@@ -48,6 +53,10 @@ export default () => {
       hide(button);
       return;
     }
+
+    //if (isWarmingUp) {
+    //  return;
+    //}
 
     const diff = lastScrollY - window.scrollY;
 
@@ -79,11 +88,15 @@ export default () => {
 
     lastScrollY = window.scrollY;
   }
-  document.addEventListener("scroll", handleScroll);
+  document.addEventListener("scroll", handleScroll, { passive: true });
 
   let timeout: number | null = null,
     pause = false;
 
+  /*
+   * Prevent "Back to top" from showing when other components are about to
+   * scroll the page up (e.g., the footnotes component).
+   */
   function handlePause() {
     if (button != null) {
       hide(button);
