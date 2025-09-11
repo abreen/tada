@@ -1,10 +1,20 @@
-import { removeClass } from "../util";
+import { debounce, removeClass } from "../util";
 import { on as globalOn, remove as globalRemove } from "../global";
 
-const PAUSE_DURATION_MS = 3000;
-const TOP_HEIGHT_PX = 120;
-const THRESHOLD_PX = 300;
+/** Show the "Back to top" button after scrolling up this many pixels */
+const SHOW_THRESHOLD_PX = 300;
+
+/** Hide the "Back to top" button after scrolling down this many pixels */
 const HIDE_THRESHOLD_PX = 80;
+
+/** Don't do anything until the user has scrolled down the page this far */
+const HIDE_ZONE_PX = 500;
+
+/** When "pauseBackToTop" event is triggered, don't show the button for this long */
+const PAUSE_DURATION_MS = 3000;
+
+/** Debounce time (maximum amount of time to wait before updates) */
+const LATENCY_MS = 50;
 
 function createButton(parent: HTMLElement): HTMLButtonElement {
   const div = document.createElement("div");
@@ -19,76 +29,89 @@ function createButton(parent: HTMLElement): HTMLButtonElement {
   return button;
 }
 
-function show(button: HTMLButtonElement) {
-  button.classList.add("is-hovering");
-}
-
-function hide(button: HTMLButtonElement) {
-  removeClass(button, "is-hovering");
-}
-
 export default () => {
   const button = createButton(document.body);
 
-  let lastScrollY = 0,
+  let isShowing = false,
+    lastScrollY = 0,
     isScrollingUp = -1,
     isScrollingDown = -1;
 
   button.onclick = () => {
     window.scroll({ top: 0 });
-    isScrollingUp = -1;
+    isScrollingUp = isScrollingDown = -1;
+    lastScrollY = 0;
   };
 
-  //let isWarmingUp = true;
-  //setTimeout(() => {
-  //  isWarmingUp = false;
-  //}, 1000);
+  function show(button: HTMLButtonElement) {
+    if (!isShowing) {
+      button.classList.add("is-hovering");
+    }
+    isShowing = true;
+  }
+
+  function hide(button: HTMLButtonElement) {
+    if (isShowing) {
+      removeClass(button, "is-hovering");
+    }
+    isShowing = false;
+  }
 
   function handleScroll() {
     if (button == null) {
       return;
     }
 
-    if (window.scrollY < TOP_HEIGHT_PX) {
+    if (window.scrollY < HIDE_ZONE_PX) {
+      lastScrollY = window.scrollY;
       hide(button);
       return;
     }
 
-    //if (isWarmingUp) {
-    //  return;
-    //}
-
     const diff = lastScrollY - window.scrollY;
 
-    if (diff > 0) {
-      if (isScrollingUp === -1) {
-        isScrollingUp = window.scrollY;
-        isScrollingDown = -1;
-      }
+    if (diff == 0) {
+      return;
+    } else if (diff < 0) {
+      // Scrolled down
+      const diffPos = Math.abs(diff);
 
-      const diffFromUp = isScrollingUp - window.scrollY;
-      if (diffFromUp > THRESHOLD_PX) {
-        if (!pause) {
-          show(button);
-        }
-      }
-    }
-
-    if (diff < 0) {
-      if (isScrollingDown === -1) {
+      if (isScrollingUp !== -1) {
+        // Was previously scrolling up
         isScrollingUp = -1;
-        isScrollingDown = window.scrollY;
+        isScrollingDown = diffPos;
+      } else {
+        // Continuing to scroll down
+        isScrollingDown += diffPos;
       }
 
-      const diffFromDown = window.scrollY - isScrollingDown;
-      if (diffFromDown > HIDE_THRESHOLD_PX) {
+      // Is the total amount scrolled down enough to hide the button?
+      if (isScrollingDown > HIDE_THRESHOLD_PX) {
         hide(button);
+      }
+    } else {
+      // Scrolled up
+
+      if (isScrollingDown !== -1) {
+        // Was previously scrolling down
+        isScrollingDown = -1;
+        isScrollingUp = diff;
+      } else {
+        // Continuing to scroll up
+        isScrollingUp += diff;
+      }
+
+      if (!pause && isScrollingUp > SHOW_THRESHOLD_PX) {
+        show(button);
       }
     }
 
     lastScrollY = window.scrollY;
+    console.log({ lastScrollY, isScrollingUp, isScrollingDown });
   }
-  document.addEventListener("scroll", handleScroll, { passive: true });
+
+  const debounced = debounce(handleScroll, LATENCY_MS);
+  document.addEventListener("scroll", debounced, { passive: true });
 
   let timeout: number | null = null,
     pause = false;
@@ -115,6 +138,6 @@ export default () => {
 
   return () => {
     globalRemove("pauseBackToTop", handlePause);
-    document.removeEventListener("scroll", handleScroll);
+    document.removeEventListener("scroll", debounced);
   };
 };
