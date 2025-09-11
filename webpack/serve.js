@@ -1,6 +1,15 @@
 const express = require("express");
 const { getDistDir } = require("./util");
-const { R, B } = require("./colors");
+const { makeLogger } = require("./log");
+const { B } = require("./colors");
+
+const log = makeLogger(__filename, "debug");
+
+function messageReady(port) {
+  if (process.send) {
+    process.send({ ready: true, port });
+  }
+}
 
 const app = express();
 
@@ -8,21 +17,27 @@ try {
   const distDir = getDistDir();
   app.use(express.static(distDir));
 } catch (err) {
-  console.error(R`Failed to serve files in "${distDir}":`, err);
+  log.error`Failed to serve files in "${distDir}": ${err}`;
   process.exit(1);
 }
 
 function tryListen(port, fallbackPort) {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, () => {
-      console.log("Local development web server:", B`http://localhost:${port}`);
+      log.note`Local development web server: ${B`http://localhost:${port}`}`;
+      messageReady(port);
       resolve(server);
     });
 
     server.on("error", (err) => {
       if (err.code === "EADDRINUSE" && fallbackPort) {
-        console.warn(`Port ${port} in use, trying fallback ${fallbackPort}...`);
-        tryListen(fallbackPort, null).then(resolve).catch(reject);
+        log.warn`Port ${port} in use, trying fallback ${fallbackPort}...`;
+        return tryListen(fallbackPort, null)
+          .then(() => {
+            messageReady(fallbackPort);
+            resolve();
+          })
+          .catch(reject);
       } else {
         reject(err);
       }
@@ -31,16 +46,16 @@ function tryListen(port, fallbackPort) {
 }
 
 tryListen(8080, 8081).catch((err) => {
-  console.error(R`Failed to start server:`, err);
+  log.error`Failed to start server: ${err}`;
   process.exit(1);
 });
 
 process.on("uncaughtException", (err) => {
-  console.error(R`Uncaught exception:`, err);
+  log.error`Uncaught exception: ${err}`;
   process.exit(1);
 });
 
 process.on("unhandledRejection", (reason) => {
-  console.error(R`Unhandled rejection:`, reason);
+  log.error`Unhandled rejection: ${reason}`;
   process.exit(1);
 });

@@ -67,8 +67,8 @@ function renderResults(
   }
 }
 
-function getSearchInput(): HTMLInputElement {
-  return document.querySelector(".search.big") as HTMLInputElement;
+function getSearchInput(): HTMLInputElement[] {
+  return Array.from(document.querySelectorAll(".search"));
 }
 
 function subtractThisTitle(title: string, thisTitle: string) {
@@ -88,15 +88,14 @@ function subtractThisTitle(title: string, thisTitle: string) {
 }
 
 export default () => {
-  const search = getSearchInput();
-  const container = search?.parentElement as HTMLDivElement;
-  if (search == null || container == null) {
+  const searchInputs = getSearchInput();
+  if (searchInputs.length === 0) {
     return;
   }
 
   const thisPageTitle = document.querySelector("title")?.innerText || "";
 
-  let state: State = { value: "", showResults: true, results: [] };
+  const state: State = { value: "", showResults: true, results: [] };
   let mini: MiniSearch | null = null;
 
   async function loadIndex() {
@@ -112,63 +111,67 @@ export default () => {
     } catch (e) {
       // fail silently
       console.warn("failed to load search index", e);
-      search.disabled = true;
+      searchInputs.forEach((input) => {
+        input.disabled = true;
+      });
     }
   }
 
   loadIndex();
 
-  function updateState(newState: State) {
-    if (newState !== state) {
-      state = { ...state, ...newState };
-      renderResults(container, state.showResults, state.results);
-    }
+  const containers = searchInputs.map(
+    (el) => el.parentElement as HTMLDivElement,
+  );
+
+  const changeHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
+    return function handleChange(e: Event) {
+      const newValue = (e.target as HTMLInputElement).value;
+
+      if (!mini) {
+        return;
+      }
+
+      let results: Result[] = [];
+      if (newValue) {
+        const hits = mini.search(newValue, { boost: { title: 2 } });
+
+        results = hits.slice(0, 20).map((h) => ({
+          title: subtractThisTitle(h.title || "", thisPageTitle),
+          url: window.siteVariables.basePath + h.id,
+          excerpt: h.excerpt || "",
+          score: h.score || 0,
+        }));
+      }
+
+      state.value = newValue;
+      state.results = results;
+      renderResults(containers[i], state.showResults, state.results);
+    };
+  });
+
+  const keyUpHandlers: Array<(e: KeyboardEvent) => void> = searchInputs.map(
+    (_, i) => {
+      return function handleKeyUp(e: KeyboardEvent) {
+        changeHandlers[i](e);
+      };
+    },
+  );
+
+  changeHandlers.forEach((handleChange, i) => {
+    searchInputs[i].addEventListener("change", handleChange);
+  });
+
+  keyUpHandlers.forEach((handleKeyUp, i) => {
+    searchInputs[i].addEventListener("keyup", handleKeyUp);
+  });
+
+  if (searchInputs.length === 1) {
+    searchInputs[0].focus();
   }
-
-  function handleFocus() {
-    // updateState({ ...state, showResults: true });
-  }
-  search.addEventListener("focus", handleFocus);
-
-  function handleBlur() {
-    // updateState({ ...state, showResults: false });
-  }
-  search.addEventListener("blur", handleBlur);
-
-  function handleChange(e: Event) {
-    const newValue = (e.target as HTMLInputElement).value;
-
-    if (!mini) {
-      return;
-    }
-
-    let results: Result[] = [];
-    if (newValue) {
-      const hits = mini.search(newValue, { boost: { title: 2 } });
-
-      results = hits.slice(0, 20).map((h) => ({
-        title: subtractThisTitle(h.title || "", thisPageTitle),
-        url: window.siteVariables.basePath + h.id,
-        excerpt: h.excerpt || "",
-        score: h.score || 0,
-      }));
-    }
-
-    updateState({ ...state, value: newValue, results });
-  }
-  search.addEventListener("change", handleChange);
-
-  function handleKeyUp(e: KeyboardEvent) {
-    handleChange(e);
-  }
-  search.addEventListener("keyup", handleKeyUp);
-
-  search.focus();
 
   return () => {
-    search.removeEventListener("keyup", handleKeyUp);
-    search.removeEventListener("change", handleChange);
-    search.removeEventListener("blur", handleBlur);
-    search.removeEventListener("focus", handleFocus);
+    changeHandlers.forEach((handleChange, i) => {
+      searchInputs[i].removeEventListener("change", handleChange);
+    });
   };
 };
