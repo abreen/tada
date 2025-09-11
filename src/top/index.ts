@@ -107,7 +107,6 @@ export default () => {
     }
 
     lastScrollY = window.scrollY;
-    console.log({ lastScrollY, isScrollingUp, isScrollingDown });
   }
 
   const debounced = debounce(handleScroll, LATENCY_MS);
