@@ -3,6 +3,7 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
 const { getDistDir, createHtmlPlugins } = require("./util");
 const { getDevSiteVariables } = require("./site-variables");
 
@@ -48,6 +49,7 @@ module.exports = async () => {
         chunkFilename: "[id].css",
       }),
       new CopyPlugin({ patterns: [{ from: "public", to: "." }] }),
+      new MiniSearchIndexPlugin(siteVariables),
     ],
     stats: "minimal",
   };

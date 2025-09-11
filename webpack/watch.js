@@ -24,19 +24,13 @@ function getFlair() {
 }
 
 function shortenWebpackOutput(output) {
-  const numAssets = output.match(/(\d+) assets\n/)?.[1] || "?";
-  const numModules = output.match(/(\d+) modules\n/)?.[1] || "?";
+  //const numAssets = output.match(/(\d+) assets\n/)?.[1] || "?";
+  //const numModules = output.match(/(\d+) modules\n/)?.[1] || "?";
 
-  const matches = output.match(
-    /webpack ([\d.]+) compiled successfully in (\d+) ms\n/,
-  );
+  const matches = output.match(/webpack ([\d.]+) compiled .+ in (\d+) ms\n/);
   const time = matches?.[2] || "?";
 
-  return (
-    `${getFlair()} ` +
-    L`Webpack compiled ${numAssets} assets & ${numModules} modules in ${time} ms` +
-    "\n"
-  );
+  return `${getFlair()} ` + L`Webpack compiled in ${time} ms` + "\n";
 }
 
 function printSiteVariables() {
@@ -80,7 +74,12 @@ function runWebpack() {
 
   exec("npx webpack --config webpack/config.dev.js", (err, stdout, stderr) => {
     if (stdout) {
-      if (SHORTEN_WEBPACK_STDOUT) {
+      if (
+        !stderr &&
+        !stdout.includes("error") &&
+        !err &&
+        SHORTEN_WEBPACK_STDOUT
+      ) {
         process.stdout.write(shortenWebpackOutput(stdout));
       } else {
         process.stdout.write(stdout);

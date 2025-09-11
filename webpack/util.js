@@ -10,18 +10,12 @@ const { stripHtml } = require("string-strip-html");
 const { compileTemplates, render } = require("./templates");
 const { extractPdfPageSvgs } = require("./pdf-to-svg");
 
-function createTemplateParameters(
-  pageVariables,
-  layout,
-  siteVariables,
-  content,
-) {
+function createTemplateParameters(pageVariables, siteVariables, content) {
   return {
     site: siteVariables,
     base: siteVariables.base,
     basePath: siteVariables.basePath,
     page: pageVariables,
-    layout,
     content,
     isoDate,
     readableDate,
@@ -44,13 +38,15 @@ async function createHtmlPlugins(siteVariables) {
 
     if ([".html", ".md", ".markdown"].includes(ext.toLowerCase())) {
       const { content, pageVariables } = renderContent(filePath, siteVariables);
+      if (!pageVariables.template) {
+        pageVariables.template = "default";
+      }
       const templateParameters = createTemplateParameters(
         pageVariables,
-        "default",
         siteVariables,
         content,
       );
-      const html = render("default.html", templateParameters);
+      const html = render(`${pageVariables.template}.html`, templateParameters);
       plugins.push(
         new HtmlWebpackPlugin({
           filename: path.format({
@@ -72,6 +68,7 @@ async function createHtmlPlugins(siteVariables) {
         const titleHtml = `<tt>${name + ext}</tt> (${pageNum} of ${arr.length})`;
         const templateParameters = createTemplateParameters(
           {
+            template: "pdf",
             filePath,
             pageNumber: pageNum,
             prevUrl: hasPrev
@@ -84,7 +81,6 @@ async function createHtmlPlugins(siteVariables) {
             titleHtml,
             pdfFilePath,
           },
-          "pdf",
           siteVariables,
           svg,
         );
@@ -147,7 +143,7 @@ function renderContent(filePath, siteVariables) {
   const { pageVariables, content } = parseFrontMatterAndContent(raw, ext);
 
   // Handle substitutions inside page variables using siteVariables
-  const siteOnlyParams = createTemplateParameters({}, "", siteVariables, null);
+  const siteOnlyParams = createTemplateParameters({}, siteVariables, null);
   const pageVariablesProcessed = Object.entries(pageVariables)
     .map(([k, v]) => {
       const newValue = _.template(v)(siteOnlyParams);
@@ -162,7 +158,6 @@ function renderContent(filePath, siteVariables) {
 
   const params = createTemplateParameters(
     pageVariablesProcessed,
-    "",
     siteVariables,
     strippedContent,
   );

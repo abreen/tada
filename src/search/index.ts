@@ -1,4 +1,7 @@
-type Result = { title: string; subtitle: string; excerpt: string };
+import MiniSearch from "minisearch";
+import options from "./options.json";
+
+type Result = { title: string; url: string; excerpt: string; score: number };
 
 type State = { value: string; showResults: boolean; results: Result[] };
 
@@ -7,12 +10,21 @@ function renderResults(
   showResults: boolean,
   results: Result[],
 ) {
-  const existing = parent.querySelector("#results");
-  if (existing) {
-    parent.removeChild(existing);
+  const resultsContainer = parent.querySelector(".results");
+  if (!resultsContainer) {
+    throw new Error("results element must already be in the DOM");
   }
 
-  if (!results.length || !showResults) {
+  if (!showResults) {
+    resultsContainer.classList.add("is-hidden");
+  } else {
+    resultsContainer.classList.remove("is-hidden");
+  }
+
+  const existingList = resultsContainer.querySelector("ol");
+
+  if (results.length === 0) {
+    existingList?.remove();
     return;
   }
 
@@ -21,20 +33,26 @@ function renderResults(
   results.forEach((result) => {
     const a = document.createElement("a");
     a.className = "result";
+    a.href = result.url;
 
-    const title = document.createElement("p");
+    const title = document.createElement("div");
     title.className = "title";
     title.innerText = result.title;
     a.appendChild(title);
 
-    const subtitle = document.createElement("p");
+    const subtitle = document.createElement("div");
     subtitle.className = "subtitle";
-    subtitle.innerText = result.subtitle;
+    subtitle.innerText = result.url;
     a.appendChild(subtitle);
 
-    const excerpt = document.createElement("p");
+    const score = document.createElement("div");
+    score.className = "score";
+    score.innerText = result.score.toFixed(2);
+    a.appendChild(score);
+
+    const excerpt = document.createElement("div");
     excerpt.className = "excerpt";
-    excerpt.innerHTML = `&#133;${result.excerpt}&#133;`;
+    excerpt.innerHTML = result.excerpt;
     a.appendChild(excerpt);
 
     const li = document.createElement("li");
@@ -42,30 +60,63 @@ function renderResults(
     ol.appendChild(li);
   });
 
-  const div = document.createElement("div");
-  div.id = "results";
-  div.appendChild(ol);
-  parent.appendChild(div);
+  if (existingList) {
+    existingList.replaceWith(ol);
+  } else {
+    resultsContainer.appendChild(ol);
+  }
 }
 
-function getElements(): [HTMLInputElement, HTMLElement] {
-  const el = document.getElementById("search") as HTMLInputElement;
-  if (!el) {
-    throw new Error("no search element");
+function getSearchInput(): HTMLInputElement {
+  return document.querySelector(".search.big") as HTMLInputElement;
+}
+
+function subtractThisTitle(title: string, thisTitle: string) {
+  // Starting from the end, remove matching chars until they differ
+  let i = title.length - 1;
+  let j = thisTitle.length - 1;
+
+  while (i >= 0 && j >= 0) {
+    if (title[i] !== thisTitle[j]) {
+      break;
+    }
+    i--;
+    j--;
   }
 
-  const parent = el.parentElement;
-  if (!parent) {
-    throw new Error("no parent element");
-  }
-
-  return [el, parent];
+  return title.substring(0, i + 1).trim();
 }
 
 export default () => {
-  const [search, container] = getElements();
+  const search = getSearchInput();
+  const container = search?.parentElement as HTMLDivElement;
+  if (search == null || container == null) {
+    return;
+  }
 
-  let state: State = { value: "", showResults: false, results: [] };
+  const thisPageTitle = document.querySelector("title")?.innerText || "";
+
+  let state: State = { value: "", showResults: true, results: [] };
+  let mini: MiniSearch | null = null;
+
+  async function loadIndex() {
+    try {
+      const res = await fetch("/search-index.json");
+      if (!res.ok) {
+        console.warn("failed to fetch search index", res.statusText);
+        return;
+      }
+      mini = MiniSearch.loadJSON(await res.text(), options);
+    } catch (e) {
+      // fail silently
+      console.warn("failed to load search index", e);
+    }
+  }
+
+  loadIndex().then(() => {
+    search.placeholder = "Search";
+    search.disabled = false;
+  });
 
   function updateState(newState: State) {
     if (newState !== state) {
@@ -75,55 +126,48 @@ export default () => {
   }
 
   function handleFocus() {
-    updateState({ ...state, showResults: true });
+    // updateState({ ...state, showResults: true });
   }
   search.addEventListener("focus", handleFocus);
 
   function handleBlur() {
-    updateState({ ...state, showResults: false });
+    // updateState({ ...state, showResults: false });
   }
   search.addEventListener("blur", handleBlur);
 
-  function handleInput(e: Event) {
-    const newValue = (e.target as HTMLInputElement).value || "";
-    updateState({ ...state, value: newValue });
+  function handleChange(e: Event) {
+    const newValue = (e.target as HTMLInputElement).value;
 
-    // TODO
-    if (!newValue) {
-      updateState({ ...state, results: [] });
-    } else {
-      updateState({
-        ...state,
-        results: [
-          {
-            title: "Problem Set 5",
-            subtitle: "Problem 3",
-            excerpt:
-              'the following keys into a <span class="highlight">binary search tree</span>, showing the',
-          },
-          {
-            title: "Problem Set 2",
-            subtitle: "Problem 6",
-            excerpt:
-              'form the keys of a <span class="highlight">binary search tree</span>, what would the',
-          },
-          {
-            title: "Lecture 3",
-            subtitle: "Coursepack page 59",
-            excerpt:
-              'in a <span class="highlight">binary search tree</span> the keys are kept in order such that',
-          },
-        ],
-      });
+    if (!mini) {
+      return;
     }
-  }
-  search.addEventListener("input", handleInput);
 
-  search.placeholder = "Search";
-  search.disabled = false;
+    let results: Result[] = [];
+    if (newValue) {
+      const hits = mini.search(newValue, { boost: { title: 2 } });
+
+      results = hits.slice(0, 20).map((h) => ({
+        title: subtractThisTitle(h.title || "", thisPageTitle),
+        url: h.id || "",
+        excerpt: h.excerpt || "",
+        score: h.score || 0,
+      }));
+    }
+
+    updateState({ ...state, value: newValue, results });
+  }
+  search.addEventListener("change", handleChange);
+
+  function handleKeyUp(e: KeyboardEvent) {
+    handleChange(e);
+  }
+  search.addEventListener("keyup", handleKeyUp);
+
+  search.focus();
 
   return () => {
-    search.removeEventListener("input", handleInput);
+    search.removeEventListener("keyup", handleKeyUp);
+    search.removeEventListener("change", handleChange);
     search.removeEventListener("blur", handleBlur);
     search.removeEventListener("focus", handleFocus);
   };

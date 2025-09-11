@@ -37,7 +37,7 @@
     <link rel="expect" href="main" blocking="render" />
   </head>
 
-  <body class="<%= layout %>">
+  <body class="<%= page.template %>">
     <header style="view-transition-name: site-header">
       <details>
         <summary>
@@ -50,16 +50,18 @@
 
           <%= render('_nav.html') %>
 
-          <input
-            id="search"
-            tabindex="0"
-            type="search"
-            autocomplete="off"
-            name="search-string"
-            placeholder="Search (requires JavaScript)"
-            disabled
-          />
+          <div class="search-container">
+            <input
+              type="search"
+              class="search"
+              tabindex="0"
+              autocomplete="off"
+              name="search-string"
+              placeholder="Search (requires JavaScript)"
+              disabled
+            />
+          </div>
         </div>
       </details>
     </header>
-    <main>
+    <div class="container">

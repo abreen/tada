@@ -2,12 +2,21 @@ import { removeClass } from "../util";
 import { on as globalOn, remove as globalRemove } from "../global";
 
 const PAUSE_DURATION_MS = 3000;
-const TOP_HEIGHT_PX = 64;
+const TOP_HEIGHT_PX = 120;
 const THRESHOLD_PX = 300;
 const HIDE_THRESHOLD_PX = 80;
 
-function getBackToTopButton(parent: HTMLElement): HTMLButtonElement | null {
-  return parent.querySelector(".back-to-top button");
+function createButton(parent: HTMLElement): HTMLButtonElement {
+  const div = document.createElement("div");
+  div.className = "back-to-top";
+
+  const button = document.createElement("button");
+  button.innerText = "Back to top";
+  div.appendChild(button);
+
+  parent.appendChild(div);
+
+  return button;
 }
 
 function show(button: HTMLButtonElement) {
@@ -19,10 +28,7 @@ function hide(button: HTMLButtonElement) {
 }
 
 export default () => {
-  const button = getBackToTopButton(document.body);
-  if (button == null) {
-    throw new Error("back to top button must exist already");
-  }
+  const button = createButton(document.body);
 
   let lastScrollY = window.scrollY,
     isScrollingUp = -1,

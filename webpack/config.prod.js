@@ -1,6 +1,7 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
+const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -47,6 +48,7 @@ module.exports = async () => {
         chunkFilename: "[id].css",
       }),
       new CopyPlugin({ patterns: [{ from: "public", to: "." }] }),
+      new MiniSearchIndexPlugin(siteVariables),
     ],
     stats: "minimal",
   };

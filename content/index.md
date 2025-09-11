@@ -2,7 +2,6 @@ title: Welcome
 author: Alex Breen
 avatar: alex
 description: A testing page for <%= site.fullCourseName %>.
-template: article
 published: 2025-09-05
 
 Here's an example article page.[^1] This one was written using Markdown.

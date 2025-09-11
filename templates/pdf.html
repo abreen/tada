@@ -3,25 +3,28 @@
 <h1><%= page.titleHtml %></h1>
 
 <div class="tools">
-  <span>Beta feature <i class="warning">️</i> If you experience issues, download the PDF:</span>
+  <span>Beta feature <i class="warning"></i> If you experience issues, download the PDF:</span>
+  <%= render('_beta.html') %>
   <a class="download button" href="<%= page.pdfFilePath %>" download="">Download</a>
 </div>
 
 <div class="pdf-container">
   <div class="prev">
   <% if (page.prevUrl) { %>
-  <button onclick="window.location = '<%= page.prevUrl %>'" aria-label="Previous page">◀</button>
+    <button onclick="window.location = '<%= page.prevUrl %>'" aria-label="Previous page">◀</button>
   <% } %>
   </div>
 
   <div class="next">
   <% if (page.nextUrl) { %>
-  <button onclick="window.location = '<%= page.nextUrl %>'" aria-label="Next page">▶</button>
+    <button onclick="window.location = '<%= page.nextUrl %>'" aria-label="Next page">▶</button>
   <% } %>
   </div>
 
   <div class="content">
-  <%= content %>
+    <main>
+      <%= content %>
+    </main>
   </div>
 </div>
 

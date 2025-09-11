@@ -1,21 +1,26 @@
 <%= render('_top.html') %>
 
-<h1><%= page.title %></h1>
+<div class="title-and-info">
+  <h1><%= page.title %></h1>
 
-<div class="info">
-  <% if (page.author && page.avatar) { %>
-    <%= render('_author.html') %>
-  <% } %>
-  <% if (page.published) { %>
+  <div class="info">
+    <% if (page.author && page.avatar) { %>
+      <%= render('_author.html') %>
+    <% } %>
+    <% if (page.published) { %>
     <p class="publish-date">
       <time datetime="<%= isoDate(page.published) %>">
         <%= readableDate(page.published) %>
       </time>
     </p>
-  <% } %>
-
+    <% } %>
+  </div>
 </div>
 
-<%= content %>
+<nav class="toc"></nav>
+
+<main>
+  <%= content %>
+</main>
 
 <%= render('_bottom.html') %>

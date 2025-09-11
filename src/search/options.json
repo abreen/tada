@@ -1,0 +1,5 @@
+{
+  "filename": "search-index.json",
+  "fields": ["title", "content"],
+  "storeFields": ["id", "title", "url", "excerpt"]
+}

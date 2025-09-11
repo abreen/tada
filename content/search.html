@@ -1,0 +1,27 @@
+<!---
+title: Search
+description: The search page for <%= site.fullCourseName %>.
+template: search
+-->
+
+<!---
+See the `search` component in `src/search/index.ts`
+for the code that makes this work.
+-->
+
+
+<div class="search-container">
+  <input
+    type="search"
+    class="search big"
+    tabindex="0"
+    autocomplete="on"
+    name="search-string-big"
+    placeholder="Search"
+    autofocus
+  >
+  <p class="beta-warning">Beta feature <i class="warning"></i></p>
+
+  <div class="results"></div>
+</div>
+

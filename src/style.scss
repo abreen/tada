@@ -161,6 +161,11 @@ html {
   background: var(--bg-color);
 }
 
+footer.site-footer {
+  height: 4rem;
+  margin-top: var(--gap);
+}
+
 a {
   color: inherit;
   text-decoration: none;
