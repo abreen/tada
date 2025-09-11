@@ -148,7 +148,7 @@ export default () => {
 
       results = hits.slice(0, 20).map((h) => ({
         title: subtractThisTitle(h.title || "", thisPageTitle),
-        url: h.id || "",
+        url: window.siteVariables.basePath + h.id,
         excerpt: h.excerpt || "",
         score: h.score || 0,
       }));
