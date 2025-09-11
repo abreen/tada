@@ -101,7 +101,9 @@ export default () => {
 
   async function loadIndex() {
     try {
-      const res = await fetch("/search-index.json");
+      const res = await fetch(
+        window.siteVariables.basePath + "/search-index.json",
+      );
       if (!res.ok) {
         console.warn("failed to fetch search index", res.statusText);
         return;
@@ -110,13 +112,11 @@ export default () => {
     } catch (e) {
       // fail silently
       console.warn("failed to load search index", e);
+      search.disabled = true;
     }
   }
 
-  loadIndex().then(() => {
-    search.placeholder = "Search";
-    search.disabled = false;
-  });
+  loadIndex();
 
   function updateState(newState: State) {
     if (newState !== state) {

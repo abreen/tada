@@ -1,11 +1,10 @@
+const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { getDistDir, createHtmlPlugins } = require("./util");
+const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util");
 const { getProdSiteVariables } = require("./site-variables");
 
 const distDir = getDistDir();
@@ -39,10 +38,10 @@ module.exports = async () => {
     },
     plugins: [
       ...(await createHtmlPlugins(siteVariables)),
+      createDefinePlugin(siteVariables),
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: [path.join(distDir, "./**/*")],
       }),
-      new webpack.DefinePlugin({}),
       new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[id].css",

@@ -11,8 +11,7 @@ const isValid = compileJsonSchema(require("./site.schema.json"));
 
 function getJson(filePath) {
   return JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, filePath)),
-    "utf-8",
+    fs.readFileSync(path.resolve(__dirname, filePath), "utf-8"),
   );
 }
 

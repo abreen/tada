@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fm = require("front-matter");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const { DefinePlugin } = require("webpack");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
 const { stripHtml } = require("string-strip-html");
 const { compileTemplates, render } = require("./templates");
@@ -494,6 +495,13 @@ function isoDate(str) {
   return date.toISOString().slice(0, 10);
 }
 
+function createDefinePlugin(siteVariables) {
+  return new DefinePlugin({
+    "window.siteVariables.base": JSON.stringify(siteVariables.base),
+    "window.siteVariables.basePath": JSON.stringify(siteVariables.basePath),
+  });
+}
+
 module.exports = {
   createHtmlPlugins,
   createMarkdown,
@@ -503,4 +511,5 @@ module.exports = {
   getContentFiles,
   extensionIsMarkdown,
   parseFrontMatter,
+  createDefinePlugin,
 };
