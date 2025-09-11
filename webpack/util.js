@@ -73,10 +73,10 @@ async function createHtmlPlugins(siteVariables) {
             filePath,
             pageNumber: pageNum,
             prevUrl: hasPrev
-              ? siteVariables.basePath + `${subPath}/page-${pageNum - 1}.html`
+              ? siteVariables.basePath + `/${subPath}/page-${pageNum - 1}.html`
               : null,
             nextUrl: hasNext
-              ? siteVariables.basePath + `${subPath}/page-${pageNum + 1}.html`
+              ? siteVariables.basePath + `/${subPath}/page-${pageNum + 1}.html`
               : null,
             title: stripHtml(titleHtml).result,
             titleHtml,
