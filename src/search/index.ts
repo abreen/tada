@@ -1,6 +1,10 @@
 import MiniSearch from "minisearch";
 import options from "./options.json";
 
+const PLACEHOLDER_DISCLAIMER = " (requires JavaScript)";
+const NAV_MAX_RESULTS = 4;
+const BIG_MAX_RESULTS = 12;
+
 type Result = { title: string; url: string; excerpt: string; score: number };
 
 type State = { value: string; showResults: boolean; results: Result[] };
@@ -22,9 +26,16 @@ function renderResults(
   }
 
   const existingList = resultsContainer.querySelector("ol");
+  const existingSpan = resultsContainer.querySelector("span");
+
+  existingSpan?.remove();
 
   if (results.length === 0) {
     existingList?.remove();
+    const span = document.createElement("span");
+    span.innerText = "No results";
+    span.className = "no-results";
+    resultsContainer.appendChild(span);
     return;
   }
 
@@ -72,6 +83,10 @@ function getSearchInput(): HTMLInputElement[] {
 }
 
 function subtractThisTitle(title: string, thisTitle: string) {
+  if (title == thisTitle) {
+    return "";
+  }
+
   // Starting from the end, remove matching chars until they differ
   let i = title.length - 1;
   let j = thisTitle.length - 1;
@@ -84,7 +99,7 @@ function subtractThisTitle(title: string, thisTitle: string) {
     j--;
   }
 
-  return title.substring(0, i + 1).trim();
+  return title.substring(0, i + 2).trim();
 }
 
 export default () => {
@@ -93,7 +108,18 @@ export default () => {
     return;
   }
 
+  searchInputs.forEach((input) => {
+    const placeholder = input.placeholder;
+    if (placeholder && placeholder.endsWith(PLACEHOLDER_DISCLAIMER)) {
+      input.placeholder = placeholder.substring(
+        0,
+        placeholder.length - PLACEHOLDER_DISCLAIMER.length,
+      );
+    }
+  });
+
   const thisPageTitle = document.querySelector("title")?.innerText || "";
+  const onSearchPage = window.location.pathname.endsWith("/search.html");
 
   const state: State = { value: "", showResults: true, results: [] };
   let mini: MiniSearch | null = null;
@@ -109,7 +135,6 @@ export default () => {
       }
       mini = MiniSearch.loadJSON(await res.text(), options);
     } catch (e) {
-      // fail silently
       console.warn("failed to load search index", e);
       searchInputs.forEach((input) => {
         input.disabled = true;
@@ -117,7 +142,14 @@ export default () => {
     }
   }
 
-  loadIndex();
+  loadIndex().then(() => {
+    searchInputs.forEach((input) => {
+      if (input.value) {
+        const event = new Event("change");
+        input.dispatchEvent(event);
+      }
+    });
+  });
 
   const containers = searchInputs.map(
     (el) => el.parentElement as HTMLDivElement,
@@ -125,25 +157,53 @@ export default () => {
 
   const changeHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleChange(e: Event) {
-      const newValue = (e.target as HTMLInputElement).value;
-
       if (!mini) {
         return;
       }
 
-      let results: Result[] = [];
-      if (newValue) {
-        const hits = mini.search(newValue, { boost: { title: 2 } });
-
-        results = hits.slice(0, 20).map((h) => ({
-          title: subtractThisTitle(h.title || "", thisPageTitle),
-          url: window.siteVariables.basePath + h.id,
-          excerpt: h.excerpt || "",
-          score: h.score || 0,
-        }));
+      if (!(e.target instanceof HTMLInputElement)) {
+        return;
       }
 
+      const newValue = e.target.value;
+      if (newValue === state.value) {
+        return;
+      }
+
+      if (!newValue) {
+        state.value = "";
+        state.showResults = false;
+        state.results = [];
+        renderResults(containers[i], state.showResults, state.results);
+        return;
+      }
+
+      let results: Result[] = [];
+      const maxNumResults = e.target?.classList.contains("nav")
+        ? NAV_MAX_RESULTS
+        : BIG_MAX_RESULTS;
+
+      const hits = mini.search(newValue, { prefix: true });
+
+      results = hits
+        .slice(0, maxNumResults)
+        .map((h) => {
+          const title = subtractThisTitle(h.title || "", thisPageTitle);
+          if (!title) {
+            return;
+          }
+
+          return {
+            title,
+            url: window.siteVariables.basePath + h.id,
+            excerpt: h.excerpt || "",
+            score: h.score || 0,
+          };
+        })
+        .filter((r): r is Result => r !== undefined);
+
       state.value = newValue;
+      state.showResults = true;
       state.results = results;
       renderResults(containers[i], state.showResults, state.results);
     };
@@ -152,7 +212,26 @@ export default () => {
   const keyUpHandlers: Array<(e: KeyboardEvent) => void> = searchInputs.map(
     (_, i) => {
       return function handleKeyUp(e: KeyboardEvent) {
-        changeHandlers[i](e);
+        if (e.key === "Enter" && !onSearchPage) {
+          e.preventDefault();
+          window.location.href =
+            window.siteVariables.basePath +
+            "/search.html#q=" +
+            encodeURIComponent(state.value);
+        } else {
+          changeHandlers[i](e);
+        }
+      };
+    },
+  );
+
+  const focusHandlers: Array<(e: FocusEvent) => void> = searchInputs.map(
+    (input, i) => {
+      return function handleFocus() {
+        if (input.classList.contains("nav") && state.results.length > 0) {
+          state.showResults = true;
+          renderResults(containers[i], state.showResults, state.results);
+        }
       };
     },
   );
@@ -165,11 +244,19 @@ export default () => {
     searchInputs[i].addEventListener("keyup", handleKeyUp);
   });
 
-  if (searchInputs.length === 1) {
-    searchInputs[0].focus();
-  }
+  focusHandlers.forEach((handleFocus, i) => {
+    searchInputs[i].addEventListener("focus", handleFocus);
+  });
 
   return () => {
+    focusHandlers.forEach((handleFocus, i) => {
+      searchInputs[i].removeEventListener("focus", handleFocus);
+    });
+
+    keyUpHandlers.forEach((handleKeyUp, i) => {
+      searchInputs[i].removeEventListener("keyup", handleKeyUp);
+    });
+
     changeHandlers.forEach((handleChange, i) => {
       searchInputs[i].removeEventListener("change", handleChange);
     });

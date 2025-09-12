@@ -5,10 +5,8 @@ template: search
 -->
 
 <!---
-See the `search` component in `src/search/index.ts`
-for the code that makes this work.
+See `src/search/index.ts` for the code that powers this.
 -->
-
 
 <div class="search-container">
   <input
@@ -19,9 +17,32 @@ for the code that makes this work.
     name="search-string-big"
     placeholder="Search"
     autofocus
-  >
+  />
   <p class="beta-warning">Beta feature <i class="warning"></i></p>
-
-  <div class="results"></div>
+  <div class="results is-hidden"></div>
 </div>
 
+<script>
+  const el = document.querySelector("input.search.big");
+  function setFromHash() {
+    if (window.location.hash.startsWith("#q=")) {
+      const query = decodeURIComponent(window.location.hash.substring(3)).trim();
+      if (query) {
+        el.value = query;
+        el.focus();
+        el.dispatchEvent(new Event("input"));
+      }
+    }
+  }
+  setFromHash();
+
+  window.addEventListener("hashchange", function () {
+    setFromHash();
+  });
+  el.addEventListener("search", function () {
+    const value = el.value.trim();
+    if (value) {
+      window.location.hash = '#q=' + encodeURIComponent(value);
+    }
+  });
+</script>

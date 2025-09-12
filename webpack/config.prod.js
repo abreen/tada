@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
+const WebpackShellPlugin = require("webpack-shell-plugin-next");
 const TerserPlugin = require("terser-webpack-plugin");
 const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util");
 const { getProdSiteVariables } = require("./site-variables");
@@ -52,6 +53,11 @@ module.exports = async () => {
       }),
       new CopyPlugin({ patterns: [{ from: "public", to: "." }] }),
       new MiniSearchIndexPlugin(siteVariables),
+      new WebpackShellPlugin({
+        onBuildEnd: {
+          scripts: ["npx quick-lint-js src/**/*.ts webpack/*.js || true"],
+        },
+      }),
     ],
     stats: "minimal",
   };

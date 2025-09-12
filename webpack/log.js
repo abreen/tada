@@ -1,11 +1,11 @@
 const path = require("path");
-const { R, Y, L } = require("./colors");
+const { G, R, Y, L } = require("./colors");
 
 const LEVELS = ["debug", "note", "warn", "error"];
 const LEVELS_PRETTY = ["ᴅᴇʙᴜɢ", " ɴᴏᴛᴇ", " ᴡᴀʀɴ", "ᴇʀʀᴏʀ"];
 
-function shouldLog(currentLevel, messageLevel) {
-  return LEVELS.indexOf(messageLevel) >= LEVELS.indexOf(currentLevel);
+function shouldLog(loggerLevel, level) {
+  return LEVELS.indexOf(level) >= LEVELS.indexOf(loggerLevel);
 }
 
 function validateLevel(level) {
@@ -17,6 +17,9 @@ function validateLevel(level) {
 }
 
 function prettyLevel(level) {
+  if (level === "event") {
+    return "ᴇᴠᴇɴᴛ";
+  }
   const i = LEVELS.indexOf(level);
   return LEVELS_PRETTY[i] || level;
 }
@@ -39,7 +42,7 @@ function makeLogger(name, logLevel = "note") {
     getArgs(level, strings, args, colorFn) {
       const params = [];
       params.push(colorFn`${prettyLevel(level)}` + "\t");
-      params.push(format(strings, ...args));
+      params.push(L`${format(strings, ...args)}`);
       return params;
     },
     debug(strings, ...args) {
@@ -61,6 +64,9 @@ function makeLogger(name, logLevel = "note") {
       if (shouldLog(this.minLogLevel, "error")) {
         console.error(...this.getArgs("error", strings, args, R));
       }
+    },
+    event(strings, ...args) {
+      console.info(...this.getArgs("event", strings, args, G));
     },
   };
 

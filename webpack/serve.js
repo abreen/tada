@@ -17,7 +17,7 @@ try {
   const distDir = getDistDir();
   app.use(express.static(distDir));
 } catch (err) {
-  log.error`Failed to serve files in "${distDir}": ${err}`;
+  log.error`Failed to start server: ${err}`;
   process.exit(1);
 }
 

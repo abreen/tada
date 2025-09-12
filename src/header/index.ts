@@ -115,6 +115,9 @@ export default () => {
   }
 
   function handleClick(e: MouseEvent) {
+    if (e.target !== summary) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     details.style.overflow = "hidden";

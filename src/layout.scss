@@ -153,6 +153,10 @@ body.pdf .pdf-container .content {
 }
 
 body.search {
+  header details .search-container {
+    display: none;
+  }
+
   .container {
     padding: 16px;
   }
@@ -173,12 +177,8 @@ body.search {
       width: var(--main-width);
     }
 
-    .results ol {
-      column-count: 2;
-    }
-
-    .results ol li {
-      break-inside: avoid-column;
+    .search.big + .results {
+      min-height: 1000px;
     }
   }
 }

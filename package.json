@@ -39,6 +39,7 @@
     "open": "^10.2.0",
     "pdfjs-dist": "2.13.216",
     "prettier": "^3.6.2",
+    "quick-lint-js": "^3.2.0",
     "quote-quote": "^1.2.0",
     "raw-loader": "^4.0.2",
     "sass": "^1.91.0",
@@ -51,7 +52,8 @@
     "webpack": "^5.99.6",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1",
-    "webpack-merge": "^6.0.1"
+    "webpack-merge": "^6.0.1",
+    "webpack-shell-plugin-next": "^2.3.3"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

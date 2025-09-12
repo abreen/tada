@@ -2,13 +2,14 @@ import { debounce, removeClass } from "../util";
 import { on as globalOn, remove as globalRemove } from "../global";
 
 /** Show the "Back to top" button after scrolling up this many pixels */
-const SHOW_THRESHOLD_PX = 300;
+//const SHOW_THRESHOLD_PX = 300;
+const SHOW_THRESHOLD_PERCENT = 0.33;
 
 /** Hide the "Back to top" button after scrolling down this many pixels */
 const HIDE_THRESHOLD_PX = 80;
 
-/** Don't do anything until the user has scrolled down the page this far */
-const HIDE_ZONE_PX = 500;
+/** Don't do anything at the top of the page */
+const HIDE_ZONE_PX = 900;
 
 /** When "pauseBackToTop" event is triggered, don't show the button for this long */
 const PAUSE_DURATION_MS = 3000;
@@ -101,7 +102,9 @@ export default () => {
         isScrollingUp += diff;
       }
 
-      if (!pause && isScrollingUp > SHOW_THRESHOLD_PX) {
+      const scrolledUpEnough =
+        isScrollingUp / window.innerHeight > SHOW_THRESHOLD_PERCENT;
+      if (!pause && scrolledUpEnough) {
         show(button);
       }
     }

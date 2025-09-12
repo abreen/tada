@@ -2,6 +2,7 @@
  * Render source code into HTML pages
  */
 
+const path = require("path");
 const _ = require("lodash");
 
 function getTemplatesDir() {

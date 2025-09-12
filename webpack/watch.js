@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 const chokidar = require("chokidar");
-const { execSync, fork } = require("child_process");
+const { spawnSync, fork } = require("child_process");
 const path = require("path");
 const WebSocket = require("ws");
 const FLAIR_STRINGS = require("./flair.json");
-const { I, G } = require("./colors");
+const { B, P, R, Y } = require("./colors");
 const { makeLogger } = require("./log");
 const { getDevSiteVariables } = require("./site-variables");
 
 const WEBSOCKET_PORT = 35729;
 const SHORTEN_WEBPACK_STDOUT = true;
-
+const LINTER_OUTPUT_REGEX =
+  /^(.+):(\d+):(\d+): (error|warning): (.+) \[.+\]$/gm;
 const DIRS_TO_WATCH = [
   path.resolve(__dirname, "../src"),
   path.resolve(__dirname, "../content"),
@@ -24,7 +25,7 @@ const wslog = makeLogger("WebSocket");
 
 function getFlair() {
   const i = Math.floor(Math.random() * FLAIR_STRINGS.length);
-  return I`${FLAIR_STRINGS[i]}!` + " 🎉";
+  return P`${FLAIR_STRINGS[i]}!` + " 🎉";
 }
 
 function shortenWebpackOutput(output) {
@@ -39,16 +40,27 @@ function shortenWebpackOutput(output) {
     }
   }
 
-  return (
-    `${getFlair()} Webpack ${matches?.[1] || ""} compiled` +
-    (time != null ? ` in ${time}` : "") +
-    "\n"
-  );
+  log.event`${getFlair()} Webpack built the site${time != null ? ` in ${time}` : ""}`;
+}
+
+function shortenLinterOutput(output) {
+  for (const match of output.matchAll(LINTER_OUTPUT_REGEX)) {
+    const file = match[1];
+    const line = match[2];
+    const col = match[3];
+    const type = match[4];
+    const problem = match[5];
+
+    if (type === "error") {
+      log.error`${B`${`${file}:${line}:${col}`}`}: ${R`${problem}`}`;
+    } else {
+      log.warn`${B`${`${file}:${line}:${col}`}`}: ${Y`${problem}`}`;
+    }
+  }
 }
 
 function printSiteVariables() {
   const variables = getDevSiteVariables();
-  console.log("Site variables (site.dev.json):");
   console.dir(variables);
 }
 
@@ -114,23 +126,52 @@ function runWebpack(initialBuild = false) {
   isBuilding = true;
 
   try {
-    const stdout = execSync("npx webpack --config webpack/config.dev.js", {
-      stdio: "pipe",
-    }).toString();
-    if (SHORTEN_WEBPACK_STDOUT && !stdout.includes("error")) {
-      process.stdout.write(shortenWebpackOutput(stdout));
-    } else {
-      process.stdout.write(stdout);
+    const res = spawnSync(
+      "npx",
+      ["webpack", "--config", "webpack/config.dev.js"],
+      {
+        encoding: "utf8",
+      },
+    );
+
+    const stdout = res.stdout || "";
+    const stderr = res.stderr || "";
+
+    if (res.error) {
+      throw res.error;
     }
 
-    lastBuildFailed = false;
+    if (res.status !== 0) {
+      lastBuildFailed = true;
 
-    broadcast("reload");
+      if (stdout) {
+        process.stdout.write(stdout);
+      }
+      if (stderr) {
+        process.stderr.write(stderr);
+      }
 
-    if (waitingToOpenBrowser && webServerReady) {
-      waitingToOpenBrowser = false;
-      log.note`Webpack is building now, opening browser...`;
-      openBrowser();
+      log.error`Build failed: exit code ${res.status}`;
+    } else {
+      lastBuildFailed = false;
+
+      if (SHORTEN_WEBPACK_STDOUT) {
+        shortenWebpackOutput(stdout);
+        shortenLinterOutput(stderr);
+      } else {
+        process.stdout.write(stdout);
+        if (stderr) {
+          process.stderr.write(stderr);
+        }
+      }
+
+      broadcast("reload");
+
+      if (waitingToOpenBrowser && webServerReady) {
+        waitingToOpenBrowser = false;
+        log.note`Webpack is building now, opening browser...`;
+        openBrowser();
+      }
     }
   } catch (err) {
     lastBuildFailed = true;
@@ -167,7 +208,7 @@ watcher.on("all", (event, filePath) => {
   const relativePath = path.relative(process.cwd(), filePath);
   switch (event) {
     case "change":
-      console.log(G`${relativePath}` + " changed, building...");
+      log.event`${B`${relativePath}`} changed, rebuilding...`;
       if (isDevSiteVariables) {
         printSiteVariables();
       }
@@ -216,6 +257,6 @@ try {
 }
 
 printSiteVariables();
-console.log("Running initial build...");
+log.note`Running initial build...`;
 runWebpack(true);
 serve();

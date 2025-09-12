@@ -5,7 +5,12 @@ description: A testing page for <%= site.fullCourseName %>.
 published: 2025-09-05
 
 Here's an example article page.[^1] This one was written using Markdown.
-However you can write in "raw" HTML, [see this page](html.html).
+However:
+
+- you can write in "raw" HTML: [see this page](html.html)
+- uploaded PDF files are converted into HTML pages: [see this example](slides/)
+
+Also, try [making a search query](search.html).
 
 A code block:
 

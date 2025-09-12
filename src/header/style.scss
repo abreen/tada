@@ -85,7 +85,7 @@ header details input[type="search"] {
 @media only screen and (min-width: 640px) {
   header details nav {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    min-height: 250px;
+    min-height: 200px;
   }
 }
 
@@ -168,4 +168,44 @@ header summary .title .logo {
   margin-right: 4px;
   font-size: 15px;
   font-weight: 600;
+}
+
+header details .search-container {
+  display: flex;
+
+  .results {
+    position: absolute;
+    top: 0;
+    z-index: 5000;
+    width: calc(100vw - var(--gap));
+
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+
+    ol {
+      padding: 0;
+
+      .subtitle,
+      .score {
+        display: none;
+      }
+
+      .excerpt {
+        line-height: 2.5ex;
+        height: 5ex;
+      }
+
+      li {
+        .title {
+        }
+        .subtitle {
+        }
+      }
+
+      a {
+        padding: 8px 0 0 8px;
+      }
+    }
+  }
 }

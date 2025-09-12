@@ -33,7 +33,7 @@ function getElementTop(element: HTMLElement): number {
   return rect.top - document.body.getBoundingClientRect().top;
 }
 
-function scrollIfNeeded(element: HTMLElement, options?: ScrollIntoViewOptions) {
+function scrollIfNeeded(element: HTMLElement, options?: any) {
   const parent = element.parentElement;
   if (parent == null) {
     return;
