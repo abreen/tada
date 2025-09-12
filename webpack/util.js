@@ -60,7 +60,7 @@ async function createHtmlPlugins(siteVariables) {
       );
     } else if (ext.toLowerCase() === ".pdf") {
       const subPath = path.relative(contentDir, path.join(dir, name));
-      const pdfFilePath = siteVariables.basePath + `${subPath}/${name + ext}`;
+      const pdfFilePath = `${siteVariables.basePath || "/"}${subPath}/${name + ext}`;
 
       const pages = (await extractPdfPageSvgs(filePath)).map((svg, i, arr) => {
         const hasPrev = i > 0,
@@ -73,10 +73,10 @@ async function createHtmlPlugins(siteVariables) {
             filePath,
             pageNumber: pageNum,
             prevUrl: hasPrev
-              ? siteVariables.basePath + `/${subPath}/page-${pageNum - 1}.html`
+              ? `${siteVariables.basePath || "/"}${subPath}/page-${pageNum - 1}.html`
               : null,
             nextUrl: hasNext
-              ? siteVariables.basePath + `/${subPath}/page-${pageNum + 1}.html`
+              ? `${siteVariables.basePath || "/"}${subPath}/page-${pageNum + 1}.html`
               : null,
             title: stripHtml(titleHtml).result,
             titleHtml,
