@@ -205,21 +205,24 @@ write a loop:
 </ul>
 ```
 
-### PDFs (in progress)
+### PDFs
 
 Each page of a PDF in `content/` is first converted to a vector image, then
 a separate web page is generated for each page. For example, the PDF file
 located at `content/ps1/intro.pdf` would be converted to multiple HTML pages:
 
-- `dist/ps1/intro.pdf/index.html` or `dist/ps1/intro.pdf/1.html`
-- `dist/ps1/intro.pdf/2.html`
-- `dist/ps1/intro.pdf/3.html`
+- `dist/ps1/intro/index.html` (redirects to `page-1.html`)
+- `dist/ps1/intro/page-1.html`
+- `dist/ps1/intro/page-2.html`
+- `dist/ps1/intro/page-3.html`
 
-### Search index (in progress)
+### Search index
 
 After all content is processed, a search index JSON file is built using
-[MiniSearch][minisearch] and saved to `dist/`. See the client-side code in
-`src/search.ts`.
+[MiniSearch][minisearch] and saved to `dist/`.
+
+- See the build-time code in `webpack/minisearch-index-plugin.js`
+- See the client-side code in `src/search/`
 
 
 [lodash]: https://lodash.info/doc/template
