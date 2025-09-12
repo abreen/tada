@@ -1,5 +1,6 @@
 import MiniSearch from "minisearch";
 import options from "./options.json";
+import { applyBasePath } from "../util";
 
 const PLACEHOLDER_DISCLAIMER = " (requires JavaScript)";
 const NAV_MAX_RESULTS = 4;
@@ -126,9 +127,7 @@ export default () => {
 
   async function loadIndex() {
     try {
-      const res = await fetch(
-        window.siteVariables.basePath + "/search-index.json",
-      );
+      const res = await fetch(applyBasePath("/search-index.json"));
       if (!res.ok) {
         console.warn("failed to fetch search index", res.statusText);
         return;
@@ -195,7 +194,7 @@ export default () => {
 
           return {
             title,
-            url: window.siteVariables.basePath + h.id,
+            url: h.id,
             excerpt: h.excerpt || "",
             score: h.score || 0,
           };
@@ -214,10 +213,9 @@ export default () => {
       return function handleKeyUp(e: KeyboardEvent) {
         if (e.key === "Enter" && !onSearchPage) {
           e.preventDefault();
-          window.location.href =
-            window.siteVariables.basePath +
-            "/search.html#q=" +
-            encodeURIComponent(state.value);
+          window.location.href = applyBasePath(
+            "/search.html#q=" + encodeURIComponent(state.value),
+          );
         } else {
           changeHandlers[i](e);
         }
@@ -236,6 +234,12 @@ export default () => {
     },
   );
 
+  const searchHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
+    return function handleSearch(e: Event) {
+      changeHandlers[i](e);
+    };
+  });
+
   changeHandlers.forEach((handleChange, i) => {
     searchInputs[i].addEventListener("change", handleChange);
   });
@@ -248,7 +252,15 @@ export default () => {
     searchInputs[i].addEventListener("focus", handleFocus);
   });
 
+  searchHandlers.forEach((handleSearch, i) => {
+    searchInputs[i].addEventListener("search", handleSearch);
+  });
+
   return () => {
+    searchHandlers.forEach((handleSearch, i) => {
+      searchInputs[i].removeEventListener("search", handleSearch);
+    });
+
     focusHandlers.forEach((handleFocus, i) => {
       searchInputs[i].removeEventListener("focus", handleFocus);
     });

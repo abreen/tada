@@ -3,8 +3,7 @@ const path = require("path");
 const { compile: compileJsonSchema, doValidation } = require("./json-schema");
 
 const DEFAULT = {
-  base: "",
-  basePath: "",
+  basePath: "/",
 };
 
 const isValid = compileJsonSchema(require("./site.schema.json"));

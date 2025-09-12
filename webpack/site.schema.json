@@ -1,16 +1,15 @@
 {
   "type": "object",
-  "required": ["base", "basePath", "internalDomains"],
+  "required": ["basePath", "internalDomains"],
   "properties": {
     "base": {
       "type": "string",
-      "default": "",
-      "pattern": "^(https?:\\/\\/.*\\/)?$"
+      "pattern": "^https?:\\/\\/.*\\/$"
     },
     "basePath": {
       "type": "string",
-      "default": "",
-      "pattern": "^(\\/[-a-zA-Z0-9]*)?$"
+      "default": "/",
+      "pattern": "^\\/[-a-zA-Z0-9]*?$"
     },
     "internalDomains": {
       "type": "array",

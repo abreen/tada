@@ -11,13 +11,19 @@ const { stripHtml } = require("string-strip-html");
 const { compileTemplates, render } = require("./templates");
 const { extractPdfPageSvgs } = require("./pdf-to-svg");
 
-function createTemplateParameters(pageVariables, siteVariables, content) {
+function createTemplateParameters(
+  pageVariables,
+  siteVariables,
+  content,
+  applyBasePath,
+) {
   return {
     site: siteVariables,
     base: siteVariables.base,
     basePath: siteVariables.basePath,
     page: pageVariables,
     content,
+    applyBasePath,
     isoDate,
     readableDate,
     cx: classNames,
@@ -32,13 +38,29 @@ async function createHtmlPlugins(siteVariables) {
   const contentFiles = getContentFiles(contentDir);
   const distDir = getDistDir();
 
+  function applyBasePath(subPath) {
+    if (!subPath.startsWith("/")) {
+      throw new Error('invalid internal path, must start with "/": ' + subPath);
+    }
+
+    let path = siteVariables.basePath || "/";
+    if (path.endsWith("/")) {
+      path = path.slice(0, -1);
+    }
+    return path + subPath;
+  }
+
   const plugins = [];
 
   for (const filePath of contentFiles) {
     const { dir, name, ext } = path.parse(filePath);
 
     if ([".html", ".md", ".markdown"].includes(ext.toLowerCase())) {
-      const { content, pageVariables } = renderContent(filePath, siteVariables);
+      const { content, pageVariables } = renderContent(
+        filePath,
+        siteVariables,
+        applyBasePath,
+      );
       if (!pageVariables.template) {
         pageVariables.template = "default";
       }
@@ -46,6 +68,7 @@ async function createHtmlPlugins(siteVariables) {
         pageVariables,
         siteVariables,
         content,
+        applyBasePath,
       );
       const html = render(`${pageVariables.template}.html`, templateParameters);
       plugins.push(
@@ -60,7 +83,7 @@ async function createHtmlPlugins(siteVariables) {
       );
     } else if (ext.toLowerCase() === ".pdf") {
       const subPath = path.relative(contentDir, path.join(dir, name));
-      const pdfFilePath = `${siteVariables.basePath || "/"}${subPath}/${name + ext}`;
+      const pdfFilePath = `${applyBasePath("/" + subPath)}/${name + ext}`;
 
       const pages = (await extractPdfPageSvgs(filePath)).map((svg, i, arr) => {
         const hasPrev = i > 0,
@@ -73,10 +96,10 @@ async function createHtmlPlugins(siteVariables) {
             filePath,
             pageNumber: pageNum,
             prevUrl: hasPrev
-              ? `${siteVariables.basePath || "/"}${subPath}/page-${pageNum - 1}.html`
+              ? `${applyBasePath("/" + subPath)}/page-${pageNum - 1}.html`
               : null,
             nextUrl: hasNext
-              ? `${siteVariables.basePath || "/"}${subPath}/page-${pageNum + 1}.html`
+              ? `${applyBasePath("/" + subPath)}/page-${pageNum + 1}.html`
               : null,
             title: stripHtml(titleHtml).result,
             titleHtml,
@@ -84,6 +107,7 @@ async function createHtmlPlugins(siteVariables) {
           },
           siteVariables,
           svg,
+          applyBasePath,
         );
 
         const html = render("pdf.html", templateParameters);
@@ -135,7 +159,7 @@ async function createHtmlPlugins(siteVariables) {
 }
 
 /** Parses the file, renders using template, returns HTML & params used to generate page */
-function renderContent(filePath, siteVariables) {
+function renderContent(filePath, siteVariables, applyBasePath) {
   const md = createMarkdown(siteVariables);
 
   const ext = path.extname(filePath);
@@ -144,7 +168,12 @@ function renderContent(filePath, siteVariables) {
   const { pageVariables, content } = parseFrontMatterAndContent(raw, ext);
 
   // Handle substitutions inside page variables using siteVariables
-  const siteOnlyParams = createTemplateParameters({}, siteVariables, null);
+  const siteOnlyParams = createTemplateParameters(
+    {},
+    siteVariables,
+    null,
+    applyBasePath,
+  );
   const pageVariablesProcessed = Object.entries(pageVariables)
     .map(([k, v]) => {
       const newValue = _.template(v)(siteOnlyParams);
@@ -161,6 +190,7 @@ function renderContent(filePath, siteVariables) {
     pageVariablesProcessed,
     siteVariables,
     strippedContent,
+    applyBasePath,
   );
 
   let html = _.template(strippedContent)(params);

@@ -1,5 +1,6 @@
 {
   "base": "http://localhost:8080/",
+  "basePath": "/",
   "internalDomains": ["localhost"],
   "courseId": "1234",
   "courseCode": "CS-101",

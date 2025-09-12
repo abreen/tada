@@ -1,7 +1,7 @@
 <aside class="author">
   <figure>
     <img
-      src="<%= basePath %>/avatars/<%= page.avatar %>.jpg"
+      src="<%= applyBasePath(`/avatars/${page.avatar}.jpg`) %>"
       alt="Picture of <%= page.author %>"
       class="avatar"
     />

@@ -7,7 +7,7 @@
         <li>
           <a
             class="<%= cx({disabled: link.disabled, external: link.external}) %>"
-            href="<%= link.internal ? `${basePath}${link.internal}` : link.external %>"
+            href="<%= link.internal ? applyBasePath(link.internal) : link.external %>"
           >
             <%= link.text %>
           </a>
