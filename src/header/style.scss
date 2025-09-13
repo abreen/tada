@@ -78,10 +78,6 @@ header nav a.disabled {
 .current-heading {
 }
 
-header details input[type="search"] {
-  margin: 0 var(--header-gap) var(--header-gap) var(--header-gap);
-}
-
 @media only screen and (min-width: 640px) {
   header details nav {
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -173,15 +169,50 @@ header summary .title .logo {
 header details .search-container {
   display: flex;
 
+  .controls {
+    margin: 0 var(--header-gap) var(--header-gap) var(--header-gap);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+
+    .search-link {
+      display: inline;
+      font-size: var(--font-size-small);
+    }
+  }
+
   .results {
     position: absolute;
-    top: 0;
+    top: calc(-1 * var(--header-collapsed-height));
     z-index: 5000;
-    width: calc(100vw - var(--gap));
+    width: calc(100vw - var(--gap) - 6px);
 
     background: Canvas;
     color: CanvasText;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+
+    opacity: 1;
+    transform: translateY(0);
+
+    &.is-hidden {
+      opacity: 0;
+      transform: translateY(-16px);
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      & {
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+      }
+    }
+
+    &::before {
+      text-align: center;
+      padding-left: 0;
+      font-weight: 400;
+    }
 
     ol {
       padding: 0;
@@ -204,7 +235,7 @@ header details .search-container {
       }
 
       a {
-        padding: 8px 0 0 8px;
+        padding: 8px;
       }
     }
   }

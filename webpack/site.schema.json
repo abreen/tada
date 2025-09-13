@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["basePath", "internalDomains"],
+  "required": ["base", "basePath", "internalDomains", "titlePostfix"],
   "properties": {
     "base": {
       "type": "string",
@@ -17,6 +17,9 @@
         "type": "string",
         "pattern": "^[-.a-zA-Z0-9]+$"
       }
+    },
+    "titlePostfix": {
+      "type": "string"
     },
     "courseId": {
       "type": "string"

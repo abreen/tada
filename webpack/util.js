@@ -529,6 +529,9 @@ function createDefinePlugin(siteVariables) {
   return new DefinePlugin({
     "window.siteVariables.base": JSON.stringify(siteVariables.base),
     "window.siteVariables.basePath": JSON.stringify(siteVariables.basePath),
+    "window.siteVariables.titlePostfix": JSON.stringify(
+      siteVariables.titlePostfix,
+    ),
   });
 }
 

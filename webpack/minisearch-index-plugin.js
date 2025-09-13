@@ -84,9 +84,15 @@ class MiniSearchIndexPlugin {
 
             const titleEl =
               doc.querySelector("title") || doc.querySelector("h1");
-            const title = titleEl
+            let title = titleEl
               ? (titleEl.textContent || "").trim()
               : path.basename(file, ".html");
+            if (this.siteVariables.titlePostfix) {
+              const postfix = this.siteVariables.titlePostfix;
+              if (title.endsWith(postfix)) {
+                title = title.slice(0, -postfix.length).trim();
+              }
+            }
 
             const rel = path.relative(outDir, file).replace(/\\/g, "/");
             const url = rel === "index.html" ? "/" : "/" + rel;

@@ -3,8 +3,8 @@ import options from "./options.json";
 import { applyBasePath } from "../util";
 
 const PLACEHOLDER_DISCLAIMER = " (requires JavaScript)";
-const NAV_MAX_RESULTS = 4;
-const BIG_MAX_RESULTS = 12;
+const QUICK_SEARCH_MAX_RESULTS = 4;
+const SEARCH_MAX_RESULTS = 12;
 
 type Result = { title: string; url: string; excerpt: string; score: number };
 
@@ -79,32 +79,12 @@ function renderResults(
   }
 }
 
-function getSearchInput(): HTMLInputElement[] {
-  return Array.from(document.querySelectorAll(".search"));
-}
-
-function subtractThisTitle(title: string, thisTitle: string) {
-  if (title == thisTitle) {
-    return "";
-  }
-
-  // Starting from the end, remove matching chars until they differ
-  let i = title.length - 1;
-  let j = thisTitle.length - 1;
-
-  while (i >= 0 && j >= 0) {
-    if (title[i] !== thisTitle[j]) {
-      break;
-    }
-    i--;
-    j--;
-  }
-
-  return title.substring(0, i + 2).trim();
+function getSearchInputs(): HTMLInputElement[] {
+  return Array.from(document.querySelectorAll("input.search"));
 }
 
 export default () => {
-  const searchInputs = getSearchInput();
+  const searchInputs = getSearchInputs();
   if (searchInputs.length === 0) {
     return;
   }
@@ -119,7 +99,6 @@ export default () => {
     }
   });
 
-  const thisPageTitle = document.querySelector("title")?.innerText || "";
   const onSearchPage = window.location.pathname.endsWith("/search.html");
 
   const state: State = { value: "", showResults: true, results: [] };
@@ -151,8 +130,14 @@ export default () => {
   });
 
   const containers = searchInputs.map(
-    (el) => el.parentElement as HTMLDivElement,
+    (el) => el.parentElement?.parentElement as HTMLDivElement,
   );
+
+  for (const c of containers) {
+    if (!c.classList.contains("search-container")) {
+      throw new Error("invalid search container");
+    }
+  }
 
   const changeHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleChange(e: Event) {
@@ -178,28 +163,21 @@ export default () => {
       }
 
       let results: Result[] = [];
-      const maxNumResults = e.target?.classList.contains("nav")
-        ? NAV_MAX_RESULTS
-        : BIG_MAX_RESULTS;
+      const maxNumResults = e.target?.classList.contains("quick-search")
+        ? QUICK_SEARCH_MAX_RESULTS
+        : SEARCH_MAX_RESULTS;
 
       const hits = mini.search(newValue, { prefix: true });
 
       results = hits
         .slice(0, maxNumResults)
-        .map((h) => {
-          const title = subtractThisTitle(h.title || "", thisPageTitle);
-          if (!title) {
-            return;
-          }
-
-          return {
-            title,
-            url: h.id,
-            excerpt: h.excerpt || "",
-            score: h.score || 0,
-          };
-        })
-        .filter((r): r is Result => r !== undefined);
+        .map((h) => ({
+          title: h.title,
+          url: h.id,
+          excerpt: h.excerpt,
+          score: h.score,
+        }))
+        .filter((r) => r !== undefined);
 
       state.value = newValue;
       state.showResults = true;

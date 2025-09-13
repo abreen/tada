@@ -167,18 +167,30 @@ body.search {
     user-select: none;
   }
 
-  .search {
-    margin-top: var(--gap);
-  }
-
-  @media (min-width: 1000px) {
-    .container {
-      margin: var(--header-collapsed-height) auto 0 auto;
-      width: var(--main-width);
+  .search-container {
+    .results {
+      min-height: 1000px;
     }
 
-    .search.big + .results {
-      min-height: 1000px;
+    .search {
+      margin-top: var(--gap);
+      height: 48px;
+    }
+
+    .controls {
+      text-align: center;
+    }
+
+    @media (min-width: 1000px) {
+      & {
+        margin: var(--header-collapsed-height) auto 0 auto;
+        width: var(--main-width);
+
+        .search {
+          width: 500px;
+          margin: 0 auto;
+        }
+      }
     }
   }
 }

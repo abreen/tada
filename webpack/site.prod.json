@@ -6,5 +6,6 @@
   "courseCode": "CS-101",
   "courseTitle": "Introduction to CS",
   "fullCourseName": "CS-101 at Acme University",
+  "titlePostfix": " - Introduction to CS",
   "themeColor": "#1ca591"
 }

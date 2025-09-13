@@ -3,9 +3,11 @@ import java from "highlight.js/lib/languages/java";
 hljs.registerLanguage("java", java);
 
 export default () => {
-  const codeBlocks = document.querySelectorAll("pre");
+  const codeBlocks = document.querySelectorAll("pre code");
   codeBlocks.forEach((el) => {
-    hljs.highlightElement(el);
+    if (!el.hasAttribute("data-highlighted")) {
+      hljs.highlightElement(el as HTMLElement);
+    }
   });
 
   return () => {};

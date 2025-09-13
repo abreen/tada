@@ -23,7 +23,7 @@
     <meta name="author" content="<%= page.author %>" />
     <meta property="og:author" content="<%= page.author %>" />
     <% } %>
-    <title><%= page.title %> - <%= site.courseTitle %></title>
+    <title><%= page.title %><%= site.titlePostfix %></title>
     <% if (page.prevUrl) { %>
     <link rel="prev" href="<%= page.prevUrl %>">
     <% } %>
@@ -51,15 +51,17 @@
           <%= render('_nav.html') %>
 
           <div class="search-container">
-            <input
-              type="search"
-              class="search nav"
-              tabindex="0"
-              autocomplete="off"
-              name="search-string-nav"
-              placeholder="Search"
-              autofocus
-            >
+            <div class="controls">
+              <input
+                type="search"
+                class="search quick-search"
+                tabindex="0"
+                autocomplete="off"
+                name="quick-search"
+                placeholder="Quick search (requires JavaScript)"
+              >
+              <a href="<%= applyBasePath('/search.html') %>" class="search-link">Full search page</a>
+            </div>
             <div class="results is-hidden"></div>
           </div>
         </div>

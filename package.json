@@ -8,7 +8,8 @@
     "build": "webpack --config webpack/config.prod.js",
     "watch": "node webpack/watch.js",
     "serve": "node webpack/serve.js",
-    "format": "npx prettier --write \"**/*.(t|j)s\" \"**/*.scss\" \"**/*.json\""
+    "format": "npx prettier --write \"**/*.(t|j)s\" \"**/*.scss\" \"**/*.json\"",
+    "lint": "npx quick-lint-js src/**/*.ts webpack/*.js && echo 'No warnings or errors.'"
   },
   "engines": {
     "node": ">=22",
