@@ -17,6 +17,11 @@ verify versions with `node --version` and `npm --version`.
 
 Here are the available scripts:
 
+### `npm run lint`
+
+Run [quick-lint-js](https://quick-lint-js.com/cli/) to spot any issues.
+This also automatically runs when you use `npm run dev` or `npm run build`.
+
 ### `npm run dev`
 
 Build the site for local development (using `config.dev.js` and `site.dev.json`)
@@ -29,9 +34,8 @@ files in the `dist/` directory.
 
 ### `npm run watch`
 
-Watch this directory for changes. When a file changes, `npm run dev` runs
-automatically. In the background, `npm run serve` runs to make the site
-available at `http://localhost:8080`.
+Ideal for local development. Watch for changes and rebuild automatically.
+This is `npm run serve` + `npm run dev` invoked for you when files change.
 
 ### `npm run build`
 
