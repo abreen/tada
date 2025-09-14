@@ -1,7 +1,11 @@
 <aside class="author">
   <figure>
     <img
+      <% if (page.avatar) { %>
       src="<%= applyBasePath(`/avatars/${page.avatar}.jpg`) %>"
+      <% } else { %>
+      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32'/></svg>"
+      <% } %>
       alt="Picture of <%= page.author %>"
       class="avatar"
     />

@@ -1,5 +1,47 @@
 <%= render('_top.html') %>
 
-<%= content %>
+<div class="search-container">
+  <p class="beta-warning">Beta feature <i class="warning"></i></p>
+
+  <div class="controls">
+    <input
+      type="search"
+      class="search main-search"
+      tabindex="0"
+      autocomplete="off"
+      name="search-string"
+      placeholder="Search (requires JavaScript)"
+      autofocus
+    />
+    <%= render('_hints.html') %>
+  </div>
+  <div class="results is-hidden"></div>
+</div>
+
+<script>
+  const el = document.querySelector("input.search.main-search");
+  function setFromHash() {
+    if (window.location.hash.startsWith("#q=")) {
+      const query = decodeURIComponent(
+        window.location.hash.substring(3)
+      ).trim();
+      if (query) {
+        el.value = query;
+        el.dispatchEvent(new Event("input"));
+      }
+    }
+  }
+  setFromHash();
+
+  window.addEventListener("hashchange", function () {
+    setFromHash();
+  });
+  el.addEventListener("search", function () {
+    const value = el.value.trim();
+    if (value) {
+      window.location.hash = "#q=" + encodeURIComponent(value);
+    }
+  });
+</script>
 
 <%= render('_bottom.html') %>

@@ -1,18 +1,24 @@
-type Key = "pauseBackToTop";
-type Event = "pauseBackToTop";
+type Key = "pauseBackToTop" | "headerIsOpen";
+type Event = "pauseBackToTop" | "searchShortcutInvoked";
 
 export const INITIAL_STATE = {
   pauseBackToTop: false,
+  headerIsOpen: null,
 };
 
 let state: Record<Key, any> = INITIAL_STATE;
 
 const listeners: Record<Event, Function[]> = {
   pauseBackToTop: [],
+  searchShortcutInvoked: [],
 };
 
 export function set(key: Key, value: any) {
   state[key] = value;
+
+  if (window.IS_DEV) {
+    console.log(`${key} = ${value}`, state);
+  }
 }
 
 export function get(key: Key): any {
@@ -31,6 +37,10 @@ export function unsetAll() {
 
 export function on(event: Event, fn: Function) {
   listeners[event].push(fn);
+
+  if (window.IS_DEV) {
+    console.log(`Registered ${event} event listener`, fn);
+  }
 }
 
 export function remove(event: Event, fn: Function) {
@@ -44,4 +54,8 @@ export function remove(event: Event, fn: Function) {
 
 export function trigger(event: Event) {
   listeners[event].forEach((fn) => fn());
+
+  if (window.IS_DEV) {
+    console.log(`Triggered ${event} event`);
+  }
 }

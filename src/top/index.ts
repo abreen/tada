@@ -1,5 +1,9 @@
 import { debounce, removeClass } from "../util";
-import { on as globalOn, remove as globalRemove } from "../global";
+import {
+  on as globalOn,
+  remove as globalRemove,
+  get as globalGet,
+} from "../global";
 
 /** Show the "Back to top" button after scrolling up this many pixels */
 //const SHOW_THRESHOLD_PX = 300;
@@ -104,7 +108,7 @@ export default () => {
 
       const scrolledUpEnough =
         isScrollingUp / window.innerHeight > SHOW_THRESHOLD_PERCENT;
-      if (!pause && scrolledUpEnough) {
+      if (!pause && globalGet("headerIsOpen") !== true && scrolledUpEnough) {
         show(button);
       }
     }

@@ -21,6 +21,10 @@
   font-weight: 600;
 }
 
+.toc ul li:last-of-type {
+  margin-bottom: var(--gap);
+}
+
 .toc ul a {
   text-decoration: none;
   border: none;

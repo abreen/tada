@@ -27,6 +27,21 @@ a {
 body > .container {
   position: relative;
   margin-top: var(--header-collapsed-height);
+  transition: margin-top 0.5s;
+}
+
+body.is-homepage {
+  header {
+    position: inherit;
+    background: var(--bg2-color);
+    &:hover {
+      background: var(--bg2-color);
+    }
+  }
+
+  .container {
+    margin-top: 0;
+  }
 }
 
 body.default > .container {
@@ -65,7 +80,7 @@ body.default main table {
     position: fixed;
     overflow-y: auto;
     scroll-behavior: smooth;
-    height: calc(100vh - var(--header-collapsed-height));
+    height: calc(100vh - var(--header-collapsed-height) - var(--gap));
     padding: 0 0 var(--gap) var(--gap);
   }
   body.default nav.toc ul li:first-of-type {
@@ -124,6 +139,10 @@ body.pdf .pdf-container .content {
   grid-column: 1 / 3;
 }
 
+body.pdf .container {
+  padding-top: var(--gap);
+}
+
 @media (min-width: 1000px) {
   body.pdf .container {
     padding: var(--gap);
@@ -153,10 +172,6 @@ body.pdf .pdf-container .content {
 }
 
 body.search {
-  header details .search-container {
-    display: none;
-  }
-
   .container {
     padding: 16px;
   }
@@ -169,27 +184,17 @@ body.search {
 
   .search-container {
     .results {
-      min-height: 1000px;
+      min-height: 400px;
     }
 
     .search {
-      margin-top: var(--gap);
       height: 48px;
-    }
-
-    .controls {
-      text-align: center;
     }
 
     @media (min-width: 1000px) {
       & {
         margin: var(--header-collapsed-height) auto 0 auto;
         width: var(--main-width);
-
-        .search {
-          width: 500px;
-          margin: 0 auto;
-        }
       }
     }
   }

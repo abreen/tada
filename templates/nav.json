@@ -11,8 +11,16 @@
         "internal": "/syllabus.html"
       },
       {
+        "text": "Schedule",
+        "internal": "/schedule.html"
+      },
+      {
         "text": "Staff",
         "internal": "/staff.html"
+      },
+      {
+        "text": "Policies",
+        "internal": "/policies.html"
       }
     ]
   },
@@ -28,12 +36,12 @@
         "internal": "/labs"
       },
       {
-        "text": "Glossary",
-        "internal": "/glossary"
+        "text": "Code",
+        "internal": "/code"
       },
       {
-        "text": "Interactive",
-        "internal": "/interactive",
+        "text": "Articles",
+        "internal": "/articles",
         "disabled": true
       }
     ]
@@ -71,8 +79,8 @@
     "title": "Links",
     "links": [
       {
-        "text": "Link 1",
-        "external": "http://example.com"
+        "text": "Resources",
+        "internal": "/resources"
       },
       {
         "text": "Link 2",

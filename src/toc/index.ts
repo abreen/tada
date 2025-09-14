@@ -2,7 +2,8 @@ import { debounce, removeClass } from "../util";
 import { trigger as globalTrigger } from "../global";
 
 const LATENCY_MS = 50;
-const MIN_COMPLEXITY = 20;
+const MIN_PAGE_HEIGHT_PX = 1000;
+const MIN_HEADING_COVERAGE_PERCENT = 0.7;
 const HIGHLIGHT_DURATION_MS = 3000;
 
 type HeadingLevel = "1" | "2" | "3" | "4" | "5" | "6";
@@ -185,26 +186,39 @@ function alertToTableItem(el: HTMLElement): Alert | null {
   return null;
 }
 
-function complexity(headings: HTMLHeadingElement[]): number {
-  let c = 0;
-  for (const el of headings) {
-    const level = parseInt(el.tagName[1], 10);
-    if (level == 1) {
-      c += 10;
-    } else if (level == 2 || level == 3) {
-      c += 5;
-    } else if (level == 4 || level == 5 || level == 6) {
-      c += 2;
+function shouldBeActive(headings: HTMLHeadingElement[] | null) {
+  if (headings == null || headings.length < 2) {
+    return false;
+  }
+
+  const pageHeight = document.body.clientHeight || -1;
+
+  if (pageHeight < MIN_PAGE_HEIGHT_PX) {
+    return false;
+  }
+
+  // Do the headings cover enough of the page?
+  let minY = Infinity,
+    maxY = -Infinity;
+  for (const h of headings) {
+    const y = getElementTop(h);
+    if (y < minY) {
+      minY = y;
+    }
+    if (y > maxY) {
+      maxY = y;
     }
   }
-  return c;
+
+  const delta = Math.abs(maxY - minY);
+  return 1 - (pageHeight - delta) / pageHeight > MIN_HEADING_COVERAGE_PERCENT;
 }
 
 export default () => {
   // guaranteed to be in order from document
   const headings = getHeadingElements(document.body);
 
-  if (!headings.length || complexity(headings) < MIN_COMPLEXITY) {
+  if (!shouldBeActive(headings)) {
     return;
   } else {
     document.body.classList.add("toc-is-active");

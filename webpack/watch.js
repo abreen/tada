@@ -60,8 +60,10 @@ function shortenLinterOutput(output) {
 }
 
 function printSiteVariables() {
-  const variables = getDevSiteVariables();
-  console.dir(variables);
+  try {
+    const variables = getDevSiteVariables();
+    console.dir(variables);
+  } catch (ignored) {}
 }
 
 function broadcast(msg) {
@@ -208,7 +210,7 @@ watcher.on("all", (event, filePath) => {
   const relativePath = path.relative(process.cwd(), filePath);
   switch (event) {
     case "change":
-      log.event`${B`${relativePath}`} changed, rebuilding...`;
+      log.note`${relativePath} changed, rebuilding...`;
       if (isDevSiteVariables) {
         printSiteVariables();
       }

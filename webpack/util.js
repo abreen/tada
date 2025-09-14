@@ -8,37 +8,31 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { DefinePlugin } = require("webpack");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
 const { stripHtml } = require("string-strip-html");
+const { makeLogger } = require("./log");
+const createGlobals = require("./globals");
 const { compileTemplates, render } = require("./templates");
 const { extractPdfPageSvgs } = require("./pdf-to-svg");
 
-function createTemplateParameters(
+function createTemplateParameters({
   pageVariables,
   siteVariables,
   content,
   applyBasePath,
-) {
+  subPath,
+}) {
   return {
+    ...createGlobals(pageVariables, siteVariables, subPath),
     site: siteVariables,
     base: siteVariables.base,
     basePath: siteVariables.basePath,
     page: pageVariables,
     content,
     applyBasePath,
-    isoDate,
-    readableDate,
-    cx: classNames,
   };
 }
 
-/** Create one HtmlWebpackPlugin for each input file in content/ */
-async function createHtmlPlugins(siteVariables) {
-  compileTemplates();
-
-  const contentDir = getContentDir();
-  const contentFiles = getContentFiles(contentDir);
-  const distDir = getDistDir();
-
-  function applyBasePath(subPath) {
+function createApplyBasePath(siteVariables) {
+  return function applyBasePath(subPath) {
     if (!subPath.startsWith("/")) {
       throw new Error('invalid internal path, must start with "/": ' + subPath);
     }
@@ -48,28 +42,43 @@ async function createHtmlPlugins(siteVariables) {
       path = path.slice(0, -1);
     }
     return path + subPath;
-  }
+  };
+}
+
+/** Create one HtmlWebpackPlugin for each input file in content/ */
+async function createHtmlPlugins(siteVariables) {
+  compileTemplates(siteVariables);
+
+  const contentDir = getContentDir();
+  const contentFiles = getContentFiles(contentDir);
+  const distDir = getDistDir();
+
+  const applyBasePath = createApplyBasePath(siteVariables);
 
   const plugins = [];
 
   for (const filePath of contentFiles) {
     const { dir, name, ext } = path.parse(filePath);
+    const subPath = path.relative(contentDir, path.join(dir, name));
 
     if ([".html", ".md", ".markdown"].includes(ext.toLowerCase())) {
-      const { content, pageVariables } = renderContent(
+      const { content, pageVariables } = renderPlainTextContent(
         filePath,
+        subPath,
         siteVariables,
         applyBasePath,
       );
       if (!pageVariables.template) {
         pageVariables.template = "default";
       }
-      const templateParameters = createTemplateParameters(
+
+      const templateParameters = createTemplateParameters({
         pageVariables,
         siteVariables,
         content,
         applyBasePath,
-      );
+        subPath,
+      });
       const html = render(`${pageVariables.template}.html`, templateParameters);
       plugins.push(
         new HtmlWebpackPlugin({
@@ -82,7 +91,6 @@ async function createHtmlPlugins(siteVariables) {
         }),
       );
     } else if (ext.toLowerCase() === ".pdf") {
-      const subPath = path.relative(contentDir, path.join(dir, name));
       const pdfFilePath = `${applyBasePath("/" + subPath)}/${name + ext}`;
 
       const pages = (await extractPdfPageSvgs(filePath)).map((svg, i, arr) => {
@@ -90,25 +98,27 @@ async function createHtmlPlugins(siteVariables) {
           hasNext = i < arr.length - 1;
         const pageNum = i + 1;
         const titleHtml = `<tt>${name + ext}</tt> (${pageNum} of ${arr.length})`;
-        const templateParameters = createTemplateParameters(
-          {
-            template: "pdf",
-            filePath,
-            pageNumber: pageNum,
-            prevUrl: hasPrev
-              ? `${applyBasePath("/" + subPath)}/page-${pageNum - 1}.html`
-              : null,
-            nextUrl: hasNext
-              ? `${applyBasePath("/" + subPath)}/page-${pageNum + 1}.html`
-              : null,
-            title: stripHtml(titleHtml).result,
-            titleHtml,
-            pdfFilePath,
-          },
+        const pageVariables = {
+          template: "pdf",
+          filePath,
+          pageNumber: pageNum,
+          prevUrl: hasPrev
+            ? `${applyBasePath("/" + subPath)}/page-${pageNum - 1}.html`
+            : null,
+          nextUrl: hasNext
+            ? `${applyBasePath("/" + subPath)}/page-${pageNum + 1}.html`
+            : null,
+          title: stripHtml(titleHtml).result,
+          titleHtml,
+          pdfFilePath,
+        };
+        const templateParameters = createTemplateParameters({
+          pageVariables,
           siteVariables,
-          svg,
+          content: svg,
           applyBasePath,
-        );
+          subPath,
+        });
 
         const html = render("pdf.html", templateParameters);
 
@@ -159,7 +169,12 @@ async function createHtmlPlugins(siteVariables) {
 }
 
 /** Parses the file, renders using template, returns HTML & params used to generate page */
-function renderContent(filePath, siteVariables, applyBasePath) {
+function renderPlainTextContent(
+  filePath,
+  subPath,
+  siteVariables,
+  applyBasePath,
+) {
   const md = createMarkdown(siteVariables);
 
   const ext = path.extname(filePath);
@@ -167,13 +182,14 @@ function renderContent(filePath, siteVariables, applyBasePath) {
 
   const { pageVariables, content } = parseFrontMatterAndContent(raw, ext);
 
-  // Handle substitutions inside page variables using siteVariables
-  const siteOnlyParams = createTemplateParameters(
-    {},
+  // Handle substitutions inside front matter using siteVariables
+  const siteOnlyParams = createTemplateParameters({
+    pageVariables: {},
     siteVariables,
-    null,
+    content: null,
     applyBasePath,
-  );
+    subPath,
+  });
   const pageVariablesProcessed = Object.entries(pageVariables)
     .map(([k, v]) => {
       const newValue = _.template(v)(siteOnlyParams);
@@ -186,14 +202,22 @@ function renderContent(filePath, siteVariables, applyBasePath) {
 
   const strippedContent = stripHtmlComments(content);
 
-  const params = createTemplateParameters(
-    pageVariablesProcessed,
+  const params = createTemplateParameters({
+    pageVariables: pageVariablesProcessed,
     siteVariables,
-    strippedContent,
+    content: strippedContent,
     applyBasePath,
-  );
+    subPath,
+  });
 
-  let html = _.template(strippedContent)(params);
+  let html = null;
+  try {
+    html = _.template(strippedContent)(params);
+  } catch (err) {
+    throw new Error(
+      `${filePath}: Lodash template error in page or template: ${err.message}`,
+    );
+  }
 
   if (extensionIsMarkdown(ext)) {
     html = md.render(html);
@@ -241,16 +265,6 @@ function capitalize(str) {
   return str[0].toUpperCase() + str.slice(1);
 }
 
-function classNames(obj) {
-  const names = [];
-  for (const key in obj) {
-    if (!!obj[key]) {
-      names.push(key);
-    }
-  }
-  return names.join(" ");
-}
-
 function textToId(str) {
   return str
     .trim()
@@ -263,11 +277,7 @@ function createMarkdown(siteVariables) {
   const markdown = new MarkdownIt({ html: true, typographer: true })
     .use(require("markdown-it-anchor"), { tabIndex: false })
     .use(require("markdown-it-footnote"))
-    .use(require("markdown-it-external-links"), {
-      externalClassName: "external",
-      externalTarget: "_blank",
-      internalDomains: siteVariables.internalDomains,
-    })
+    .use(require("./external-links-plugin"), siteVariables)
     .use(require("markdown-it-container"), "details", {
       marker: "<",
       validate: function (params) {
@@ -479,70 +489,25 @@ function parseFrontMatter(rawContent, ext) {
   }
 }
 
-function readableDate(date) {
-  if (date == null || date == "") {
-    return "";
-  }
-
-  if (!(date instanceof Date)) {
-    date = new Date(date);
-  }
-
-  const str = date.toISOString();
-  const year = str.slice(0, 4);
-  let month = str.slice(5, 7);
-  if (month[0] === "0") {
-    month = month[1];
-  }
-  let day = str.slice(8, 10);
-  if (day[0] === "0") {
-    day = day[1];
-  }
-
-  const months = {
-    1: "January",
-    2: "February",
-    3: "March",
-    4: "April",
-    5: "May",
-    6: "June",
-    7: "July",
-    8: "August",
-    9: "September",
-    10: "October",
-    11: "November",
-    12: "December",
-  };
-
-  return `${months[month]} ${day}, ${year}`;
-}
-
-function isoDate(str) {
-  if (str == null || str == "") {
-    return null;
-  }
-  const date = new Date(str);
-  return date.toISOString().slice(0, 10);
-}
-
-function createDefinePlugin(siteVariables) {
+function createDefinePlugin(siteVariables, isDev = false) {
   return new DefinePlugin({
     "window.siteVariables.base": JSON.stringify(siteVariables.base),
     "window.siteVariables.basePath": JSON.stringify(siteVariables.basePath),
     "window.siteVariables.titlePostfix": JSON.stringify(
       siteVariables.titlePostfix,
     ),
+    "window.IS_DEV": JSON.stringify(isDev),
   });
 }
 
 module.exports = {
   createHtmlPlugins,
   createMarkdown,
-  renderContent,
   getContentDir,
   getDistDir,
   getContentFiles,
   extensionIsMarkdown,
   parseFrontMatter,
   createDefinePlugin,
+  createApplyBasePath,
 };

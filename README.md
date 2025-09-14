@@ -83,19 +83,42 @@ author: Author name
 <p>Foo <b>bar</b> <i>baz</i> <a href="google.com">Google</a></p>
 ```
 
+!!! note Link processing not available
+
+The link processing logic (detailed below) for Markdown documents is
+not available when writing HTML. This means you must use `applyBasePath()`
+to prefix a path with the `basePath` site variable:
+
+```
+<p>Go to <a href="<%= applyBasePath('/other') %>">another page on this site</a></p>
+```
+!!!
+
 ### Markdown
 
 Markdown is converted to HTML using the [MarkdownIt][markdownit] library
 and inserted into the `<main>` element.
 
-Example front matter:
+Example:
 
 ```markdown
 title: Title of Page
-author: Author name
 
-Foo **bar** _baz_ [Google](google.com)
+Foo *bar* [external](http://google.com) [internal](/other)
 ```
+
+Results in this HTML:
+
+```markdown
+<head>...<title>Title of Page</title>...</head>
+...
+<p>Foo <em>bar</em>
+<a class="external" href="http://google.com">external</a>
+<a href="/basePath/other">internal</a>
+```
+
+Notice that the internal links (starting with `/`) are prefixed with the
+appropriate `basePath`.
 
 Expand to see all MarkdownIt plugins installed by default:
 
@@ -162,19 +185,9 @@ is overridden here by "See the FAQ".
 * There are two variations: `note` and `warning`
 * Override the default title by specifying the optional text
 
-#### [markdown-it-external-links](https://www.npmjs.com/package/markdown-it-external-links)
-
-Adds the `.external` CSS class to links that fall outside of the domains specified
-in the `internalDomains` site variable. See `site.dev.json` and `site.prod.json`.
-
 #### [markdown-it-footnote](https://www.npmjs.com/package/markdown-it-footnote)
 
 Adds support for footnotes.
-
-#### [markdown-it-multimd-table](https://www.npmjs.com/package/markdown-it-multimd-table)
-
-Adds support for tables.
-
 
 </details>
 

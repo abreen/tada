@@ -45,7 +45,7 @@ module.exports = async () => {
     },
     plugins: [
       ...(await createHtmlPlugins(siteVariables)),
-      createDefinePlugin(siteVariables),
+      createDefinePlugin(siteVariables, true),
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: [path.join(distDir, "./**/*")],
       }),

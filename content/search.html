@@ -5,48 +5,8 @@ template: search
 -->
 
 <!---
-See `src/search/index.ts` for the code that powers this.
+See `src/search/index.ts` for the client-side code that powers this page
+and the quick search in the header.
+
+See `templates/search.html` for the HTML for the search component.
 -->
-
-<div class="search-container">
-  <div class="controls">
-    <input
-      type="search"
-      class="search main"
-      tabindex="0"
-      autocomplete="on"
-      name="search-string"
-      placeholder="Search (requires JavaScript)"
-      autofocus
-    />
-  </div>
-  <p class="beta-warning">Beta feature <i class="warning"></i></p>
-  <div class="results is-hidden"></div>
-</div>
-
-<script>
-  const el = document.querySelector("input.search.main");
-  function setFromHash() {
-    if (window.location.hash.startsWith("#q=")) {
-      const query = decodeURIComponent(
-        window.location.hash.substring(3)
-      ).trim();
-      if (query) {
-        el.value = query;
-        el.focus();
-        el.dispatchEvent(new Event("input"));
-      }
-    }
-  }
-  setFromHash();
-
-  window.addEventListener("hashchange", function () {
-    setFromHash();
-  });
-  el.addEventListener("search", function () {
-    const value = el.value.trim();
-    if (value) {
-      window.location.hash = "#q=" + encodeURIComponent(value);
-    }
-  });
-</script>

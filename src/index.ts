@@ -21,25 +21,51 @@ import mountTop from "./top";
 import mountAnchor from "./anchor";
 import mountFootnotes from "./footnotes";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const components = {
-    toc: mountTableOfContents,
-    search: mountSearch,
-    header: mountHeader,
-    highlight: mountHighlight,
-    print: mountPrint,
-    life: mountLife,
-    top: mountTop,
-    anchor: mountAnchor,
-    footnotes: mountFootnotes,
-  };
+function scheduleTask(fn: () => void) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(fn);
+  } else {
+    return setTimeout(fn, 0);
+  }
+}
 
-  Object.entries(components).forEach(([name, mount]) => {
-    try {
-      mount();
-    } catch (err: any) {
-      console.error(`failed to mount ${name} component: ${err?.message}`);
-      console.error(err);
-    }
+const COMPONENTS = {
+  toc: mountTableOfContents,
+  search: mountSearch,
+  header: mountHeader,
+  highlight: mountHighlight,
+  print: mountPrint,
+  life: mountLife,
+  top: mountTop,
+  anchor: mountAnchor,
+  footnotes: mountFootnotes,
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const mountPromises = Object.entries(COMPONENTS).map(([name, mount]) => {
+    return new Promise<void>((resolve) => {
+      scheduleTask(async () => {
+        try {
+          await Promise.resolve(mount());
+
+          if (window.IS_DEV) {
+            console.log(`Mounted ${name} component`);
+          }
+        } catch (err: any) {
+          if (window.IS_DEV) {
+            console.error(`Failed to mount ${name} component: ${err?.message}`);
+            console.error(err);
+          }
+        } finally {
+          resolve();
+        }
+      });
+    });
   });
+
+  await Promise.all(mountPromises);
+
+  if (window.IS_DEV) {
+    console.log("All components mounted");
+  }
 });

@@ -1,11 +1,7 @@
 {
   "type": "object",
-  "required": ["base", "basePath", "internalDomains", "titlePostfix"],
+  "required": [],
   "properties": {
-    "base": {
-      "type": "string",
-      "pattern": "^https?:\\/\\/.*\\/$"
-    },
     "basePath": {
       "type": "string",
       "default": "/",
@@ -13,9 +9,10 @@
     },
     "internalDomains": {
       "type": "array",
+      "default": [],
       "items": {
         "type": "string",
-        "pattern": "^[-.a-zA-Z0-9]+$"
+        "pattern": "^[-.:a-zA-Z0-9]+$"
       }
     },
     "titlePostfix": {

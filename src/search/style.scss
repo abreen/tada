@@ -1,40 +1,46 @@
 .search-container {
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
+  gap: 8px;
 
-  input.search {
-    background-color: Canvas;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7' stroke='hsl(20deg 5% 8%)' stroke-width='2' fill='none'/><line x1='16.5' y1='16.5' x2='22' y2='22' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
-    background-repeat: no-repeat;
-    background-position: left 6px center;
-    background-size: 16px 16px;
-    padding-left: 2rem;
-
-    border-radius: 18px;
-    width: 100%;
-  }
-
-  @media (prefers-color-scheme: dark) {
+  .controls {
     input.search {
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7' stroke='hsl(20deg 10% 90%)' stroke-width='2' fill='none'/><line x1='16.5' y1='16.5' x2='22' y2='22' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+      background-color: Canvas;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7' stroke='hsl(20deg 5% 8%)' stroke-width='2' fill='none'/><line x1='16.5' y1='16.5' x2='22' y2='22' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: left 6px center;
+      background-size: 16px 16px;
+      padding-left: 2rem;
+
+      border-radius: 18px;
+      width: 100%;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      input.search {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7' stroke='hsl(20deg 10% 90%)' stroke-width='2' fill='none'/><line x1='16.5' y1='16.5' x2='22' y2='22' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+      }
+    }
+
+    .hints {
+      font-size: var(--font-size-small);
+      font-style: italic;
+      color: var(--fg2-color);
+      user-select: none;
+      padding: 0;
+      margin-top: 8px;
+      display: flex;
+      gap: var(--gap);
+
+      kbd {
+        background: var(--bg-color);
+        padding: 2px 4px;
+      }
     }
   }
 
-  input.search::before {
-    content: "";
-    position: absolute;
-    left: 2px;
-    top: 4px;
-    width: 20px;
-    height: 20px;
-    background: var(--fg-color);
-    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>");
-    pointer-events: none;
-  }
-
   .results {
-    min-height: 150px;
+    min-height: 80px;
     opacity: 1;
     transform: translateY(0);
 
@@ -44,12 +50,11 @@
       pointer-events: none;
     }
 
-    &::before {
-      content: "Search results";
+    .results-info {
       display: block;
       color: var(--fg2-color);
       user-select: none;
-      padding: 8px 0 0 8px;
+      padding: 8px 0 8px 8px;
       font-weight: 700;
     }
 
@@ -62,13 +67,25 @@
     ol {
       margin: 0;
       padding: 0;
-      column-count: 2;
       list-style-type: none;
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media only screen and (min-width: 640px) {
+        & {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
     }
 
     ol a {
       display: grid;
       border: none;
+      position: relative;
+
+      &.top-result {
+        border: 2px dotted var(--fg2-color);
+      }
     }
 
     ol a,
@@ -78,41 +95,48 @@
 
     @media (hover: hover) {
       ol a:hover {
-        background: var(--bg2-color);
-        color: inherit;
         cursor: pointer;
+        background: var(--bg2-color);
+        color: var(--fg-color);
       }
     }
 
     ol a:active {
-      background: var(--fg-color);
-      color: var(--bg-color);
+      color: Canvas;
+      background: CanvasText;
     }
 
     ol li {
-      break-inside: avoid-column;
     }
 
     ol li .title {
-      grid-column: span 2;
       font-weight: 500;
+
+      .badge {
+        font-family: var(--mono-font);
+        font-size: var(--font-size-small);
+        padding: 2px 6px;
+        background: var(--bg2-color);
+        vertical-align: text-top;
+
+        &.top-result {
+          position: absolute;
+          right: 0;
+        }
+
+        &.page-number {
+          margin-left: 8px;
+        }
+      }
     }
 
     ol li .subtitle {
-      grid-row-start: 2;
       font-family: var(--mono-font);
       font-size: var(--font-size-small);
       color: var(--fg2-color);
     }
 
-    ol li .score {
-      grid-row-start: 2;
-      text-align: right;
-      font-size: var(--font-size-small);
-    }
-
     ol li .excerpt {
-      grid-column: span 2 / span 2;
       grid-row-start: 3;
       font-size: var(--font-size-small);
       color: var(--fg2-color);

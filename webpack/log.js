@@ -1,3 +1,4 @@
+const { inspect } = require("node:util");
 const path = require("path");
 const { G, R, Y, L } = require("./colors");
 
@@ -24,6 +25,13 @@ function prettyLevel(level) {
   return LEVELS_PRETTY[i] || level;
 }
 
+function print(strings, stream = "stdout", end = "\n") {
+  for (const s of strings) {
+    process[stream].write(s);
+  }
+  process[stream].write(end);
+}
+
 function makeLogger(name, logLevel = "note") {
   validateLevel(logLevel);
 
@@ -42,31 +50,34 @@ function makeLogger(name, logLevel = "note") {
     getArgs(level, strings, args, colorFn) {
       const params = [];
       params.push(colorFn`${prettyLevel(level)}` + "\t");
-      params.push(L`${format(strings, ...args)}`);
+      params.push(format(strings, ...args));
       return params;
     },
     debug(strings, ...args) {
       if (shouldLog(this.minLogLevel, "debug")) {
-        console.debug(...this.getArgs("debug", strings, args, L));
+        print(this.getArgs("debug", strings, args, L), "stderr");
       }
     },
     note(strings, ...args) {
       if (shouldLog(this.minLogLevel, "note")) {
-        console.info(...this.getArgs("note", strings, args, L));
+        print(this.getArgs("note", strings, args, L));
       }
     },
     warn(strings, ...args) {
       if (shouldLog(this.minLogLevel, "warn")) {
-        console.warn(...this.getArgs("warn", strings, args, Y));
+        print(this.getArgs("warn", strings, args, Y));
       }
     },
     error(strings, ...args) {
       if (shouldLog(this.minLogLevel, "error")) {
-        console.error(...this.getArgs("error", strings, args, R));
+        print(this.getArgs("error", strings, args, R));
       }
     },
     event(strings, ...args) {
-      console.info(...this.getArgs("event", strings, args, G));
+      print(this.getArgs("event", strings, args, G));
+    },
+    followup(strings) {
+      print(strings);
     },
   };
 
@@ -78,24 +89,46 @@ function format(strings, ...args) {
   // Called as template tag: first arg is an array-like with .raw
   if (strings && typeof strings === "object" && "raw" in strings) {
     try {
-      return String.raw(strings, ...args);
+      return String.raw(strings, ...args.map(toString));
     } catch (e) {
       // fallback to safe join
     }
+  } else {
+    if (Array.isArray(strings)) {
+      args.unshift(...strings);
+    } else {
+      args.unshift(strings);
+    }
+
+    return args.map(toString).join(" ");
+  }
+}
+
+function toString(item) {
+  if (item === undefined) {
+    return "undefined";
+  }
+  if (item === null) {
+    return "null";
+  }
+  if (typeof item === "string") {
+    return item;
   }
 
-  // Normal call: join all args into a single string
-  const parts = [strings, ...args].map((part) => {
-    if (part === undefined) return "undefined";
-    if (part === null) return "null";
-    if (typeof part === "string") return part;
-    try {
-      return typeof part === "object" ? JSON.stringify(part) : String(part);
-    } catch (e) {
-      return String(part);
+  try {
+    if (typeof item === "object") {
+      return inspect(item, {
+        compact: true,
+        depth: 2,
+        breakLength: 80,
+        maxStringLength: 250,
+        colors: true,
+      });
     }
-  });
-  return parts.join(" ");
+    throw new Error("not an object");
+  } catch (e) {
+    return String(item);
+  }
 }
 
 module.exports = {

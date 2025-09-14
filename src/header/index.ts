@@ -1,4 +1,5 @@
 import { removeClass } from "../util";
+import { on as globalOn, set as globalSet } from "../global";
 
 const DURATION_MS = 250;
 
@@ -67,9 +68,12 @@ export default () => {
     isExpanding = false;
     isCollapsing = false;
     animation = null;
+
+    globalSet("headerIsOpen", isOpen);
   }
 
   function collapse() {
+    details.style.overflow = "hidden";
     if (isCollapsing || isExpanding) {
       animation?.cancel();
     }
@@ -90,6 +94,7 @@ export default () => {
   }
 
   function expand() {
+    details.style.overflow = "hidden";
     if (isCollapsing || isExpanding) {
       animation?.cancel();
     }
@@ -115,12 +120,22 @@ export default () => {
   }
 
   function handleClick(e: MouseEvent) {
-    if (e.target !== summary) {
+    if (!(e?.target instanceof HTMLElement)) {
       return;
     }
+
+    // User clicked search results, not the <details> element
+    if (e.target.closest(".search-container") != null) {
+      return;
+    }
+
     e.preventDefault();
     e.stopPropagation();
-    details.style.overflow = "hidden";
+
+    if (header.classList.contains("is-frozen")) {
+      return;
+    }
+
     if (isCollapsing || !details.open) {
       expand();
     } else if (isExpanding || details.open) {
@@ -135,6 +150,10 @@ export default () => {
   details.addEventListener("click", handleDetailsClick);
 
   function handleWindowClick() {
+    if (header.classList.contains("is-frozen")) {
+      return;
+    }
+
     if (details.open && !isCollapsing) {
       collapse();
     }
@@ -142,11 +161,21 @@ export default () => {
   window.addEventListener("click", handleWindowClick);
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === "Escape" && !isCollapsing) {
+    if (header.classList.contains("is-frozen")) {
+      return;
+    }
+
+    if (e.key === "Escape" && details.open && !isCollapsing) {
       collapse();
     }
   }
   window.addEventListener("keydown", handleKeyDown);
+
+  globalOn("searchShortcutInvoked", () => {
+    if (!details.open && !isExpanding) {
+      expand();
+    }
+  });
 
   return () => {
     window.removeEventListener("keydown", handleKeyDown);

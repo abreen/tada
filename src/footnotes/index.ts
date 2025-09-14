@@ -44,7 +44,7 @@ export default () => {
       }
       e.preventDefault();
       globalTrigger("pauseBackToTop");
-      referenceEl.scrollIntoView({ behavior: "smooth" });
+      referenceEl.scrollIntoView();
       highlightBriefly(referenceEl);
     };
   });
