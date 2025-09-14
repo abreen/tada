@@ -43,10 +43,10 @@ When you are happy with your changes, use `npm run build` to build the site
 for production (using `config.prod.js` and `site.prod.json`).
 
 > [!NOTE]
-> Change the `site.base` and `site.basePath` variables as needed.
+> Change `site.basePath` and `site.internalDomains` as needed.
 > For example, if your site is hosted at `https://institution.edu/cs101/`,
-> set `site.base` to `"https://institution.edu/cs101/"` and
-> `site.basePath` to `"/cs101"`.
+> set `site.basePath` to `"/cs101"` and `site.internalDomains` to
+> `["institution.edu"]`.
 
 
 ###  `npm run format`
