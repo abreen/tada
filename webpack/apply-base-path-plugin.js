@@ -1,4 +1,7 @@
-const { createApplyBasePath } = require("../utils");
+const { createApplyBasePath } = require("./util");
+const { makeLogger } = require("./log");
+
+const log = makeLogger(__filename, "debug");
 
 module.exports = function externalLinks(md, siteVariables) {
   const applyBasePath = createApplyBasePath(siteVariables);
@@ -8,7 +11,9 @@ module.exports = function externalLinks(md, siteVariables) {
       const href = token.attrGet("href");
 
       if (href.startsWith("/")) {
-        token.attrSet("href", applyBasePath(href));
+        const afterApply = applyBasePath(href);
+        log.debug`${href} -> ${afterApply}`;
+        token.attrSet("href", afterApply);
       }
     }
 

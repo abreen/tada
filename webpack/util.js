@@ -9,9 +9,12 @@ const { DefinePlugin } = require("webpack");
 const { convertMarkdown: curlyQuote } = require("quote-quote");
 const { stripHtml } = require("string-strip-html");
 const { makeLogger } = require("./log");
+const { B } = require("./colors");
 const createGlobals = require("./globals");
 const { compileTemplates, render } = require("./templates");
 const { extractPdfPageSvgs } = require("./pdf-to-svg");
+
+const log = makeLogger(__filename, "debug");
 
 function createTemplateParameters({
   pageVariables,
@@ -60,6 +63,8 @@ async function createHtmlPlugins(siteVariables) {
   for (const filePath of contentFiles) {
     const { dir, name, ext } = path.parse(filePath);
     const subPath = path.relative(contentDir, path.join(dir, name));
+
+    log.note`Building ${B`${subPath + ext}`}`;
 
     if ([".html", ".md", ".markdown"].includes(ext.toLowerCase())) {
       const { content, pageVariables } = renderPlainTextContent(
@@ -278,6 +283,7 @@ function createMarkdown(siteVariables) {
     .use(require("markdown-it-anchor"), { tabIndex: false })
     .use(require("markdown-it-footnote"))
     .use(require("./external-links-plugin"), siteVariables)
+    .use(require("./apply-base-path-plugin"), siteVariables)
     .use(require("markdown-it-container"), "details", {
       marker: "<",
       validate: function (params) {

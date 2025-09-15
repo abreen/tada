@@ -1,5 +1,6 @@
 const fs = require("fs");
 const pdfjs = require("pdfjs-dist/lib/pdf");
+const { setVerbosityLevel } = require("pdfjs-dist/lib/shared/util");
 const { BaseSVGFactory } = require("pdfjs-dist/lib/display/base_factory");
 const { SVGGraphics } = require("pdfjs-dist/lib/display/svg");
 const { JSDOM } = require("jsdom");
@@ -42,6 +43,7 @@ async function extractPdfPageSvgs(pdfPath) {
     }
   }
 
+  setVerbosityLevel(0);
   const pdfDoc = await pdfjs.getDocument({
     data,
     useSystemFonts: false,
