@@ -87,16 +87,11 @@ author: Author name
 <p>Foo <b>bar</b> <i>baz</i> <a href="google.com">Google</a></p>
 ```
 
-!!! note Link processing not available
-
-The link processing logic (detailed below) for Markdown documents is
-not available when writing HTML. This means you must use `applyBasePath()`
-to prefix a path with the `basePath` site variable:
-
-```
-<p>Go to <a href="<%= applyBasePath('/other') %>">another page on this site</a></p>
-```
-!!!
+> [!NOTE]
+> The link processing logic (detailed below) for Markdown documents is
+> not available when writing HTML. This means you must use `applyBasePath()`
+> to prefix a path with the `basePath` site variable:  
+> `<p>Go to <a href="<%= applyBasePath('/other') %>">another page on this site</a></p>`
 
 ### Markdown
 
