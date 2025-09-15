@@ -1,6 +1,7 @@
 const { inspect } = require("node:util");
 const path = require("path");
-const { G, R, Y, L } = require("./colors");
+const { G, R, P, Y, L } = require("./colors");
+const FLAIR_STRINGS = require("./flair.json");
 
 const LEVELS = ["debug", "note", "warn", "error"];
 const LEVELS_PRETTY = ["ᴅᴇʙᴜɢ", " ɴᴏᴛᴇ", " ᴡᴀʀɴ", "ᴇʀʀᴏʀ"];
@@ -131,6 +132,12 @@ function toString(item) {
   }
 }
 
+function getFlair() {
+  const i = Math.floor(Math.random() * FLAIR_STRINGS.length);
+  return P`${FLAIR_STRINGS[i]}!` + " 🎉";
+}
+
 module.exports = {
   makeLogger,
+  getFlair,
 };

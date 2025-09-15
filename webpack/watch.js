@@ -3,9 +3,8 @@ const chokidar = require("chokidar");
 const { spawnSync, fork } = require("child_process");
 const path = require("path");
 const WebSocket = require("ws");
-const FLAIR_STRINGS = require("./flair.json");
-const { B, P, R, Y } = require("./colors");
-const { makeLogger } = require("./log");
+const { B, R, Y } = require("./colors");
+const { makeLogger, getFlair } = require("./log");
 const { getDevSiteVariables } = require("./site-variables");
 
 const WEBSOCKET_PORT = 35729;
@@ -22,11 +21,6 @@ const DIRS_TO_WATCH = [
 
 const log = makeLogger(__filename);
 const wslog = makeLogger("WebSocket");
-
-function getFlair() {
-  const i = Math.floor(Math.random() * FLAIR_STRINGS.length);
-  return P`${FLAIR_STRINGS[i]}!` + " 🎉";
-}
 
 function shortenWebpackOutput(output) {
   const matches = output.match(/webpack ([\d.]+) compiled .+ in (\d+) ms\n/);

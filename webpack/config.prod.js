@@ -58,7 +58,8 @@ module.exports = async () => {
           scripts: ["npx quick-lint-js src/**/*.ts webpack/*.js || true"],
         },
       }),
+      require("./print-flair-plugin"),
     ],
-    stats: "minimal",
+    stats: "errors-only",
   };
 };
