@@ -1,29 +1,29 @@
-const { makeLogger } = require("./log")
+const { makeLogger } = require('./log')
 
-const log = makeLogger(__filename, "debug")
+const log = makeLogger(__filename, 'debug')
 
 module.exports = function externalLinks(md, siteVariables) {
   function addClass(token) {
-    if (token.type === "link_open") {
-      const href = token.attrGet("href")
+    if (token.type === 'link_open') {
+      const href = token.attrGet('href')
 
       if (href.match(/^https?:\/\/.*$/)) {
         const url = new URL(href)
         if (!siteVariables.internalDomains.includes(url.host)) {
-          const classAttr = token.attrGet("class")
+          const classAttr = token.attrGet('class')
           let newClassAttr
 
           if (classAttr) {
-            newClassAttr = classAttr + " external"
+            newClassAttr = classAttr + ' external'
           } else {
-            newClassAttr = "external"
+            newClassAttr = 'external'
           }
 
           log.debug`${href} -> "${newClassAttr}"`
-          token.attrSet("class", newClassAttr)
+          token.attrSet('class', newClassAttr)
 
           log.debug`${href} -> target="_blank"`
-          token.attrSet("target", "_blank")
+          token.attrSet('target', '_blank')
         }
       }
     }
@@ -31,7 +31,7 @@ module.exports = function externalLinks(md, siteVariables) {
     token.children?.map(addClass)
   }
 
-  md.core.ruler.push("external_links", state => {
+  md.core.ruler.push('external_links', state => {
     state.tokens.map(addClass)
   })
 }

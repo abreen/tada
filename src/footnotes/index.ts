@@ -1,17 +1,17 @@
-import { trigger as globalTrigger } from "../global"
-import { highlightBriefly } from "../toc"
+import { trigger as globalTrigger } from '../global'
+import { highlightBriefly } from '../toc'
 
 function getReferenceElements(parent: HTMLElement): HTMLElement[] {
-  return Array.from(parent.querySelectorAll(".footnote-ref"))
+  return Array.from(parent.querySelectorAll('.footnote-ref'))
 }
 
 function getBackreferenceElements(parent: HTMLElement): HTMLAnchorElement[] {
-  return Array.from(parent.querySelectorAll(".footnote-backref"))
+  return Array.from(parent.querySelectorAll('.footnote-backref'))
 }
 
 function getIdFromHref(href: string): string {
   const url = new URL(href)
-  return url.hash.replace("#", "")
+  return url.hash.replace('#', '')
 }
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
   }
 
   referenceElements.forEach(el => {
-    const a = el.querySelector("a")
+    const a = el.querySelector('a')
     if (a == null) {
       return
     }
@@ -43,7 +43,7 @@ export default () => {
         return
       }
       e.preventDefault()
-      globalTrigger("pauseBackToTop")
+      globalTrigger('pauseBackToTop')
       referenceEl.scrollIntoView()
       highlightBriefly(referenceEl)
     }

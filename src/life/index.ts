@@ -19,15 +19,15 @@ type State = { grid: Grid; sleeping: boolean }
 
 function renderGrid(grid: Grid, elements: HTMLHRElement[]) {
   const content = grid
-    .map(row => row.map(cell => (cell === 0 ? "○" : "●")).join(" "))
-    .join("\n")
+    .map(row => row.map(cell => (cell === 0 ? '○' : '●')).join(' '))
+    .join('\n')
   elements.forEach(el => {
     el.dataset.grid = content
   })
 }
 
 function getThematicBreakElements(parent: HTMLElement): HTMLHRElement[] {
-  return Array.from(parent.querySelectorAll("hr"))
+  return Array.from(parent.querySelectorAll('hr'))
 }
 
 function neighbors(
@@ -42,7 +42,7 @@ function neighbors(
     if (nx >= 0 && nx < grid.length && ny >= 0 && ny < grid[0].length) {
       return fn(nx, ny)
     }
-  }).filter(value => typeof value !== "undefined")
+  }).filter(value => typeof value !== 'undefined')
 }
 
 function countLiveNeighbors(grid: Grid, x: Index, y: Index) {

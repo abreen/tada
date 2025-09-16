@@ -1,9 +1,9 @@
-import { debounce, removeClass } from "../util"
+import { debounce, removeClass } from '../util'
 import {
   on as globalOn,
   remove as globalRemove,
   get as globalGet,
-} from "../global"
+} from '../global'
 
 /** Show the "Back to top" button after scrolling up this many pixels */
 //const SHOW_THRESHOLD_PX = 300;
@@ -22,11 +22,11 @@ const PAUSE_DURATION_MS = 3000
 const LATENCY_MS = 50
 
 function createButton(parent: HTMLElement): HTMLButtonElement {
-  const div = document.createElement("div")
-  div.className = "back-to-top"
+  const div = document.createElement('div')
+  div.className = 'back-to-top'
 
-  const button = document.createElement("button")
-  button.innerText = "Back to top"
+  const button = document.createElement('button')
+  button.innerText = 'Back to top'
   div.appendChild(button)
 
   parent.appendChild(div)
@@ -50,14 +50,14 @@ export default () => {
 
   function show(button: HTMLButtonElement) {
     if (!isShowing) {
-      button.classList.add("is-hovering")
+      button.classList.add('is-hovering')
     }
     isShowing = true
   }
 
   function hide(button: HTMLButtonElement) {
     if (isShowing) {
-      removeClass(button, "is-hovering")
+      removeClass(button, 'is-hovering')
     }
     isShowing = false
   }
@@ -108,7 +108,7 @@ export default () => {
 
       const scrolledUpEnough =
         isScrollingUp / window.innerHeight > SHOW_THRESHOLD_PERCENT
-      if (!pause && globalGet("headerIsOpen") !== true && scrolledUpEnough) {
+      if (!pause && globalGet('headerIsOpen') !== true && scrolledUpEnough) {
         show(button)
       }
     }
@@ -117,7 +117,7 @@ export default () => {
   }
 
   const debounced = debounce(handleScroll, LATENCY_MS)
-  document.addEventListener("scroll", debounced, { passive: true })
+  document.addEventListener('scroll', debounced, { passive: true })
 
   let timeout: number | null = null,
     pause = false
@@ -140,10 +140,10 @@ export default () => {
       pause = false
     }, PAUSE_DURATION_MS)
   }
-  globalOn("pauseBackToTop", handlePause)
+  globalOn('pauseBackToTop', handlePause)
 
   return () => {
-    globalRemove("pauseBackToTop", handlePause)
-    document.removeEventListener("scroll", debounced)
+    globalRemove('pauseBackToTop', handlePause)
+    document.removeEventListener('scroll', debounced)
   }
 }

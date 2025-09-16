@@ -14,11 +14,11 @@
   --link-active-color: #000;
   --alert-gradient-angle: 135deg;
 
-  --font: "Source Serif 4", Times, "Times New Roman", Georgia, serif;
+  --font: 'Source Serif 4', Times, 'Times New Roman', Georgia, serif;
   --system-font:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --mono-font: "Spline Sans Mono", Consolas, Courier, monospace;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --mono-font: 'Spline Sans Mono', Consolas, Courier, monospace;
 
   --font-size: 20px;
   --font-size-smaller: 18px;
@@ -200,7 +200,7 @@ a.external {
 }
 
 a.external::after {
-  content: "";
+  content: '';
   background: var(--icon-external-link);
   background-size: contain;
   background-repeat: no-repeat;
@@ -304,8 +304,8 @@ main details {
   border: 2px solid var(--fg2-color);
 }
 
-input[type="text"],
-input[type="search"] {
+input[type='text'],
+input[type='search'] {
   background: var(--bg-color);
   color: var(--fg-color);
   border: var(--control-border-width) solid var(--fg2-color);
@@ -314,12 +314,12 @@ input[type="search"] {
   padding: 4px 4px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
 }
 
 button,
 a.button,
-input[type="submit"] {
+input[type='submit'] {
   background: var(--bg-color);
   color: var(--fg-color);
   padding: 4px 6px;
@@ -334,7 +334,7 @@ input[type="submit"] {
 
 button:active,
 a.button:active,
-input[type="submit"]:active {
+input[type='submit']:active {
   background: var(--link-active-color) !important;
   color: var(--bg-color) !important;
 }
@@ -342,7 +342,7 @@ input[type="submit"]:active {
 @media (hover: hover) {
   button:hover,
   a.button:hover,
-  input[type="submit"]:hover {
+  input[type='submit']:hover {
     background: var(--fg2-color);
     cursor: pointer;
   }
@@ -350,9 +350,9 @@ input[type="submit"]:active {
 
 button::focus-visible,
 a.button::focus-visible,
-input[type="submit"]:focus-visible,
-input[type="text"]:focus-visible,
-input[type="search"]:focus-visible {
+input[type='submit']:focus-visible,
+input[type='text']:focus-visible,
+input[type='search']:focus-visible {
   border-color: var(--fg-color);
   outline: var(--focus-border-width) solid var(--fg2-color);
   background: var(--bg2-color);

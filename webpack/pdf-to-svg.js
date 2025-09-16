@@ -1,14 +1,14 @@
-const fs = require("fs")
-const pdfjs = require("pdfjs-dist/lib/pdf")
-const { setVerbosityLevel } = require("pdfjs-dist/lib/shared/util")
-const { BaseSVGFactory } = require("pdfjs-dist/lib/display/base_factory")
-const { SVGGraphics } = require("pdfjs-dist/lib/display/svg")
-const { JSDOM } = require("jsdom")
+const fs = require('fs')
+const pdfjs = require('pdfjs-dist/lib/pdf')
+const { setVerbosityLevel } = require('pdfjs-dist/lib/shared/util')
+const { BaseSVGFactory } = require('pdfjs-dist/lib/display/base_factory')
+const { SVGGraphics } = require('pdfjs-dist/lib/display/svg')
+const { JSDOM } = require('jsdom')
 
 async function extractPdfPageSvgs(pdfPath) {
   const data = new Uint8Array(fs.readFileSync(pdfPath))
 
-  const dom = new JSDOM("<!DOCTYPE html>")
+  const dom = new JSDOM('<!DOCTYPE html>')
   global.window = dom.window
   global.document = dom.window.document
   global.DOMParser = dom.window.DOMParser
@@ -23,9 +23,9 @@ async function extractPdfPageSvgs(pdfPath) {
   }
 
   function fixFont(el) {
-    const loadedName = el.getAttribute("font-family")
-    if (loadedName === "undefined") {
-      el.removeAttribute("font-family")
+    const loadedName = el.getAttribute('font-family')
+    if (loadedName === 'undefined') {
+      el.removeAttribute('font-family')
       return
     }
 
@@ -33,12 +33,12 @@ async function extractPdfPageSvgs(pdfPath) {
       const { fontFamily, fontStyle, fontWeight } = inferFont(
         loadedFonts[loadedName].name,
       )
-      el.setAttribute("font-family", fontFamily)
+      el.setAttribute('font-family', fontFamily)
       if (fontStyle) {
-        el.setAttribute("font-style", fontStyle)
+        el.setAttribute('font-style', fontStyle)
       }
       if (fontWeight) {
-        el.setAttribute("font-weight", fontWeight)
+        el.setAttribute('font-weight', fontWeight)
       }
     }
   }
@@ -63,15 +63,15 @@ async function extractPdfPageSvgs(pdfPath) {
 
     const svg = await svgGfx.getSVG(opList, page.getViewport({ scale: 1.0 }))
 
-    const textElements = svg.querySelectorAll("text")
+    const textElements = svg.querySelectorAll('text')
     for (const text of textElements) {
-      if (text.hasAttribute("font-family")) {
+      if (text.hasAttribute('font-family')) {
         fixFont(text)
       }
 
-      const tspans = text.querySelectorAll("tspan")
+      const tspans = text.querySelectorAll('tspan')
       for (const tspan of tspans) {
-        if (tspan.hasAttribute("font-family")) {
+        if (tspan.hasAttribute('font-family')) {
           fixFont(tspan)
         }
       }
@@ -84,51 +84,51 @@ async function extractPdfPageSvgs(pdfPath) {
 }
 
 function inferFont(fontName) {
-  if (fontName.includes("+")) {
-    fontName = fontName.slice(fontName.lastIndexOf("+") + 1)
+  if (fontName.includes('+')) {
+    fontName = fontName.slice(fontName.lastIndexOf('+') + 1)
   }
 
   let fontStyle = null,
     fontWeight = null
   if (fontName.match(/italic/i)) {
-    fontStyle = "italic"
+    fontStyle = 'italic'
   } else if (fontName.match(/oblique/i)) {
-    fontStyle = "oblique"
+    fontStyle = 'oblique'
   }
 
   if (fontName.match(/bold/i)) {
-    fontWeight = "bold"
+    fontWeight = 'bold'
   }
 
   let fontFamily = fontName
   if (fontName.match(/Arial ?Narrow/i)) {
-    fontFamily = "Arial Narrow, Arial, sans-serif"
+    fontFamily = 'Arial Narrow, Arial, sans-serif'
   } else if (fontName.match(/Arial/i)) {
-    fontFamily = "Arial, sans-serif"
+    fontFamily = 'Arial, sans-serif'
   } else if (fontName.match(/Helvetica/i)) {
-    fontFamily = "Helvetica, Arial, sans-serif"
+    fontFamily = 'Helvetica, Arial, sans-serif'
   } else if (fontName.match(/Times ?New ?Roman/i)) {
     fontFamily = "'Times New Roman', Times, serif"
   } else if (fontName.match(/Times/i)) {
-    fontFamily = "Times, serif"
+    fontFamily = 'Times, serif'
   } else if (fontName.match(/Georgia/i)) {
-    fontFamily = "Georgia, serif"
+    fontFamily = 'Georgia, serif'
   } else if (fontName.match(/Courier ?New/i)) {
     fontFamily = "'Courier New', Courier, monospace"
   } else if (fontName.match(/Courier/i)) {
-    fontFamily = "Courier, monospace"
+    fontFamily = 'Courier, monospace'
   } else if (fontName.match(/Lucida ?Console/i)) {
     fontFamily = "'Lucida Console', monospace"
   } else if (fontName.match(/Impact/i)) {
-    fontFamily = "Impact, sans-serif"
+    fontFamily = 'Impact, sans-serif'
   } else if (fontName.match(/Verdana/i)) {
-    fontFamily = "Verdana, Geneva, sans-serif"
+    fontFamily = 'Verdana, Geneva, sans-serif'
   } else if (fontName.match(/Tahoma/i)) {
-    fontFamily = "Tahoma, Geneva, sans-serif"
+    fontFamily = 'Tahoma, Geneva, sans-serif'
   } else if (fontName.match(/Trebuchet ?MS/i)) {
     fontFamily = "'Trebuchet MS', Helvetica, sans-serif"
   } else if (fontName.match(/Calibri/i)) {
-    fontFamily = "Calibri, Helvetica, sans-serif"
+    fontFamily = 'Calibri, Helvetica, sans-serif'
   }
 
   return { fontFamily, fontStyle, fontWeight }
@@ -151,7 +151,7 @@ class FontlessSVGGraphics extends SVGGraphics {
     super.showText(
       glyphs
         .map(glyph => {
-          if (typeof glyph === "object") {
+          if (typeof glyph === 'object') {
             return { ...glyph, fontChar: glyph.unicode, isInFont: true }
           }
         })
@@ -159,7 +159,7 @@ class FontlessSVGGraphics extends SVGGraphics {
     )
 
     // Remove x attributes added for spacing that aren't needed
-    const tspans = this.current.txtElement.querySelectorAll("tspan")
+    const tspans = this.current.txtElement.querySelectorAll('tspan')
     for (const tspan of tspans) {
       //tspan.removeAttribute("x");
       //tspan.removeAttribute("font-family");
@@ -171,7 +171,7 @@ class FontlessSVGGraphics extends SVGGraphics {
     super.executeOpTree(
       opTree.filter(
         op =>
-          op.fn !== "beginMarkedContentProps" && op.fn !== "endMarkedContent",
+          op.fn !== 'beginMarkedContentProps' && op.fn !== 'endMarkedContent',
       ),
     )
   }
@@ -205,10 +205,10 @@ class FontlessSVGGraphics extends SVGGraphics {
       //   t.setAttribute("fill", "var(--fg-color, inherit)");
       // }
 
-      parent.setAttribute("width", "100%")
-      parent.removeAttribute("height")
+      parent.setAttribute('width', '100%')
+      parent.removeAttribute('height')
       //parent.setAttribute("height", "auto");
-      parent.setAttribute("preserveAspectRatio", "xMidYMid meet")
+      parent.setAttribute('preserveAspectRatio', 'xMidYMid meet')
       return parent
     })
   }
@@ -216,11 +216,11 @@ class FontlessSVGGraphics extends SVGGraphics {
 
 class JSDOMSvgFactory extends BaseSVGFactory {
   _createSVG(type) {
-    if (type.startsWith("svg:")) {
+    if (type.startsWith('svg:')) {
       type = type.substring(4)
     }
 
-    return document.createElementNS("http://www.w3.org/2000/svg", type)
+    return document.createElementNS('http://www.w3.org/2000/svg', type)
   }
 }
 

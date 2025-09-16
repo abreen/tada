@@ -1,9 +1,9 @@
-const express = require("express")
-const { getDistDir } = require("./util")
-const { makeLogger } = require("./log")
-const { B } = require("./colors")
+const express = require('express')
+const { getDistDir } = require('./util')
+const { makeLogger } = require('./log')
+const { B } = require('./colors')
 
-const log = makeLogger(__filename, "debug")
+const log = makeLogger(__filename, 'debug')
 
 function messageReady(port) {
   if (process.send) {
@@ -29,8 +29,8 @@ function tryListen(port, fallbackPort) {
       resolve(server)
     })
 
-    server.on("error", err => {
-      if (err.code === "EADDRINUSE" && fallbackPort) {
+    server.on('error', err => {
+      if (err.code === 'EADDRINUSE' && fallbackPort) {
         log.warn`Port ${port} in use, trying fallback ${fallbackPort}...`
         return tryListen(fallbackPort, null)
           .then(() => {
@@ -50,12 +50,12 @@ tryListen(8080, 8081).catch(err => {
   process.exit(1)
 })
 
-process.on("uncaughtException", err => {
+process.on('uncaughtException', err => {
   log.error`Uncaught exception: ${err}`
   process.exit(1)
 })
 
-process.on("unhandledRejection", reason => {
+process.on('unhandledRejection', reason => {
   log.error`Unhandled rejection: ${reason}`
   process.exit(1)
 })

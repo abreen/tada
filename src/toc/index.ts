@@ -1,13 +1,13 @@
-import { debounce, removeClass } from "../util"
-import { trigger as globalTrigger } from "../global"
+import { debounce, removeClass } from '../util'
+import { trigger as globalTrigger } from '../global'
 
 const LATENCY_MS = 50
 const MIN_PAGE_HEIGHT_PX = 1000
 const MIN_HEADING_COVERAGE_PERCENT = 0.7
 const HIGHLIGHT_DURATION_MS = 3000
 
-type HeadingLevel = "1" | "2" | "3" | "4" | "5" | "6"
-type AlertType = "warning" | "note"
+type HeadingLevel = '1' | '2' | '3' | '4' | '5' | '6'
+type AlertType = 'warning' | 'note'
 
 type Alert = { type: AlertType; title: string }
 type Heading = { level: HeadingLevel; text: string; id: string }
@@ -22,11 +22,11 @@ function clearContainer(container: HTMLElement) {
 }
 
 function getContainer(parent: HTMLElement): HTMLElement | null {
-  return parent.querySelector("nav.toc")
+  return parent.querySelector('nav.toc')
 }
 
 function getCurrentListItem(parent: HTMLElement): HTMLLIElement | null {
-  return parent.querySelector("nav.toc .current")
+  return parent.querySelector('nav.toc .current')
 }
 
 function getElementTop(element: HTMLElement): number {
@@ -57,12 +57,12 @@ export function highlightBriefly(
       window.clearTimeout(highlightTimeout)
       highlightTimeout = null
     }
-    removeClass(highlightEl, "is-highlighted")
+    removeClass(highlightEl, 'is-highlighted')
   }
-  element.classList.add("is-highlighted")
+  element.classList.add('is-highlighted')
   highlightEl = element
   highlightTimeout = window.setTimeout(() => {
-    removeClass(element, "is-highlighted")
+    removeClass(element, 'is-highlighted')
     highlightTimeout = null
   }, duration)
 }
@@ -73,22 +73,22 @@ function renderTable(
 ): HTMLAnchorElement[] {
   const container = getContainer(parent)
   if (container == null) {
-    throw new Error("toc container must exist already")
+    throw new Error('toc container must exist already')
   }
 
   const rendered: HTMLAnchorElement[] = []
-  let lastHeadingLevel = "1"
-  const ul = document.createElement("ul")
+  let lastHeadingLevel = '1'
+  const ul = document.createElement('ul')
 
   items.forEach((item, i) => {
-    const li = document.createElement("li")
+    const li = document.createElement('li')
 
     function makeClickHandler(
       element: HTMLElement,
       preventDefault: boolean,
     ): (e: MouseEvent) => void {
       return (e: MouseEvent) => {
-        globalTrigger("pauseBackToTop")
+        globalTrigger('pauseBackToTop')
         if (preventDefault) {
           e.preventDefault()
           element.scrollIntoView()
@@ -100,9 +100,9 @@ function renderTable(
     const handlerNormal = makeClickHandler(headingsAndAlerts[i], false)
     const handlerPreventDefault = makeClickHandler(headingsAndAlerts[i], true)
 
-    if ("level" in item) {
+    if ('level' in item) {
       const heading = item as Heading
-      const a = document.createElement("a")
+      const a = document.createElement('a')
       a.innerText = heading.text
       a.href = `#${heading.id}`
       a.onclick = handlerNormal
@@ -114,9 +114,9 @@ function renderTable(
       li.appendChild(a)
     } else {
       const alert = item as Alert
-      const a = document.createElement("a")
+      const a = document.createElement('a')
       a.innerText = alert.title
-      a.href = "#"
+      a.href = '#'
       a.onclick = handlerPreventDefault
 
       rendered.push(a)
@@ -135,7 +135,7 @@ function renderTable(
 }
 
 function getHeadingElements(parent: HTMLElement): HTMLHeadingElement[] {
-  return Array.from(parent.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+  return Array.from(parent.querySelectorAll('h1, h2, h3, h4, h5, h6'))
 }
 
 function getHeadingsAndAlerts(
@@ -143,14 +143,14 @@ function getHeadingsAndAlerts(
 ): (HTMLHeadingElement | HTMLDivElement)[] {
   return Array.from(
     parent.querySelectorAll(
-      "h1, h2, h3, h4, h5, h6, main > div.alert, main section > div.alert",
+      'h1, h2, h3, h4, h5, h6, main > div.alert, main section > div.alert',
     ),
   )
 }
 
 /* Calculate how much to offset scroll calculations based on floating header */
 function getHeaderOffset() {
-  const element = document.querySelector("header details summary")
+  const element = document.querySelector('header details summary')
   if (!element) {
     return 0
   }
@@ -165,18 +165,18 @@ function headingToTableItem(el: HTMLHeadingElement): Heading {
 
 function alertToTableItem(el: HTMLElement): Alert | null {
   const classes = el.className
-    .split(" ")
+    .split(' ')
     .map(cl => cl.trim())
-    .filter(cl => cl != "alert")
+    .filter(cl => cl != 'alert')
 
   const firstClass = classes[0]
-  if (firstClass === "warning" || firstClass === "note") {
-    let title = el.querySelector(".title")?.innerHTML
+  if (firstClass === 'warning' || firstClass === 'note') {
+    let title = el.querySelector('.title')?.innerHTML
     if (!title) {
-      if (firstClass === "warning") {
-        title = "Warning"
+      if (firstClass === 'warning') {
+        title = 'Warning'
       } else {
-        title = "Note"
+        title = 'Note'
       }
     }
 
@@ -221,13 +221,13 @@ export default () => {
   if (!shouldBeActive(headings)) {
     return
   } else {
-    document.body.classList.add("toc-is-active")
+    document.body.classList.add('toc-is-active')
   }
 
   const headingsAndAlerts = getHeadingsAndAlerts(document.body)
   const items = headingsAndAlerts
     .map(el => {
-      if (el.tagName.toLowerCase() == "div") {
+      if (el.tagName.toLowerCase() == 'div') {
         // element is a <div class="alert">
         return alertToTableItem(el)
       } else {
@@ -264,16 +264,16 @@ export default () => {
 
     if (nextItem != null && nextItem !== existingItem) {
       switchCurrent(existingItem, nextItem)
-      scrollIfNeeded(nextItem, { block: "center" })
+      scrollIfNeeded(nextItem, { block: 'center' })
     }
   }
   const debounced = debounce(handleScroll, LATENCY_MS)
-  window.addEventListener("scroll", debounced, { passive: true })
-  window.addEventListener("load", debounced)
+  window.addEventListener('scroll', debounced, { passive: true })
+  window.addEventListener('load', debounced)
 
   return () => {
-    window.removeEventListener("scroll", debounced)
-    window.removeEventListener("load", debounced)
+    window.removeEventListener('scroll', debounced)
+    window.removeEventListener('load', debounced)
   }
 }
 
@@ -282,7 +282,7 @@ function switchCurrent(
   newCurrent: HTMLElement,
 ) {
   if (oldCurrent) {
-    oldCurrent.classList.remove("current")
+    oldCurrent.classList.remove('current')
   }
-  newCurrent.classList.add("current")
+  newCurrent.classList.add('current')
 }

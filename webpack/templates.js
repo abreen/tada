@@ -1,9 +1,9 @@
-const fs = require("fs")
-const { inspect } = require("node:util")
-const path = require("path")
-const _ = require("lodash")
-const { compile: compileJsonSchema, doValidation } = require("./json-schema")
-const { makeLogger } = require("./log")
+const fs = require('fs')
+const { inspect } = require('node:util')
+const path = require('path')
+const _ = require('lodash')
+const { compile: compileJsonSchema, doValidation } = require('./json-schema')
+const { makeLogger } = require('./log')
 
 const log = makeLogger(__filename)
 
@@ -21,7 +21,7 @@ const renderStack = []
 let errorStack = null
 
 function getTemplatesDir() {
-  return path.resolve(__dirname, "../templates")
+  return path.resolve(__dirname, '../templates')
 }
 
 function json(fileName) {
@@ -64,16 +64,16 @@ function compileTemplates(siteVariables) {
 
   fs.readdirSync(templatesDir).forEach(fileName => {
     const ext = path.extname(fileName).toLowerCase()
-    const isSchema = fileName.toLowerCase().endsWith(".schema.json")
+    const isSchema = fileName.toLowerCase().endsWith('.schema.json')
     if (isSchema) {
       return
     }
 
     const filePath = path.join(templatesDir, fileName)
 
-    if (ext === ".html") {
-      templates[fileName] = fs.readFileSync(filePath, "utf-8")
-    } else if (ext === ".json") {
+    if (ext === '.html') {
+      templates[fileName] = fs.readFileSync(filePath, 'utf-8')
+    } else if (ext === '.json') {
       const schemaFile = `${path.parse(fileName).name}.schema.json`
       const schemaPath = path.join(templatesDir, schemaFile)
       if (fs.existsSync(schemaPath)) {
@@ -81,7 +81,7 @@ function compileTemplates(siteVariables) {
       }
 
       jsonData[fileName] = JSON.parse(
-        _.template(fs.readFileSync(filePath, "utf-8"))({
+        _.template(fs.readFileSync(filePath, 'utf-8'))({
           site: siteVariables,
           base: siteVariables.base,
           basePath: siteVariables.basePath,
@@ -98,7 +98,7 @@ function compileTemplates(siteVariables) {
 }
 
 function compileAndSetValidator(schemaPath, fileName) {
-  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"))
+  const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf-8'))
   validators[fileName] = compileJsonSchema(schema)
 }
 

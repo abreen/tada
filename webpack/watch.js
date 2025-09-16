@@ -1,25 +1,25 @@
 #!/usr/bin/env node
-const chokidar = require("chokidar")
-const { spawnSync, fork } = require("child_process")
-const path = require("path")
-const WebSocket = require("ws")
-const { B, G, R, Y } = require("./colors")
-const { makeLogger, getFlair } = require("./log")
-const { getDevSiteVariables } = require("./site-variables")
+const chokidar = require('chokidar')
+const { spawnSync, fork } = require('child_process')
+const path = require('path')
+const WebSocket = require('ws')
+const { B, G, R, Y } = require('./colors')
+const { makeLogger, getFlair } = require('./log')
+const { getDevSiteVariables } = require('./site-variables')
 
 const WEBSOCKET_PORT = 35729
 const SHORTEN_WEBPACK_STDOUT = true
 const LINTER_OUTPUT_REGEX = /^(.+):(\d+):(\d+): (error|warning): (.+) \[.+\]$/gm
 const DIRS_TO_WATCH = [
-  path.resolve(__dirname, "../src"),
-  path.resolve(__dirname, "../content"),
-  path.resolve(__dirname, "../templates"),
-  path.resolve(__dirname, "../public"),
+  path.resolve(__dirname, '../src'),
+  path.resolve(__dirname, '../content'),
+  path.resolve(__dirname, '../templates'),
+  path.resolve(__dirname, '../public'),
   path.resolve(__dirname),
 ]
 
 const log = makeLogger(__filename)
-const wslog = makeLogger("WebSocket")
+const wslog = makeLogger('WebSocket')
 
 function shortenLinterOutput(output) {
   for (const match of output.matchAll(LINTER_OUTPUT_REGEX)) {
@@ -29,7 +29,7 @@ function shortenLinterOutput(output) {
     const type = match[4]
     const problem = match[5]
 
-    if (type === "error") {
+    if (type === 'error') {
       log.error`${B`${`${file}:${line}:${col}`}`}: ${R`${problem}`}`
     } else {
       log.warn`${B`${`${file}:${line}:${col}`}`}: ${Y`${problem}`}`
@@ -57,17 +57,17 @@ function broadcast(msg) {
 }
 
 function serve() {
-  const child = fork(path.join(__dirname, "serve.js"), { stdio: "inherit" })
-  child.on("close", code => {
+  const child = fork(path.join(__dirname, 'serve.js'), { stdio: 'inherit' })
+  child.on('close', code => {
     webServerReady = false
     log.error`Web server exited with code ${code}`
     process.exit(2)
   })
-  child.on("error", err => {
+  child.on('error', err => {
     webServerReady = false
     log.error`Web server failed: ${err.message}`
   })
-  child.on("message", msg => {
+  child.on('message', msg => {
     if (msg.ready) {
       webServerReady = true
       clearTimeout(webServerTimeout)
@@ -107,13 +107,13 @@ function runWebpack(initialBuild = false) {
 
   try {
     const res = spawnSync(
-      "npx",
-      ["webpack", "--config", "webpack/config.dev.js"],
-      { encoding: "utf8" },
+      'npx',
+      ['webpack', '--config', 'webpack/config.dev.js'],
+      { encoding: 'utf8' },
     )
 
-    const stdout = res.stdout || ""
-    const stderr = res.stderr || ""
+    const stdout = res.stdout || ''
+    const stderr = res.stderr || ''
 
     if (res.error) {
       throw res.error
@@ -143,7 +143,7 @@ function runWebpack(initialBuild = false) {
         }
       }
 
-      broadcast("reload")
+      broadcast('reload')
 
       if (waitingToOpenBrowser && webServerReady) {
         waitingToOpenBrowser = false
@@ -179,26 +179,26 @@ const watcher = chokidar.watch(DIRS_TO_WATCH, {
   interval: 500,
 })
 
-watcher.on("all", (event, filePath) => {
+watcher.on('all', (event, filePath) => {
   const { base } = path.parse(filePath)
-  const isDevSiteVariables = base === "site.dev.json"
+  const isDevSiteVariables = base === 'site.dev.json'
 
   const relativePath = path.relative(process.cwd(), filePath)
   switch (event) {
-    case "change":
+    case 'change':
       log.note`${relativePath} changed, rebuilding...`
       if (isDevSiteVariables) {
         printSiteVariables()
       }
       runWebpack()
       return
-    case "error":
+    case 'error':
       return
   }
 })
 
 function openBrowser() {
-  import("open").then(({ default: open }) => {
+  import('open').then(({ default: open }) => {
     open(`http://localhost:8080/`)
   })
 }
@@ -215,18 +215,18 @@ let wss = null
 try {
   wss = new WebSocket.Server({ port: WEBSOCKET_PORT })
 
-  wss.on("connection", conn => {
+  wss.on('connection', conn => {
     wslog.debug`WebSocket client connected`
-    conn.on("close", () => {
+    conn.on('close', () => {
       wslog.debug`WebSocket client disconnected`
     })
   })
 
-  wss.on("error", err => {
+  wss.on('error', err => {
     wslog.error`WebSocket server error: ${err.message}`
   })
 
-  wss.on("listening", () => {
+  wss.on('listening', () => {
     wslog.note`WebSocket server listening at ws://localhost:${WEBSOCKET_PORT}`
     webSocketsReady = true
   })

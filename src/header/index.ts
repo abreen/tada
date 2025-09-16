@@ -1,10 +1,10 @@
-import { removeClass } from "../util"
-import { on as globalOn, set as globalSet } from "../global"
+import { removeClass } from '../util'
+import { on as globalOn, set as globalSet } from '../global'
 
 const DURATION_MS = 250
 
 // CSS properties we control via the style attribute
-const CONTROLLED_PROPERTIES = ["height", "overflow"]
+const CONTROLLED_PROPERTIES = ['height', 'overflow']
 
 function removeStyle(el: HTMLElement, propertyName: string) {
   el.style.removeProperty(propertyName)
@@ -13,7 +13,7 @@ function removeStyle(el: HTMLElement, propertyName: string) {
       property => !el.style.getPropertyValue(property),
     )
   ) {
-    el.removeAttribute("style")
+    el.removeAttribute('style')
   }
 }
 
@@ -45,10 +45,10 @@ function getElement(parent: Document | Element, selector: string): HTMLElement {
 }
 
 export default () => {
-  const header: HTMLElement = getElement(document, "header")
-  const details = getElement(header, "details") as HTMLDetailsElement
-  const summary: HTMLElement = getElement(details, "summary")
-  const content: HTMLElement = getElement(details, ".content")
+  const header: HTMLElement = getElement(document, 'header')
+  const details = getElement(header, 'details') as HTMLDetailsElement
+  const summary: HTMLElement = getElement(details, 'summary')
+  const content: HTMLElement = getElement(details, '.content')
 
   let isExpanding = false,
     isCollapsing = false,
@@ -57,50 +57,50 @@ export default () => {
   function finish(isOpen: boolean) {
     details.open = isOpen
     if (isOpen) {
-      header.classList.add("is-open")
+      header.classList.add('is-open')
     } else {
-      removeClass(header, "is-open")
+      removeClass(header, 'is-open')
     }
-    removeClass(header, "is-expanding")
-    removeClass(header, "is-collapsing")
-    removeStyle(details, "height")
-    removeStyle(details, "overflow")
+    removeClass(header, 'is-expanding')
+    removeClass(header, 'is-collapsing')
+    removeStyle(details, 'height')
+    removeStyle(details, 'overflow')
     isExpanding = false
     isCollapsing = false
     animation = null
 
-    globalSet("headerIsOpen", isOpen)
+    globalSet('headerIsOpen', isOpen)
   }
 
   function collapse() {
-    details.style.overflow = "hidden"
+    details.style.overflow = 'hidden'
     if (isCollapsing || isExpanding) {
       animation?.cancel()
     }
 
     isCollapsing = true
-    header.classList.add("is-collapsing")
+    header.classList.add('is-collapsing')
 
     animation = details.animate(
       { height: [`${details.offsetHeight}px`, `${summary.offsetHeight}px`] },
-      { duration: DURATION_MS, easing: "ease" },
+      { duration: DURATION_MS, easing: 'ease' },
     )
 
     animation.onfinish = () => finish(false)
     animation.oncancel = () => {
       isCollapsing = false
-      removeClass(header, "is-collapsing")
+      removeClass(header, 'is-collapsing')
     }
   }
 
   function expand() {
-    details.style.overflow = "hidden"
+    details.style.overflow = 'hidden'
     if (isCollapsing || isExpanding) {
       animation?.cancel()
     }
 
     isExpanding = true
-    header.classList.add("is-expanding")
+    header.classList.add('is-expanding')
 
     details.style.height = `${details.offsetHeight}px`
     details.open = true
@@ -109,13 +109,13 @@ export default () => {
 
     animation = details.animate(
       { height: [`${details.offsetHeight}px`, `${expandedHeight}px`] },
-      { duration: DURATION_MS, easing: "ease" },
+      { duration: DURATION_MS, easing: 'ease' },
     )
 
     animation.onfinish = () => finish(true)
     animation.oncancel = () => {
       isExpanding = false
-      removeClass(header, "is-expanding")
+      removeClass(header, 'is-expanding')
     }
   }
 
@@ -125,14 +125,14 @@ export default () => {
     }
 
     // User clicked search results, not the <details> element
-    if (e.target.closest(".search-container") != null) {
+    if (e.target.closest('.search-container') != null) {
       return
     }
 
     e.preventDefault()
     e.stopPropagation()
 
-    if (header.classList.contains("is-frozen")) {
+    if (header.classList.contains('is-frozen')) {
       return
     }
 
@@ -142,15 +142,15 @@ export default () => {
       collapse()
     }
   }
-  summary.addEventListener("click", handleClick)
+  summary.addEventListener('click', handleClick)
 
   function handleDetailsClick(e: MouseEvent) {
     e.stopPropagation()
   }
-  details.addEventListener("click", handleDetailsClick)
+  details.addEventListener('click', handleDetailsClick)
 
   function handleWindowClick() {
-    if (header.classList.contains("is-frozen")) {
+    if (header.classList.contains('is-frozen')) {
       return
     }
 
@@ -158,29 +158,29 @@ export default () => {
       collapse()
     }
   }
-  window.addEventListener("click", handleWindowClick)
+  window.addEventListener('click', handleWindowClick)
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (header.classList.contains("is-frozen")) {
+    if (header.classList.contains('is-frozen')) {
       return
     }
 
-    if (e.key === "Escape" && details.open && !isCollapsing) {
+    if (e.key === 'Escape' && details.open && !isCollapsing) {
       collapse()
     }
   }
-  window.addEventListener("keydown", handleKeyDown)
+  window.addEventListener('keydown', handleKeyDown)
 
-  globalOn("searchShortcutInvoked", () => {
+  globalOn('searchShortcutInvoked', () => {
     if (!details.open && !isExpanding) {
       expand()
     }
   })
 
   return () => {
-    window.removeEventListener("keydown", handleKeyDown)
-    window.removeEventListener("click", handleWindowClick)
-    details.removeEventListener("click", handleDetailsClick)
-    summary.removeEventListener("click", handleClick)
+    window.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('click', handleWindowClick)
+    details.removeEventListener('click', handleDetailsClick)
+    summary.removeEventListener('click', handleClick)
   }
 }

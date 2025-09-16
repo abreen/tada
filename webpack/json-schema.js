@@ -1,4 +1,4 @@
-const JsonSchemaCompiler = require("ajv")
+const JsonSchemaCompiler = require('ajv')
 
 const compiler = new JsonSchemaCompiler()
 

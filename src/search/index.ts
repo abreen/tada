@@ -1,12 +1,12 @@
-import MiniSearch from "minisearch"
-import options from "./options.json"
-import { applyBasePath } from "../util"
-import { trigger as globalTrigger } from "../global"
+import MiniSearch from 'minisearch'
+import options from './options.json'
+import { applyBasePath } from '../util'
+import { trigger as globalTrigger } from '../global'
 
 function updatePrefetch(href: string | null) {
   try {
     const existing = document.head.querySelector(
-      "link[data-prefetch]",
+      'link[data-prefetch]',
     ) as HTMLLinkElement | null
 
     if (!href) {
@@ -23,16 +23,16 @@ function updatePrefetch(href: string | null) {
       existing.remove()
     }
 
-    const link = document.createElement("link")
-    link.setAttribute("rel", "prefetch")
-    link.setAttribute("as", "document")
-    link.setAttribute("href", href)
-    link.setAttribute("data-prefetch", "1")
+    const link = document.createElement('link')
+    link.setAttribute('rel', 'prefetch')
+    link.setAttribute('as', 'document')
+    link.setAttribute('href', href)
+    link.setAttribute('data-prefetch', '1')
     document.head.appendChild(link)
   } catch (ignored) {}
 }
 
-const PLACEHOLDER_DISCLAIMER = " (requires JavaScript)"
+const PLACEHOLDER_DISCLAIMER = ' (requires JavaScript)'
 const QUICK_SEARCH_MAX_RESULTS = 4
 const SEARCH_MAX_RESULTS = 24
 
@@ -117,26 +117,26 @@ function renderInfo(
   maxNumResults: number,
   value: string,
 ) {
-  let span = parent.querySelector("span")
+  let span = parent.querySelector('span')
   if (!span) {
-    span = document.createElement("span")
-    span.className = "results-info"
+    span = document.createElement('span')
+    span.className = 'results-info'
     parent.appendChild(span)
   }
 
   if (numResults === 0) {
-    span.innerText = "No results"
+    span.innerText = 'No results'
   } else if (numResults <= maxNumResults) {
     if (numResults === 1) {
-      span.innerText = "One result"
+      span.innerText = 'One result'
     } else {
       span.innerText = `${numResults} results`
     }
   } else if (numResults > maxNumResults) {
     span.innerText = `Showing first ${maxNumResults} results • `
 
-    const a = document.createElement("a")
-    a.href = applyBasePath("/search.html#q=" + encodeURIComponent(value))
+    const a = document.createElement('a')
+    a.href = applyBasePath('/search.html#q=' + encodeURIComponent(value))
     a.innerText = `See all ${numResults} results`
     span.appendChild(a)
   }
@@ -150,26 +150,26 @@ function renderResults(
   currentTopResult: Result | null,
   value: string,
 ) {
-  const resultsContainer = parent.querySelector(".results") as HTMLElement
+  const resultsContainer = parent.querySelector('.results') as HTMLElement
   if (!resultsContainer) {
-    throw new Error("results element must already be in the DOM")
+    throw new Error('results element must already be in the DOM')
   }
 
-  const existingList = resultsContainer.querySelector("ol")
+  const existingList = resultsContainer.querySelector('ol')
 
-  const ol = document.createElement("ol")
+  const ol = document.createElement('ol')
 
   results.slice(0, maxNumResults).forEach(result => {
     const isTopResult = result == currentTopResult
 
-    const a = document.createElement("a")
-    a.className = `result${isTopResult ? " top-result" : ""}`
+    const a = document.createElement('a')
+    a.className = `result${isTopResult ? ' top-result' : ''}`
     a.href = result.url
 
-    const titleEl = document.createElement("div")
-    titleEl.className = "title"
+    const titleEl = document.createElement('div')
+    titleEl.className = 'title'
 
-    let badges = "",
+    let badges = '',
       title = String(result.title)
     const matches = result.title.match(/(\d+) of (\d+)/)
 
@@ -186,23 +186,23 @@ function renderResults(
     titleEl.innerHTML = `${title}${badges}`
     a.appendChild(titleEl)
 
-    const subtitle = document.createElement("div")
-    subtitle.className = "subtitle"
+    const subtitle = document.createElement('div')
+    subtitle.className = 'subtitle'
     subtitle.innerText = result.url
     a.appendChild(subtitle)
 
-    const excerpt = document.createElement("div")
-    excerpt.className = "excerpt"
+    const excerpt = document.createElement('div')
+    excerpt.className = 'excerpt'
     excerpt.innerHTML = result.excerpt
     a.appendChild(excerpt)
 
-    const li = document.createElement("li")
+    const li = document.createElement('li')
     li.appendChild(a)
     ol.appendChild(li)
   })
 
   if (!showResults) {
-    resultsContainer.classList.add("is-hidden")
+    resultsContainer.classList.add('is-hidden')
   }
 
   renderInfo(resultsContainer, results.length, maxNumResults, value)
@@ -214,35 +214,35 @@ function renderResults(
   }
 
   if (showResults) {
-    resultsContainer.classList.remove("is-hidden")
+    resultsContainer.classList.remove('is-hidden')
   }
 
-  const topResultHint = parent.querySelector(".hints .top-result-hint")
+  const topResultHint = parent.querySelector('.hints .top-result-hint')
   if (topResultHint) {
     if (currentTopResult) {
-      topResultHint.classList.add("is-highlighted")
+      topResultHint.classList.add('is-highlighted')
     } else {
-      topResultHint.classList.remove("is-highlighted")
+      topResultHint.classList.remove('is-highlighted')
     }
   }
 }
 
 function getSearchInputs(): HTMLInputElement[] {
-  return Array.from(document.querySelectorAll("input.search"))
+  return Array.from(document.querySelectorAll('input.search'))
 }
 
 function isQuickSearch(el: HTMLInputElement | null) {
   if (!el) {
     return false
   }
-  return el.classList.contains("quick-search")
+  return el.classList.contains('quick-search')
 }
 
 function isMainSearch(el: HTMLInputElement | null) {
   if (!el) {
     return false
   }
-  return el.classList.contains("main-search")
+  return el.classList.contains('main-search')
 }
 
 function activateSearchInputs(inputs: HTMLInputElement[]) {
@@ -260,7 +260,7 @@ function activateSearchInputs(inputs: HTMLInputElement[]) {
 function dispatchInputEvents(inputs: HTMLInputElement[]) {
   inputs.forEach(el => {
     if (el.value) {
-      const event = new Event("input")
+      const event = new Event('input')
       el.dispatchEvent(event)
     }
   })
@@ -274,14 +274,14 @@ export default () => {
 
   async function loadIndex() {
     try {
-      const res = await fetch(applyBasePath("/search-index.json"))
+      const res = await fetch(applyBasePath('/search-index.json'))
       if (!res.ok) {
-        console.warn("failed to fetch search index", res.statusText)
+        console.warn('failed to fetch search index', res.statusText)
         return
       }
       mini = MiniSearch.loadJSON(await res.text(), options)
     } catch (e) {
-      console.warn("failed to load search index", e)
+      console.warn('failed to load search index', e)
       searchInputs.forEach(input => {
         input.disabled = true
       })
@@ -292,10 +292,10 @@ export default () => {
 
   activateSearchInputs(searchInputs)
 
-  const onSearchPage = window.location.pathname.endsWith("/search.html")
+  const onSearchPage = window.location.pathname.endsWith('/search.html')
 
   const state: State = {
-    value: "",
+    value: '',
     showResults: true,
     maxNumResults: -1,
     results: [],
@@ -309,7 +309,7 @@ export default () => {
   const inputHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleInput(e: Event) {
       if (window.IS_DEV) {
-        console.log("input", e)
+        console.log('input', e)
       }
 
       state.value = (e.target as HTMLInputElement).value
@@ -323,15 +323,15 @@ export default () => {
     _ => {
       return function handleKeyDown(e: KeyboardEvent) {
         if (window.IS_DEV) {
-          console.log("keydown", e)
+          console.log('keydown', e)
         }
 
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
           if (state.currentTopResult) {
             window.location.href = state.currentTopResult.url
           } else if (!onSearchPage) {
             window.location.href = applyBasePath(
-              "/search.html#q=" + encodeURIComponent(state.value),
+              '/search.html#q=' + encodeURIComponent(state.value),
             )
           }
         }
@@ -343,7 +343,7 @@ export default () => {
     (_, i) => {
       return function handleBlur(e: FocusEvent) {
         if (window.IS_DEV) {
-          console.log("blur", e)
+          console.log('blur', e)
         }
 
         if (onSearchPage) {
@@ -351,7 +351,7 @@ export default () => {
         }
 
         if (
-          (e.relatedTarget as HTMLAnchorElement)?.tagName.toLowerCase() === "a"
+          (e.relatedTarget as HTMLAnchorElement)?.tagName.toLowerCase() === 'a'
         ) {
           // User clicked a search result link, don't hide results yet
           return
@@ -366,7 +366,7 @@ export default () => {
   const focusHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleFocus() {
       if (window.IS_DEV) {
-        console.log("focus")
+        console.log('focus')
       }
 
       if (state.results.length > 0) {
@@ -377,27 +377,27 @@ export default () => {
   })
 
   inputHandlers.forEach((handleInput, i) => {
-    searchInputs[i].addEventListener("input", handleInput)
+    searchInputs[i].addEventListener('input', handleInput)
   })
 
   keyDownHandlers.forEach((handleKeyDown, i) => {
-    searchInputs[i].addEventListener("keydown", handleKeyDown)
+    searchInputs[i].addEventListener('keydown', handleKeyDown)
   })
 
   blurHandlers.forEach((handleBlur, i) => {
-    searchInputs[i].addEventListener("blur", handleBlur)
+    searchInputs[i].addEventListener('blur', handleBlur)
   })
 
   focusHandlers.forEach((handleFocus, i) => {
-    searchInputs[i].addEventListener("focus", handleFocus)
+    searchInputs[i].addEventListener('focus', handleFocus)
   })
 
   function handleWindowKeyDown(e: KeyboardEvent) {
     if (window.IS_DEV) {
-      console.log("window keydown", e)
+      console.log('window keydown', e)
     }
 
-    if (e.code === "Space" && e.ctrlKey) {
+    if (e.code === 'Space' && e.ctrlKey) {
       if (document.activeElement instanceof HTMLInputElement) {
         // Already focused on an input
         return
@@ -413,32 +413,32 @@ export default () => {
       if (inputToFocus) {
         e.preventDefault()
         if (!onSearchPage) {
-          globalTrigger("searchShortcutInvoked")
+          globalTrigger('searchShortcutInvoked')
         }
         inputToFocus.focus()
       }
     }
   }
 
-  window.addEventListener("keydown", handleWindowKeyDown)
+  window.addEventListener('keydown', handleWindowKeyDown)
 
   return () => {
-    window.removeEventListener("keydown", handleWindowKeyDown)
+    window.removeEventListener('keydown', handleWindowKeyDown)
 
     focusHandlers.forEach((handleFocus, i) => {
-      searchInputs[i].removeEventListener("focus", handleFocus)
+      searchInputs[i].removeEventListener('focus', handleFocus)
     })
 
     blurHandlers.forEach((handleBlur, i) => {
-      searchInputs[i].removeEventListener("blur", handleBlur)
+      searchInputs[i].removeEventListener('blur', handleBlur)
     })
 
     keyDownHandlers.forEach((handleKeyDown, i) => {
-      searchInputs[i].removeEventListener("keydown", handleKeyDown)
+      searchInputs[i].removeEventListener('keydown', handleKeyDown)
     })
 
     inputHandlers.forEach((handleInput, i) => {
-      searchInputs[i].removeEventListener("input", handleInput)
+      searchInputs[i].removeEventListener('input', handleInput)
     })
   }
 }

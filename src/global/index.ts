@@ -1,5 +1,5 @@
-type Key = "pauseBackToTop" | "headerIsOpen"
-type Event = "pauseBackToTop" | "searchShortcutInvoked"
+type Key = 'pauseBackToTop' | 'headerIsOpen'
+type Event = 'pauseBackToTop' | 'searchShortcutInvoked'
 
 export const INITIAL_STATE = { pauseBackToTop: false, headerIsOpen: null }
 

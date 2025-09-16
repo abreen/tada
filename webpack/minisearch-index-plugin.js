@@ -1,16 +1,16 @@
-const fs = require("fs")
-const path = require("path")
-const { JSDOM } = require("jsdom")
-const MiniSearch = require("minisearch")
-const searchOptions = require("../src/search/options.json")
-const { createApplyBasePath } = require("./util")
-const { makeLogger } = require("./log")
+const fs = require('fs')
+const path = require('path')
+const { JSDOM } = require('jsdom')
+const MiniSearch = require('minisearch')
+const searchOptions = require('../src/search/options.json')
+const { createApplyBasePath } = require('./util')
+const { makeLogger } = require('./log')
 
 const log = makeLogger(__filename)
 
 class MiniSearchIndexPlugin {
   constructor(siteVariables, options = {}) {
-    if (typeof searchOptions === "object") {
+    if (typeof searchOptions === 'object') {
       options = { ...searchOptions, ...options }
     }
     this.filename = options.filename
@@ -22,7 +22,7 @@ class MiniSearchIndexPlugin {
 
   apply(compiler) {
     compiler.hooks.afterEmit.tapAsync(
-      "MiniSearchIndexPlugin",
+      'MiniSearchIndexPlugin',
       async (compilation, callback) => {
         try {
           const distDir =
@@ -39,7 +39,7 @@ class MiniSearchIndexPlugin {
               const full = path.join(dir, entry.name)
               if (entry.isDirectory()) {
                 results = results.concat(walk(full))
-              } else if (entry.isFile() && entry.name.endsWith(".html")) {
+              } else if (entry.isFile() && entry.name.endsWith('.html')) {
                 results.push(full)
               }
             })
@@ -50,11 +50,11 @@ class MiniSearchIndexPlugin {
 
           const documents = htmlFiles
             .map(file => {
-              const html = fs.readFileSync(file, "utf8")
+              const html = fs.readFileSync(file, 'utf8')
               const dom = new JSDOM(html)
               const doc = dom.window.document
 
-              const main = doc.querySelector("main")
+              const main = doc.querySelector('main')
               if (!main) {
                 log.warn`No <main> element found in ${file}, not indexing`
                 return null
@@ -66,19 +66,19 @@ class MiniSearchIndexPlugin {
                       node.nodeType === 3 // Text node
                         ? node.textContent
                         : node.nodeType === 1 // Element node
-                          ? node.textContent + " "
-                          : "",
+                          ? node.textContent + ' '
+                          : '',
                     )
-                    .join("")
-                    .replace(/\s+/g, " ")
+                    .join('')
+                    .replace(/\s+/g, ' ')
                     .trim()
-                : ""
+                : ''
 
               /*
                * Find the <title> element and clean it up
                */
-              const titleEl = doc.querySelector("title")
-              let title = (titleEl.textContent || "").trim()
+              const titleEl = doc.querySelector('title')
+              let title = (titleEl.textContent || '').trim()
 
               if (this.siteVariables.titlePostfix) {
                 const postfix = this.siteVariables.titlePostfix
@@ -87,8 +87,8 @@ class MiniSearchIndexPlugin {
                 }
               }
 
-              const rel = path.relative(distDir, file).replace(/\\/g, "/")
-              const url = this.applyBasePath("/" + rel)
+              const rel = path.relative(distDir, file).replace(/\\/g, '/')
+              const url = this.applyBasePath('/' + rel)
               return {
                 id: url,
                 title,
@@ -100,18 +100,18 @@ class MiniSearchIndexPlugin {
             .filter(doc => doc !== null)
 
           if (documents.length === 0) {
-            throw new Error("no documents found to index")
+            throw new Error('no documents found to index')
           }
 
           if (!this.fields || this.fields.length === 0) {
-            throw new Error("no fields specified for indexing")
+            throw new Error('no fields specified for indexing')
           }
 
           const miniSearch = new MiniSearch({
             fields: this.fields,
             storeFields: this.storeFields,
             tokenize: (string, _fieldName) => {
-              if (_fieldName === "content" || _fieldName === "excerpt") {
+              if (_fieldName === 'content' || _fieldName === 'excerpt') {
                 return string.split(/[\n\r\p{Z}\p{P}(){}\[\]=\-+*|]+/u)
               } else {
                 return string.split(/[\n\r\p{Z}\p{P}]+/u)
@@ -124,7 +124,7 @@ class MiniSearchIndexPlugin {
           // Serialize index to JSON and write to output
           const serialized = JSON.stringify(miniSearch.toJSON())
           const outPath = path.join(distDir, this.filename)
-          fs.writeFileSync(outPath, serialized, "utf8")
+          fs.writeFileSync(outPath, serialized, 'utf8')
 
           try {
             const source = fs.readFileSync(outPath)
