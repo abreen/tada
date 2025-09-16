@@ -29,7 +29,7 @@ function getExpandedHeight(summary: HTMLElement, content: HTMLElement) {
 
   let totalHeight = elementHeight(summary);
 
-  for (const child of content.children) {
+  for (const child of Array.from(content.children)) {
     totalHeight += elementHeight(child as HTMLElement);
   }
 
