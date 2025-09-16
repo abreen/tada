@@ -6,7 +6,7 @@ A flexible static site. Generates HTML and JS using Webpack.
 
 ## Setup
 
-You need [Node.js][node] version 22 or greater. After installing,
+You need [Node.js][node] version 23 or greater. After installing,
 verify versions with `node --version` and `npm --version`.
 
 1. In this directory, do `npm install` to fetch dependencies
