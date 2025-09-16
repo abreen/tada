@@ -53,9 +53,6 @@ for production (using `config.prod.js` and `site.prod.json`).
 
 Invoke Prettier to fix code formatting across all files.
 
-> [!TIP]
-> We intentionally use the default Pretter config, so there's no `.prettierrc` file.
-
 
 ## Building
 
