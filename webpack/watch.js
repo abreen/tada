@@ -3,7 +3,7 @@ const chokidar = require("chokidar");
 const { spawnSync, fork } = require("child_process");
 const path = require("path");
 const WebSocket = require("ws");
-const { B, R, Y } = require("./colors");
+const { B, G, R, Y } = require("./colors");
 const { makeLogger, getFlair } = require("./log");
 const { getDevSiteVariables } = require("./site-variables");
 
@@ -21,21 +21,6 @@ const DIRS_TO_WATCH = [
 
 const log = makeLogger(__filename);
 const wslog = makeLogger("WebSocket");
-
-function shortenWebpackOutput(output) {
-  const matches = output.match(/webpack ([\d.]+) compiled .+ in (\d+) ms\n/);
-  let time = matches?.[2];
-  if (time != null) {
-    time = parseFloat(time);
-    if (time >= 1000) {
-      time = (time / 1000).toFixed(2) + " s";
-    } else {
-      time = time + " ms";
-    }
-  }
-
-  log.event`${getFlair()} Webpack built the site${time != null ? ` in ${time}` : ""}`;
-}
 
 function shortenLinterOutput(output) {
   for (const match of output.matchAll(LINTER_OUTPUT_REGEX)) {
@@ -152,7 +137,7 @@ function runWebpack(initialBuild = false) {
       lastBuildFailed = false;
 
       if (SHORTEN_WEBPACK_STDOUT) {
-        shortenWebpackOutput(stdout);
+        log.event`${getFlair()}  Webpack build completed ${G`successfully`}`;
         shortenLinterOutput(stderr);
       } else {
         process.stdout.write(stdout);

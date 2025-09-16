@@ -36,7 +36,7 @@
   <body class="<%= page.template %><%= isHomePage ? ' is-homepage': '' %>">
     <header<%= isHomePage ? ' class="is-open is-frozen"': '' %>>
       <details<%= isHomePage ? ' open' : '' %>>
-        <summary>
+        <summary<%= isHomePage ? ' tabindex="-1"' : '' %>>
           <span class="title"
             ><span class="logo"><%= site.courseCode %></span>&nbsp;<%=
             site.courseTitle %></span

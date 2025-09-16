@@ -23,18 +23,31 @@
     }
 
     .hints {
-      font-size: var(--font-size-small);
-      font-style: italic;
-      color: var(--fg2-color);
       user-select: none;
       padding: 0;
       margin-top: 8px;
       display: flex;
       gap: var(--gap);
 
+      .hint {
+        font-size: var(--font-size-small);
+        font-style: italic;
+        color: var(--fg2-color);
+        transition: color 0.2s;
+
+        &.is-highlighted {
+          color: var(--fg-color);
+
+          kbd {
+            background: var(--fg-color-translucent);
+          }
+        }
+      }
+
       kbd {
         background: var(--bg-color);
         padding: 2px 4px;
+        transition: background 0.2s;
       }
     }
   }

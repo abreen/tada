@@ -216,6 +216,15 @@ function renderResults(
   if (showResults) {
     resultsContainer.classList.remove("is-hidden");
   }
+
+  const topResultHint = parent.querySelector(".hints .top-result-hint");
+  if (topResultHint) {
+    if (currentTopResult) {
+      topResultHint.classList.add("is-highlighted");
+    } else {
+      topResultHint.classList.remove("is-highlighted");
+    }
+  }
 }
 
 function getSearchInputs(): HTMLInputElement[] {
