@@ -2,104 +2,40 @@
   {
     "title": "Info",
     "links": [
-      {
-        "text": "Home",
-        "internal": "/index.html"
-      },
-      {
-        "text": "Syllabus",
-        "internal": "/syllabus.html"
-      },
-      {
-        "text": "Schedule",
-        "internal": "/schedule.html"
-      },
-      {
-        "text": "Staff",
-        "internal": "/staff.html"
-      },
-      {
-        "text": "Policies",
-        "internal": "/policies.html"
-      }
+      { "text": "Home", "internal": "/index.html" },
+      { "text": "Syllabus", "internal": "/syllabus.html" },
+      { "text": "Schedule", "internal": "/schedule.html" },
+      { "text": "Staff", "internal": "/staff.html" },
+      { "text": "Policies", "internal": "/policies.html" }
     ]
   },
   {
     "title": "Topics",
     "links": [
-      {
-        "text": "Lectures",
-        "internal": "/lectures"
-      },
-      {
-        "text": "Labs",
-        "internal": "/labs"
-      },
-      {
-        "text": "Code",
-        "internal": "/code"
-      },
-      {
-        "text": "Articles",
-        "internal": "/articles",
-        "disabled": true
-      }
+      { "text": "Lectures", "internal": "/lectures" },
+      { "text": "Labs", "internal": "/labs" },
+      { "text": "Code", "internal": "/code" },
+      { "text": "Articles", "internal": "/articles", "disabled": true }
     ]
   },
   {
     "title": "Assignments",
     "links": [
-      {
-        "text": "Problem Set 1",
-        "internal": "/ps1"
-      },
-      {
-        "text": "Problem Set 2",
-        "internal": "/ps2",
-        "disabled": true
-      },
-      {
-        "text": "Problem Set 3",
-        "internal": "/ps3",
-        "disabled": true
-      },
-      {
-        "text": "Problem Set 4",
-        "internal": "/ps4",
-        "disabled": true
-      },
-      {
-        "text": "Problem Set 5",
-        "internal": "/ps5",
-        "disabled": true
-      }
+      { "text": "Problem Set 1", "internal": "/ps1" },
+      { "text": "Problem Set 2", "internal": "/ps2", "disabled": true },
+      { "text": "Problem Set 3", "internal": "/ps3", "disabled": true },
+      { "text": "Problem Set 4", "internal": "/ps4", "disabled": true },
+      { "text": "Problem Set 5", "internal": "/ps5", "disabled": true }
     ]
   },
   {
     "title": "Links",
     "links": [
-      {
-        "text": "Resources",
-        "internal": "/resources"
-      },
-      {
-        "text": "Link 2",
-        "external": "http://example.com"
-      },
-      {
-        "text": "Link 3",
-        "external": "http://example.com"
-      },
-      {
-        "text": "Link 4",
-        "external": "http://example.com",
-        "disabled": true
-      },
-      {
-        "text": "Link 5",
-        "external": "http://example.com",
-        "disabled": true
-      }
+      { "text": "Resources", "internal": "/resources" },
+      { "text": "Link 2", "external": "http://example.com" },
+      { "text": "Link 3", "external": "http://example.com" },
+      { "text": "Link 4", "external": "http://example.com", "disabled": true },
+      { "text": "Link 5", "external": "http://example.com", "disabled": true }
     ]
   }
 ]

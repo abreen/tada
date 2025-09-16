@@ -1,12 +1,12 @@
-import { type Config } from 'prettier'
+import { type Config } from "prettier"
 
 const config: Config = {
-  trailingComma: 'all',
+  trailingComma: "all",
   semi: false,
-  arrowParens: 'avoid',
+  arrowParens: "avoid",
   bracketSpacing: true,
   bracketSameLine: true,
-  objectWrap: 'collapse',
+  objectWrap: "collapse",
 }
 
 export default config

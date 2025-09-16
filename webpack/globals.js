@@ -5,35 +5,35 @@ module.exports = function createGlobals(site, page, subPath) {
     readableDate,
     classNames,
     cx: classNames,
-  };
-};
+  }
+}
 
 function isoDate(str) {
   if (str == null || str == "") {
-    return null;
+    return null
   }
-  const date = new Date(str);
-  return date.toISOString().slice(0, 10);
+  const date = new Date(str)
+  return date.toISOString().slice(0, 10)
 }
 
 function readableDate(date) {
   if (date == null || date == "") {
-    return "";
+    return ""
   }
 
   if (!(date instanceof Date)) {
-    date = new Date(date);
+    date = new Date(date)
   }
 
-  const str = date.toISOString();
-  const year = str.slice(0, 4);
-  let month = str.slice(5, 7);
+  const str = date.toISOString()
+  const year = str.slice(0, 4)
+  let month = str.slice(5, 7)
   if (month[0] === "0") {
-    month = month[1];
+    month = month[1]
   }
-  let day = str.slice(8, 10);
+  let day = str.slice(8, 10)
   if (day[0] === "0") {
-    day = day[1];
+    day = day[1]
   }
 
   const months = {
@@ -49,17 +49,17 @@ function readableDate(date) {
     10: "October",
     11: "November",
     12: "December",
-  };
+  }
 
-  return `${months[month]} ${day}, ${year}`;
+  return `${months[month]} ${day}, ${year}`
 }
 
 function classNames(obj) {
-  const names = [];
+  const names = []
   for (const key in obj) {
     if (!!obj[key]) {
-      names.push(key);
+      names.push(key)
     }
   }
-  return names.join(" ");
+  return names.join(" ")
 }

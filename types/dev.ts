@@ -1,3 +1,3 @@
 interface Window {
-  IS_DEV: boolean | undefined;
+  IS_DEV: boolean | undefined
 }

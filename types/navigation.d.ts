@@ -1,6 +1,6 @@
 interface Navigation {
-  canGoBack: boolean;
-  canGoForward: boolean;
+  canGoBack: boolean
+  canGoForward: boolean
 }
 
-declare const navigation: Navigation;
+declare const navigation: Navigation

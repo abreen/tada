@@ -1,15 +1,15 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
-const WebpackShellPlugin = require("webpack-shell-plugin-next");
-const TerserPlugin = require("terser-webpack-plugin");
-const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util");
-const { getProdSiteVariables } = require("./site-variables");
+const path = require("path")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniSearchIndexPlugin = require("./minisearch-index-plugin")
+const WebpackShellPlugin = require("webpack-shell-plugin-next")
+const TerserPlugin = require("terser-webpack-plugin")
+const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util")
+const { getProdSiteVariables } = require("./site-variables")
 
-const distDir = getDistDir();
-const siteVariables = getProdSiteVariables();
+const distDir = getDistDir()
+const siteVariables = getProdSiteVariables()
 
 module.exports = async () => {
   return {
@@ -61,5 +61,5 @@ module.exports = async () => {
       require("./print-flair-plugin"),
     ],
     stats: "errors-only",
-  };
-};
+  }
+}

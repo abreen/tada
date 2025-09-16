@@ -1,53 +1,53 @@
-import { trigger as globalTrigger } from "../global";
-import { highlightBriefly } from "../toc";
+import { trigger as globalTrigger } from "../global"
+import { highlightBriefly } from "../toc"
 
 function getReferenceElements(parent: HTMLElement): HTMLElement[] {
-  return Array.from(parent.querySelectorAll(".footnote-ref"));
+  return Array.from(parent.querySelectorAll(".footnote-ref"))
 }
 
 function getBackreferenceElements(parent: HTMLElement): HTMLAnchorElement[] {
-  return Array.from(parent.querySelectorAll(".footnote-backref"));
+  return Array.from(parent.querySelectorAll(".footnote-backref"))
 }
 
 function getIdFromHref(href: string): string {
-  const url = new URL(href);
-  return url.hash.replace("#", "");
+  const url = new URL(href)
+  return url.hash.replace("#", "")
 }
 
 export default () => {
-  const referenceElements = getReferenceElements(document.body);
+  const referenceElements = getReferenceElements(document.body)
   if (referenceElements == null) {
-    return;
+    return
   }
 
-  referenceElements.forEach((el) => {
-    const a = el.querySelector("a");
+  referenceElements.forEach(el => {
+    const a = el.querySelector("a")
     if (a == null) {
-      return;
+      return
     }
-    const footnoteEl = document.getElementById(getIdFromHref(a.href));
+    const footnoteEl = document.getElementById(getIdFromHref(a.href))
     if (footnoteEl == null) {
-      return;
+      return
     }
 
     a.onclick = () => {
-      highlightBriefly(footnoteEl);
-    };
-  });
+      highlightBriefly(footnoteEl)
+    }
+  })
 
-  const backreferenceElements = getBackreferenceElements(document.body);
-  backreferenceElements.forEach((el) => {
-    el.onclick = (e) => {
-      const referenceEl = document.getElementById(getIdFromHref(el.href));
+  const backreferenceElements = getBackreferenceElements(document.body)
+  backreferenceElements.forEach(el => {
+    el.onclick = e => {
+      const referenceEl = document.getElementById(getIdFromHref(el.href))
       if (referenceEl == null) {
-        return;
+        return
       }
-      e.preventDefault();
-      globalTrigger("pauseBackToTop");
-      referenceEl.scrollIntoView();
-      highlightBriefly(referenceEl);
-    };
-  });
+      e.preventDefault()
+      globalTrigger("pauseBackToTop")
+      referenceEl.scrollIntoView()
+      highlightBriefly(referenceEl)
+    }
+  })
 
-  return () => {};
-};
+  return () => {}
+}

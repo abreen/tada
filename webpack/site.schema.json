@@ -10,29 +10,14 @@
     "internalDomains": {
       "type": "array",
       "default": [],
-      "items": {
-        "type": "string",
-        "pattern": "^[-.:a-zA-Z0-9]+$"
-      }
+      "items": { "type": "string", "pattern": "^[-.:a-zA-Z0-9]+$" }
     },
-    "titlePostfix": {
-      "type": "string"
-    },
-    "courseId": {
-      "type": "string"
-    },
-    "courseCode": {
-      "type": "string"
-    },
-    "courseTitle": {
-      "type": "string"
-    },
-    "fullCourseName": {
-      "type": "string"
-    },
-    "themeColor": {
-      "type": "string"
-    }
+    "titlePostfix": { "type": "string" },
+    "courseId": { "type": "string" },
+    "courseCode": { "type": "string" },
+    "courseTitle": { "type": "string" },
+    "fullCourseName": { "type": "string" },
+    "themeColor": { "type": "string" }
   },
   "additionalProperties": false
 }

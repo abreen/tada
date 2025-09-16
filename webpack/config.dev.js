@@ -1,20 +1,20 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const MiniSearchIndexPlugin = require("./minisearch-index-plugin");
-const WebpackShellPlugin = require("webpack-shell-plugin-next");
-const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util");
-const { getDevSiteVariables } = require("./site-variables");
+const path = require("path")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniSearchIndexPlugin = require("./minisearch-index-plugin")
+const WebpackShellPlugin = require("webpack-shell-plugin-next")
+const { getDistDir, createHtmlPlugins, createDefinePlugin } = require("./util")
+const { getDevSiteVariables } = require("./site-variables")
 
-const distDir = getDistDir();
-const siteVariables = getDevSiteVariables();
+const distDir = getDistDir()
+const siteVariables = getDevSiteVariables()
 
-const entrypoints = { index: "./src/index.ts" };
+const entrypoints = { index: "./src/index.ts" }
 
 // for testing bfcache (WebSockets client-side turns off bfcache)
 if (!process.env.NO_RELOAD) {
-  entrypoints.reload = "./webpack/watch-reload-client.js";
+  entrypoints.reload = "./webpack/watch-reload-client.js"
 }
 
 module.exports = async () => {
@@ -63,5 +63,5 @@ module.exports = async () => {
       require("./print-flair-plugin"),
     ],
     stats: "errors-only",
-  };
-};
+  }
+}

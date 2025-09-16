@@ -1,6 +1,3 @@
 interface Window {
-  siteVariables: {
-    base: string;
-    basePath: string;
-  };
+  siteVariables: { base: string; basePath: string }
 }

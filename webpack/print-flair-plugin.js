@@ -1,9 +1,9 @@
-const { getFlair } = require("./log");
+const { getFlair } = require("./log")
 
 module.exports = {
-  apply: (compiler) => {
+  apply: compiler => {
     compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
-      console.log(getFlair());
-    });
+      console.log(getFlair())
+    })
   },
-};
+}
