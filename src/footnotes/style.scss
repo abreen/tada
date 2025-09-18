@@ -14,12 +14,9 @@
 sup.footnote-ref a,
 .footnotes li,
 .footnotes .footnote-backref {
-  font-weight: 600;
-  color: var(--fg-color);
 }
 
 .footnotes p {
-  font-weight: 400;
   margin: 0;
 }
 
@@ -29,43 +26,38 @@ sup.footnote-ref a,
 }
 
 sup.footnote-ref {
-  vertical-align: text-bottom;
-}
-
-sup.footnote-ref a {
-  padding: 0 2px;
-}
-
-sup.footnote-ref a:hover::after {
-  content: '⇣';
+  vertical-align: super;
 }
 
 sup.footnote-ref a,
 .footnotes .footnote-backref {
   border: none;
   display: inline-block;
-  min-width: 30px;
-  text-align: center;
-  background: var(--bg2-color);
-  border-radius: var(--border-radius);
   user-select: none;
-  margin-left: 3px;
 }
 
 .footnotes .footnote-backref {
 }
 
+sup.footnote-ref a {
+  color: var(--fg2-color);
+  border-radius: var(--border-radius);
+}
+
+@media (hover: hover) {
+  sup.footnote-ref a:hover {
+    color: var(--fg-color);
+  }
+}
+
 @media (hover: hover) {
   sup.footnote-ref a:hover,
   .footnotes .footnote-backref:hover {
-    color: var(--bg-color);
-    background: var(--fg2-color);
   }
 }
 
 sup.footnote-ref a:active,
 .footnotes .footnote-backref:active {
-  background: var(--fg-color);
 }
 
 sup.footnote-ref a.is-highlighted,

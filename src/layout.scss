@@ -3,7 +3,7 @@ html {
   padding: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
-  scrollbar-color: var(--fg2-color) transparent;
+  scrollbar-color: var(--fg-color) transparent;
   overscroll-behavior: none;
   scroll-behavior: smooth;
 }
@@ -80,6 +80,7 @@ body.default main table {
     position: fixed;
     overflow-y: auto;
     scroll-behavior: smooth;
+    scrollbar-color: var(--fg2-color) transparent;
     height: calc(100vh - var(--header-collapsed-height) - var(--gap));
     padding: 0 0 var(--gap) var(--gap);
   }
