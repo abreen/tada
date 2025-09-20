@@ -218,7 +218,7 @@ header details .search-container {
     pointer-events: all;
 
     margin: 0 auto;
-    width: calc(100vw - 2 * var(--header-gap));
+    width: calc(100% - var(--header-gap) * 2);
 
     @media (min-width: 1000px) {
       width: 80%;
