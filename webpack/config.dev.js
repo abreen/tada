@@ -20,7 +20,7 @@ if (!process.env.NO_RELOAD) {
 module.exports = async () => {
   return {
     mode: 'development',
-    devtool: 'eval-source-map',
+    devtool: 'inline-source-map',
     entry: entrypoints,
     output: {
       path: distDir,

@@ -4,6 +4,8 @@ import { trigger as globalTrigger } from '../global'
 const LATENCY_MS = 50
 const MIN_PAGE_HEIGHT_PX = 1000
 const MIN_HEADING_COVERAGE_PERCENT = 0.7
+
+// Must match CSS animation duration
 const HIGHLIGHT_DURATION_MS = 3000
 
 type HeadingLevel = '1' | '2' | '3' | '4' | '5' | '6'
@@ -48,10 +50,7 @@ function scrollIfNeeded(element: HTMLElement, options?: any) {
 
 let highlightEl: HTMLElement | null = null
 let highlightTimeout: number | null = null
-export function highlightBriefly(
-  element: HTMLElement,
-  duration: number = HIGHLIGHT_DURATION_MS,
-) {
+export function highlightBriefly(element: HTMLElement) {
   if (highlightEl && highlightEl != element) {
     if (highlightTimeout) {
       window.clearTimeout(highlightTimeout)
@@ -64,7 +63,7 @@ export function highlightBriefly(
   highlightTimeout = window.setTimeout(() => {
     removeClass(element, 'is-highlighted')
     highlightTimeout = null
-  }, duration)
+  }, HIGHLIGHT_DURATION_MS)
 }
 
 function renderTable(
@@ -84,28 +83,41 @@ function renderTable(
     const li = document.createElement('li')
 
     function makeClickHandler(
-      element: HTMLElement,
-      preventDefault: boolean,
+      scrollElement: HTMLElement,
+      highlightElement: HTMLElement,
+      isAlert: boolean,
     ): (e: MouseEvent) => void {
       return (e: MouseEvent) => {
         globalTrigger('pauseBackToTop')
-        if (preventDefault) {
+        if (isAlert) {
           e.preventDefault()
-          element.scrollIntoView()
+          scrollElement.scrollIntoView({ block: 'center' })
         }
-        highlightBriefly(element)
+        // otherwise, let browser scroll to link target
+        highlightBriefly(highlightElement)
       }
     }
 
-    const handlerNormal = makeClickHandler(headingsAndAlerts[i], false)
-    const handlerPreventDefault = makeClickHandler(headingsAndAlerts[i], true)
+    const handlerHeading = makeClickHandler(
+      headingsAndAlerts[i],
+      headingsAndAlerts[i],
+      false,
+    )
+    const alertTitle = headingsAndAlerts[i].querySelector(
+      '.title',
+    ) as HTMLElement | null
+    const handlerAlert = makeClickHandler(
+      alertTitle || headingsAndAlerts[i],
+      headingsAndAlerts[i],
+      true,
+    )
 
     if ('level' in item) {
       const heading = item as Heading
       const a = document.createElement('a')
       a.innerText = heading.text
       a.href = `#${heading.id}`
-      a.onclick = handlerNormal
+      a.onclick = handlerHeading
 
       rendered.push(a)
 
@@ -117,7 +129,7 @@ function renderTable(
       const a = document.createElement('a')
       a.innerText = alert.title
       a.href = '#'
-      a.onclick = handlerPreventDefault
+      a.onclick = handlerAlert
 
       rendered.push(a)
 

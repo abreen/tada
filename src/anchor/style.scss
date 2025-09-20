@@ -1,18 +1,36 @@
 .heading-anchor {
   margin-left: 8px;
-  border-radius: var(--border-radius);
-  border: none;
-  font-size: larger;
-  color: var(--fg-color-translucent);
+  font-size: 24px;
   user-select: none;
+  opacity: 0;
+  color: var(--fg-color-translucent);
+  transition:
+    opacity 0.15s,
+    color 0.15s;
+}
+
+h1:hover .heading-anchor,
+h2:hover .heading-anchor,
+h3:hover .heading-anchor,
+h4:hover .heading-anchor,
+h5:hover .heading-anchor,
+h6:hover .heading-anchor,
+h1.is-highlighted .heading-anchor,
+h2.is-highlighted .heading-anchor,
+h3.is-highlighted .heading-anchor,
+h4.is-highlighted .heading-anchor,
+h5.is-highlighted .heading-anchor,
+h6.is-highlighted .heading-anchor {
+  opacity: 1;
 }
 
 @media (hover: hover) {
   .heading-anchor:hover {
+    border: none;
     color: var(--fg2-color);
   }
 }
 
 .heading-anchor:active {
-  color: var(--fg-color);
+  color: var(--link-active-color);
 }

@@ -1,7 +1,10 @@
 :root {
   --header-collapsed-height: 45px;
   --header-gap: 16px;
-  --theme-color: #1ca591;
+  --theme-hue: 351deg;
+  --theme-color: hsl(var(--theme-hue) 70% 40%);
+  // Used for animations
+  --theme-color-transparent: hsl(var(--theme-hue) 70% 40% / 0%);
   --header-font-size: 18px;
 }
 
@@ -72,6 +75,14 @@ header nav a {
   display: block;
   height: 100%;
   width: 100%;
+  color: var(--fg-color);
+}
+
+@media (hover: hover) {
+  header nav a:hover {
+    border: none;
+    color: var(--fg2-color);
+  }
 }
 
 header nav a.external {
@@ -114,7 +125,7 @@ header details {
 
 header summary::after {
   height: 24px;
-  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><polyline points='6 9 12 15 18 9' stroke='hsl(20deg 5% 8%)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><polyline points='6 9 12 15 18 9' stroke='hsl(20deg 8% 8%)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   display: inline-block;
   transition: transform 0.5s ease;
   vertical-align: text-bottom;
@@ -127,7 +138,7 @@ header.is-frozen summary::after {
 
 @media (prefers-color-scheme: dark) {
   header summary::after {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><polyline points='6 9 12 15 18 9' stroke='hsl(20deg 10% 90%)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><polyline points='6 9 12 15 18 9' stroke='hsl(20deg 20% 90%)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   }
 }
 

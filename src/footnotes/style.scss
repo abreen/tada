@@ -11,11 +11,6 @@
   font-size: larger;
 }
 
-sup.footnote-ref a,
-.footnotes li,
-.footnotes .footnote-backref {
-}
-
 .footnotes p {
   margin: 0;
 }
@@ -34,33 +29,4 @@ sup.footnote-ref a,
   border: none;
   display: inline-block;
   user-select: none;
-}
-
-.footnotes .footnote-backref {
-}
-
-sup.footnote-ref a {
-  color: var(--fg2-color);
-  border-radius: var(--border-radius);
-}
-
-@media (hover: hover) {
-  sup.footnote-ref a:hover {
-    color: var(--fg-color);
-  }
-}
-
-@media (hover: hover) {
-  sup.footnote-ref a:hover,
-  .footnotes .footnote-backref:hover {
-  }
-}
-
-sup.footnote-ref a:active,
-.footnotes .footnote-backref:active {
-}
-
-sup.footnote-ref a.is-highlighted,
-.footnotes li.is-highlighted {
-  outline: var(--highlight-border-width) solid var(--theme-color);
 }

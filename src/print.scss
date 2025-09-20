@@ -52,21 +52,21 @@
     break-inside: avoid;
   }
 
-  .footnotes .footnote-backref {
-    display: none;
-  }
-
   sup.footnote-ref a {
     display: inline;
     background: none;
     min-width: 0;
     padding: 0;
     margin: 0;
+    border: none;
+    text-decoration: none;
+  }
+
+  .footnote-backref {
+    display: none !important;
   }
 
   .alert {
-    background: none;
-    border: 2px solid #000;
     break-inside: avoid;
   }
 
@@ -86,5 +86,21 @@
 
   section {
     border: 2px solid lightgray;
+  }
+
+  .heading-anchor {
+    display: none;
+  }
+
+  .back-to-top {
+    display: none;
+  }
+
+  a.external::after {
+    display: none;
+  }
+
+  a {
+    text-decoration: underline;
   }
 }

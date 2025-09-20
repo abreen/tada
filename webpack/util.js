@@ -346,9 +346,10 @@ function createMarkdown(siteVariables) {
           if (title) {
             html += `<p class="title">${markdown.utils.escapeHtml(curlyQuote(title))}</p>\n`
           }
+          html += '<div class="content">\n'
           return html
         } else {
-          return '</div>\n'
+          return '</div></div>\n'
         }
       },
     })

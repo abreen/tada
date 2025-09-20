@@ -30,24 +30,18 @@
   border: none;
   display: block;
   padding: 3px 3px;
+  color: var(--fg-color);
 }
 
 @media (hover: hover) {
-  .toc ul li:hover {
+  .toc ul li:hover,
+  .toc ul li:hover a {
     color: var(--fg2-color);
   }
 }
 
 .toc ul li.current {
   list-style-type: disclosure-closed;
-}
-
-.toc ul li.level1,
-.toc ul li.level2,
-.toc ul li.level3,
-.toc ul li.level4,
-.toc ul li.level5,
-.toc ul li.level6 {
 }
 
 .toc ul li.level1 {
@@ -83,53 +77,107 @@
 }
 
 .toc ul li.alert-item.warning a::before {
-  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  // fg-color
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 8% 8%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 8% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 8% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
   vertical-align: sub;
   margin-right: 4px;
 }
 
 @media (prefers-color-scheme: dark) {
   .toc ul li.alert-item.warning a::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    // fg2-color
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 90%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) {
   .toc ul li.alert-item.warning:hover a::before,
   .toc ul li.alert-item.warning a:hover::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    // fg2-color
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) and (prefers-color-scheme: dark) {
   .toc ul li.alert-item.warning:hover a::before,
   .toc ul li.alert-item.warning a:hover::before {
+    // fg2-color
     content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><polygon points='12,2 22,20 2,20' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linejoin='round'/><line x1='12' y1='9' x2='12' y2='13' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='16' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 .toc ul li.alert-item.note a::before {
-  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 5% 8%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 5% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  // fg-color
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 8% 8%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 8% 8%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 8% 8%)' stroke-width='2' stroke-linecap='round'/></svg>");
   vertical-align: sub;
   margin-right: 4px;
 }
 
 @media (prefers-color-scheme: dark) {
   .toc ul li.alert-item.note a::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 10% 90%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 10% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    // fg-color
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 20% 90%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 20% 90%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 20% 90%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) {
   .toc ul li.alert-item.note:hover a::before,
   .toc ul li.alert-item.note a:hover::before {
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 13% 66%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 13% 66%)' stroke-width='2' stroke-linecap='round'/></svg>");
+    // fg2-color
+    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
   }
 }
 
 @media (hover: hover) and (prefers-color-scheme: dark) {
   .toc ul li.alert-item.note:hover a::before,
   .toc ul li.alert-item.note a:hover::before {
+    // fg2-color
     content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='hsl(20deg 20% 60%)' stroke-width='2'/><line x1='12' y1='10' x2='12' y2='16' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/><line x1='12' y1='7' x2='12' y2='7' stroke='hsl(20deg 20% 60%)' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.alert.is-highlighted,
+sup.footnote-ref a,
+.footnotes li {
+  will-change: outline;
+  outline: 0 solid var(--theme-color);
+  outline-offset: 4px;
+  border-radius: var(--border-radius);
+}
+
+h1.is-highlighted,
+h2.is-highlighted,
+h3.is-highlighted,
+h4.is-highlighted,
+h5.is-highlighted,
+h6.is-highlighted,
+.alert.is-highlighted,
+sup.footnote-ref a.is-highlighted,
+.footnotes li.is-highlighted {
+  animation: grow-and-shrink 3s ease 1;
+}
+
+@keyframes grow-and-shrink {
+  0% {
+    outline-width: 0px;
+    outline-color: var(--theme-color-transparent);
+  }
+  12.5% {
+    outline-width: 6px;
+    outline-color: var(--theme-color);
+  }
+  87.5% {
+    outline-width: 6px;
+    outline-color: var(--theme-color);
+  }
+  100% {
+    outline-width: 0px;
+    outline-color: var(--theme-color-transparent);
   }
 }
