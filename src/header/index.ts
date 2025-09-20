@@ -119,37 +119,44 @@ export default () => {
     }
   }
 
-  function handleClick(e: MouseEvent) {
-    if (!(e?.target instanceof HTMLElement)) {
-      return
+  function handleSummaryClick(e: MouseEvent) {
+    if (window.IS_DEV) {
+      console.log('header summary clicked')
     }
-
-    // User clicked search results, not the <details> element
-    if (e.target.closest('.search-container') != null) {
-      return
-    }
-
-    e.preventDefault()
-    e.stopPropagation()
 
     if (header.classList.contains('is-frozen')) {
+      e.preventDefault()
       return
     }
 
     if (isCollapsing || !details.open) {
       expand()
+      e.preventDefault()
+      e.stopPropagation()
     } else if (isExpanding || details.open) {
       collapse()
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
-  summary.addEventListener('click', handleClick)
+  summary.addEventListener('click', handleSummaryClick)
 
   function handleDetailsClick(e: MouseEvent) {
-    e.stopPropagation()
+    if (window.IS_DEV) {
+      console.log('header details clicked')
+    }
+
+    if (details.open && !isCollapsing) {
+      e.stopPropagation()
+    }
   }
   details.addEventListener('click', handleDetailsClick)
 
   function handleWindowClick() {
+    if (window.IS_DEV) {
+      console.log('window click in header')
+    }
+
     if (header.classList.contains('is-frozen')) {
       return
     }
@@ -160,7 +167,7 @@ export default () => {
   }
   window.addEventListener('click', handleWindowClick)
 
-  function handleKeyDown(e: KeyboardEvent) {
+  function handleWindowKeyDown(e: KeyboardEvent) {
     if (header.classList.contains('is-frozen')) {
       return
     }
@@ -169,7 +176,7 @@ export default () => {
       collapse()
     }
   }
-  window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('keydown', handleWindowKeyDown)
 
   globalOn('searchShortcutInvoked', () => {
     if (!details.open && !isExpanding) {
@@ -178,9 +185,9 @@ export default () => {
   })
 
   return () => {
-    window.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('keydown', handleWindowKeyDown)
     window.removeEventListener('click', handleWindowClick)
     details.removeEventListener('click', handleDetailsClick)
-    summary.removeEventListener('click', handleClick)
+    summary.removeEventListener('click', handleSummaryClick)
   }
 }

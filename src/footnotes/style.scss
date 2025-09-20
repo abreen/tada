@@ -1,3 +1,5 @@
+@import '../_mixins.scss';
+
 .footnotes {
   margin-top: calc(var(--thematic-break-margin) / 2);
   padding-top: var(--gap);
@@ -6,7 +8,7 @@
 }
 
 .footnotes .title {
-  user-select: none;
+  @include user-select(none);
   font-weight: 700;
   font-size: larger;
 }
@@ -28,5 +30,5 @@ sup.footnote-ref a,
 .footnotes .footnote-backref {
   border: none;
   display: inline-block;
-  user-select: none;
+  @include user-select(none);
 }

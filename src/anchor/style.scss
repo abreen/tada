@@ -1,7 +1,9 @@
+@import '../_mixins.scss';
+
 .heading-anchor {
+  @include user-select(none);
   margin-left: 8px;
   font-size: 24px;
-  user-select: none;
   opacity: 0;
   color: var(--fg-color-translucent);
   transition:

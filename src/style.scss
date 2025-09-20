@@ -1,3 +1,5 @@
+@import './_mixins.scss';
+
 :root {
   --tint-hue: 20deg;
 
@@ -11,6 +13,8 @@
   --bg-color: hsl(var(--tint-hue) 28% 96%);
   --bg-color-translucent: hsl(var(--tint-hue) 30% 95% / 66%);
   --bg2-color: hsl(var(--tint-hue) 20% 90%);
+
+  --box-shadow: 0 2px 9px hsl(var(--tint-hue) 85% 10% / 25%);
 
   --font: 'Source Serif 4', Times, 'Times New Roman', Georgia, serif;
   --system-font:
@@ -29,7 +33,7 @@
 
   --box-border-width: 5px;
 
-  --border-radius: 5px;
+  --border-radius: 12px;
   --control-border-width: 2px;
   --label-border-width: 2px;
   --focus-border-width: 3px;
@@ -64,6 +68,8 @@
     --bg-color: hsl(var(--tint-hue) 10% 10%);
     --bg-color-translucent: hsl(var(--tint-hue) 15% 10% / 66%);
     --bg2-color: hsl(var(--tint-hue) 20% 16%);
+
+    --box-shadow: 0 2px 9px hsl(var(--tint-hue) 30% 6% / 80%);
 
     --link-text-color: hsl(var(--theme-hue) 85% 55%);
     --link-active-color: #fff;
@@ -109,7 +115,7 @@ h6 {
 aside.author {
   display: inline-block;
   font-size: var(--font-size-smaller);
-  user-select: none;
+  @include user-select(none);
 }
 
 aside.author figure {
@@ -133,7 +139,7 @@ aside.author abbr {
 
 .publish-date {
   font-size: var(--font-size-smaller);
-  user-select: none;
+  @include user-select(none);
 }
 
 .info {
@@ -272,7 +278,7 @@ details .content > div:last-child {
 details summary {
   font-weight: 600;
   cursor: pointer;
-  user-select: none;
+  @include user-select(none);
   padding: var(--details-padding);
 }
 
@@ -491,7 +497,7 @@ i.warning {
 
 .alert .title {
   font-weight: 800;
-  user-select: none;
+  @include user-select(none);
   padding-left: 52px;
   margin: 0;
   border-bottom: 2px solid var(--fg2-color);

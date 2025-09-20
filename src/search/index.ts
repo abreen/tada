@@ -3,35 +3,6 @@ import options from './options.json'
 import { applyBasePath } from '../util'
 import { trigger as globalTrigger } from '../global'
 
-function updatePrefetch(href: string | null) {
-  try {
-    const existing = document.head.querySelector(
-      'link[data-prefetch]',
-    ) as HTMLLinkElement | null
-
-    if (!href) {
-      if (existing) {
-        existing.remove()
-      }
-      return
-    }
-
-    if (existing) {
-      if (existing.href === href) {
-        return
-      }
-      existing.remove()
-    }
-
-    const link = document.createElement('link')
-    link.setAttribute('rel', 'prefetch')
-    link.setAttribute('as', 'document')
-    link.setAttribute('href', href)
-    link.setAttribute('data-prefetch', '1')
-    document.head.appendChild(link)
-  } catch (ignored) {}
-}
-
 const PLACEHOLDER_DISCLAIMER = ' (requires JavaScript)'
 const QUICK_SEARCH_MAX_RESULTS = 4
 const SEARCH_MAX_RESULTS = 24
@@ -56,6 +27,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
   if (!state.value) {
     state.results = []
     state.currentTopResult = null
+    highlightTopResultHint(container, false)
     renderResults(
       container,
       state.results,
@@ -117,7 +89,7 @@ function renderInfo(
   maxNumResults: number,
   value: string,
 ) {
-  let span = parent.querySelector('span')
+  let span = parent.querySelector('.results-info') as HTMLSpanElement | null
   if (!span) {
     span = document.createElement('span')
     span.className = 'results-info'
@@ -150,12 +122,12 @@ function renderResults(
   currentTopResult: Result | null,
   value: string,
 ) {
-  const resultsContainer = parent.querySelector('.results') as HTMLElement
+  const resultsContainer = parent.querySelector(
+    '.results-container',
+  ) as HTMLElement
   if (!resultsContainer) {
     throw new Error('results element must already be in the DOM')
   }
-
-  const existingList = resultsContainer.querySelector('ol')
 
   const ol = document.createElement('ol')
 
@@ -165,6 +137,7 @@ function renderResults(
     const a = document.createElement('a')
     a.className = `result${isTopResult ? ' top-result' : ''}`
     a.href = result.url
+    a.tabIndex = 0
 
     const titleEl = document.createElement('div')
     titleEl.className = 'title'
@@ -174,13 +147,13 @@ function renderResults(
     const matches = result.title.match(/(\d+) of (\d+)/)
 
     if (matches) {
-      badges += `<span class="badge page-number">${matches[1]}/${matches[2]}</span>`
+      badges += `<span class="badge page-number">page ${matches[1]}</span>`
       if (matches.index) {
         title = title.slice(0, matches.index - 2)
       }
     }
     if (isTopResult) {
-      badges += '<span class="badge top-result">Top result</span>'
+      badges += '<span class="badge top-result">Top&nbsp;result</span>'
     }
 
     titleEl.innerHTML = `${title}${badges}`
@@ -201,25 +174,38 @@ function renderResults(
     ol.appendChild(li)
   })
 
+  const existingDiv = resultsContainer.querySelector('.results')
+
   if (!showResults) {
     resultsContainer.classList.add('is-hidden')
+    resultsContainer.setAttribute('aria-hidden', 'true')
   }
 
-  renderInfo(resultsContainer, results.length, maxNumResults, value)
+  const div = document.createElement('div')
+  div.className = 'results'
 
-  if (existingList) {
-    existingList.replaceWith(ol)
+  renderInfo(div, results.length, maxNumResults, value)
+
+  div.appendChild(ol)
+
+  if (existingDiv) {
+    existingDiv.replaceWith(div)
   } else {
-    resultsContainer.appendChild(ol)
+    resultsContainer.appendChild(div)
   }
 
   if (showResults) {
     resultsContainer.classList.remove('is-hidden')
+    resultsContainer.setAttribute('aria-hidden', 'false')
   }
 
+  highlightTopResultHint(parent, currentTopResult != null)
+}
+
+function highlightTopResultHint(parent: HTMLElement, highlight: boolean) {
   const topResultHint = parent.querySelector('.hints .top-result-hint')
   if (topResultHint) {
-    if (currentTopResult) {
+    if (highlight) {
       topResultHint.classList.add('is-highlighted')
     } else {
       topResultHint.classList.remove('is-highlighted')
@@ -296,7 +282,7 @@ export default () => {
 
   const state: State = {
     value: '',
-    showResults: true,
+    showResults: false,
     maxNumResults: -1,
     results: [],
     currentTopResult: null,
@@ -313,8 +299,6 @@ export default () => {
       }
 
       state.value = (e.target as HTMLInputElement).value
-      state.showResults = true
-
       update(containers[i], isQuickSearch(searchInputs[i]), state)
     }
   })
@@ -339,40 +323,25 @@ export default () => {
     },
   )
 
-  const blurHandlers: Array<(e: FocusEvent) => void> = searchInputs.map(
-    (_, i) => {
-      return function handleBlur(e: FocusEvent) {
-        if (window.IS_DEV) {
-          console.log('blur', e)
-        }
-
-        if (onSearchPage) {
-          return
-        }
-
-        if (
-          (e.relatedTarget as HTMLAnchorElement)?.tagName.toLowerCase() === 'a'
-        ) {
-          // User clicked a search result link, don't hide results yet
-          return
-        }
-
-        state.showResults = false
-        update(containers[i], isQuickSearch(searchInputs[i]), state)
-      }
-    },
-  )
-
   const focusHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleFocus() {
       if (window.IS_DEV) {
         console.log('focus')
       }
 
-      if (state.results.length > 0) {
-        state.showResults = true
-        update(containers[i], isQuickSearch(searchInputs[i]), state)
+      state.showResults = true
+      update(containers[i], isQuickSearch(searchInputs[i]), state)
+    }
+  })
+
+  const clickHandlers: Array<(e: MouseEvent) => void> = searchInputs.map(_ => {
+    return function handleClick(e: MouseEvent) {
+      if (window.IS_DEV) {
+        console.log('search input click', e)
       }
+
+      // Prevent this click from closing the header <details> element
+      e.stopPropagation()
     }
   })
 
@@ -384,17 +353,27 @@ export default () => {
     searchInputs[i].addEventListener('keydown', handleKeyDown)
   })
 
-  blurHandlers.forEach((handleBlur, i) => {
-    searchInputs[i].addEventListener('blur', handleBlur)
-  })
-
   focusHandlers.forEach((handleFocus, i) => {
     searchInputs[i].addEventListener('focus', handleFocus)
+  })
+
+  clickHandlers.forEach((handleClick, i) => {
+    searchInputs[i].addEventListener('click', handleClick)
   })
 
   function handleWindowKeyDown(e: KeyboardEvent) {
     if (window.IS_DEV) {
       console.log('window keydown', e)
+    }
+
+    if (e.key === 'Escape') {
+      state.value = ''
+      state.showResults = false
+      containers.forEach((container, i) => {
+        searchInputs[i].blur()
+        update(container, isQuickSearch(searchInputs[i]), state)
+      })
+      return
     }
 
     if (e.code === 'Space' && e.ctrlKey) {
@@ -422,15 +401,31 @@ export default () => {
 
   window.addEventListener('keydown', handleWindowKeyDown)
 
+  function handleWindowClick(e: MouseEvent) {
+    if (window.IS_DEV) {
+      console.log('window click', e)
+    }
+
+    state.showResults = false
+    containers.forEach((container, i) => {
+      update(container, isQuickSearch(searchInputs[i]), state)
+      highlightTopResultHint(container, false)
+    })
+  }
+
+  window.addEventListener('click', handleWindowClick)
+
   return () => {
+    window.removeEventListener('click', handleWindowClick)
+
     window.removeEventListener('keydown', handleWindowKeyDown)
+
+    clickHandlers.forEach((handleClick, i) => {
+      searchInputs[i].removeEventListener('click', handleClick)
+    })
 
     focusHandlers.forEach((handleFocus, i) => {
       searchInputs[i].removeEventListener('focus', handleFocus)
-    })
-
-    blurHandlers.forEach((handleBlur, i) => {
-      searchInputs[i].removeEventListener('blur', handleBlur)
     })
 
     keyDownHandlers.forEach((handleKeyDown, i) => {
@@ -441,4 +436,33 @@ export default () => {
       searchInputs[i].removeEventListener('input', handleInput)
     })
   }
+}
+
+function updatePrefetch(href: string | null) {
+  try {
+    const existing = document.head.querySelector(
+      'link[data-prefetch]',
+    ) as HTMLLinkElement | null
+
+    if (!href) {
+      if (existing) {
+        existing.remove()
+      }
+      return
+    }
+
+    if (existing) {
+      if (existing.href === href) {
+        return
+      }
+      existing.remove()
+    }
+
+    const link = document.createElement('link')
+    link.setAttribute('rel', 'prefetch')
+    link.setAttribute('as', 'document')
+    link.setAttribute('href', href)
+    link.setAttribute('data-prefetch', '1')
+    document.head.appendChild(link)
+  } catch (ignored) {}
 }

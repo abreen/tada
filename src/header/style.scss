@@ -1,3 +1,5 @@
+@import '../_mixins.scss';
+
 :root {
   --header-collapsed-height: 45px;
   --header-gap: 16px;
@@ -49,7 +51,7 @@ header.is-frozen details summary {
 
 header nav {
   display: grid;
-  user-select: none;
+  @include user-select(none);
   gap: var(--header-gap);
   grid-template-columns: 1fr 1fr;
   margin: var(--header-gap);
@@ -107,7 +109,7 @@ header nav a.disabled {
 
 header nav div > p {
   font-style: italic;
-  user-select: none;
+  @include user-select(none);
   border-bottom: 1px solid var(--fg-color);
   padding-bottom: 2px;
 }
@@ -197,24 +199,41 @@ header details .search-container {
     margin: 0 auto;
   }
 
-  .results {
+  .results-container {
     position: absolute;
-    top: calc(-1 * var(--header-collapsed-height));
-    z-index: 5000;
-    width: calc(100vw - var(--gap) - 6px);
+    top: -40px;
+    left: 0;
+    width: calc(100vw - var(--header-gap));
+    z-index: 1000;
+    pointer-events: none;
 
-    background: Canvas;
-    color: CanvasText;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-    opacity: 1;
-    transform: translateY(0);
-
-    &.is-hidden {
+    &.is-hidden .results {
       opacity: 0;
       transform: translateY(-3px);
       pointer-events: none;
     }
+  }
+
+  .results {
+    pointer-events: all;
+
+    margin: 0 auto;
+    width: calc(100vw - 2 * var(--header-gap));
+
+    @media (min-width: 1000px) {
+      width: 80%;
+      max-width: 1000px;
+    }
+
+    background: Canvas;
+    color: CanvasText;
+    border: var(--control-border-width) solid var(--fg2-color);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+
+    opacity: 1;
+    transform: translateY(0);
 
     @media (prefers-reduced-motion: no-preference) {
       & {

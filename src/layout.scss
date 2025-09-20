@@ -1,3 +1,5 @@
+@import './_mixins.scss';
+
 html {
   margin: 0;
   padding: 0;
@@ -180,7 +182,7 @@ body.search {
   .beta-warning {
     text-align: center;
     font-size: var(--font-size-small);
-    user-select: none;
+    @include user-select(none);
   }
 
   .search-container {

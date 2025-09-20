@@ -1,3 +1,5 @@
+@import '../_mixins.scss';
+
 .search-container {
   display: flex;
   flex-direction: column;
@@ -23,7 +25,7 @@
     }
 
     .hints {
-      user-select: none;
+      @include user-select(none);
       padding: 0;
       margin-top: 8px;
       display: flex;
@@ -56,7 +58,7 @@
     min-height: 80px;
     opacity: 1;
     transform: translateY(0);
-    user-select: none;
+    @include user-select(none);
 
     &.is-hidden {
       opacity: 0;
@@ -67,14 +69,14 @@
     .results-info {
       display: block;
       color: var(--fg2-color);
-      user-select: none;
+      @include user-select(none);
       padding: 8px 0 8px 8px;
       font-weight: 700;
     }
 
     .no-results {
       display: inline-block;
-      user-select: none;
+      @include user-select(none);
       margin: 0 auto;
     }
 
@@ -99,7 +101,7 @@
       color: var(--fg-color);
 
       &.top-result {
-        border: 2px dotted var(--fg2-color);
+        background: var(--bg2-color);
       }
     }
 
@@ -120,19 +122,17 @@
       font-weight: 500;
 
       .badge {
-        font-family: var(--mono-font);
         font-size: var(--font-size-small);
+        font-weight: 400;
+        font-style: italic;
         padding: 2px 6px;
         background: var(--bg2-color);
         vertical-align: text-top;
+        margin-left: 8px;
 
         &.top-result {
-          position: absolute;
-          right: 0;
-        }
-
-        &.page-number {
-          margin-left: 8px;
+          background: var(--theme-color);
+          color: #fff;
         }
       }
     }

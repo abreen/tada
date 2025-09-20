@@ -1,3 +1,5 @@
+@import './_mixins.scss';
+
 .pdf-container {
   margin-top: var(--gap);
 }
@@ -21,7 +23,7 @@ body.pdf h1 {
 body.pdf .tools {
   text-align: center;
   font-size: smaller;
-  user-select: none;
+  @include user-select(none);
 }
 
 body.pdf .tools i.warning::before {

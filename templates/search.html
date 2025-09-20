@@ -11,31 +11,46 @@
       autocomplete="off"
       name="search-string"
       placeholder="Search (requires JavaScript)"
-      autofocus
     />
     <%= render('_hints.html') %>
   </div>
-  <div class="results is-hidden"></div>
+  <div class="results-container is-hidden" role="region" aria-live="polite" aria-hidden="true"></div>
 </div>
 
 <script>
   const el = document.querySelector("input.search.main-search");
-  function setFromHash() {
+
+  function setInputValueFromHash() {
     if (window.location.hash.startsWith("#q=")) {
       const query = decodeURIComponent(
         window.location.hash.substring(3)
       ).trim();
       if (query) {
         el.value = query;
-        el.dispatchEvent(new Event("input"));
       }
     }
   }
-  setFromHash();
+
+  function setHashFromInputValue() {
+    const value = el.value.trim();
+    if (value) {
+      window.location.hash = "#q=" + encodeURIComponent(value);
+    }
+  }
+  
+  window.addEventListener("load", function () {
+    setInputValueFromHash();
+    el.focus();
+  });
 
   window.addEventListener("hashchange", function () {
-    setFromHash();
+    setInputValueFromHash();
   });
+
+  el.addEventListener("input", function () {
+    setHashFromInputValue();
+  });
+
   el.addEventListener("search", function () {
     const value = el.value.trim();
     if (value) {
