@@ -93,7 +93,7 @@ function renderInfo(
   if (!span) {
     span = document.createElement('span')
     span.className = 'results-info'
-    parent.appendChild(span)
+    parent.insertBefore(span, parent.firstChild)
   }
 
   if (numResults === 0) {
@@ -174,29 +174,25 @@ function renderResults(
     ol.appendChild(li)
   })
 
-  const existingDiv = resultsContainer.querySelector('.results')
-
   if (!showResults) {
     resultsContainer.classList.add('is-hidden')
     resultsContainer.setAttribute('aria-hidden', 'true')
   }
 
-  const div = document.createElement('div')
-  div.className = 'results'
+  let div = resultsContainer.querySelector('.results') as HTMLElement | null
+  if (div) {
+    div.replaceChildren(ol)
+  } else {
+    div = document.createElement('div')
+    div.className = 'results'
+    div.appendChild(ol)
+  }
 
   renderInfo(div, results.length, maxNumResults, value)
 
-  div.appendChild(ol)
-
-  if (existingDiv) {
-    existingDiv.replaceWith(div)
-  } else {
-    resultsContainer.appendChild(div)
-  }
-
   if (showResults) {
-    resultsContainer.classList.remove('is-hidden')
     resultsContainer.setAttribute('aria-hidden', 'false')
+    resultsContainer.classList.remove('is-hidden')
   }
 
   highlightTopResultHint(parent, currentTopResult != null)
@@ -282,7 +278,7 @@ export default () => {
 
   const state: State = {
     value: '',
-    showResults: false,
+    showResults: onSearchPage ? true : false,
     maxNumResults: -1,
     results: [],
     currentTopResult: null,

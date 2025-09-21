@@ -54,17 +54,17 @@
     }
   }
 
+  .results-container.is-hidden .results {
+    opacity: 0;
+    transform: translateY(-16px);
+    pointer-events: none;
+  }
+
   .results {
     min-height: 80px;
     opacity: 1;
     transform: translateY(0);
     @include user-select(none);
-
-    &.is-hidden {
-      opacity: 0;
-      transform: translateY(-16px);
-      pointer-events: none;
-    }
 
     .results-info {
       display: block;

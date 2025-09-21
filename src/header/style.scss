@@ -202,14 +202,15 @@ header details .search-container {
   .results-container {
     position: absolute;
     top: -40px;
-    left: 0;
-    width: calc(100vw - var(--header-gap));
+    left: var(--header-gap);
+    width: calc(100vw - 2 * var(--header-gap) - var(--details-padding));
+
     z-index: 1000;
     pointer-events: none;
 
     &.is-hidden .results {
       opacity: 0;
-      transform: translateY(-3px);
+      transform: translateY(-50px) scaleX(50%);
       pointer-events: none;
     }
   }
@@ -218,12 +219,7 @@ header details .search-container {
     pointer-events: all;
 
     margin: 0 auto;
-    width: calc(100% - var(--header-gap) * 2);
-
-    @media (min-width: 1000px) {
-      width: 80%;
-      max-width: 1000px;
-    }
+    max-width: 768px;
 
     background: Canvas;
     color: CanvasText;
@@ -233,7 +229,7 @@ header details .search-container {
     overflow: hidden;
 
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scaleX(100%);
 
     @media (prefers-reduced-motion: no-preference) {
       & {

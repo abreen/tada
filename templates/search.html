@@ -10,53 +10,56 @@
       tabindex="0"
       autocomplete="off"
       name="search-string"
-      placeholder="Search (requires JavaScript)"
-    />
+      placeholder="Search (requires JavaScript)" />
     <%= render('_hints.html') %>
   </div>
-  <div class="results-container is-hidden" role="region" aria-live="polite" aria-hidden="true"></div>
+  <div
+    class="results-container"
+    role="region"
+    aria-live="polite"
+    aria-hidden="false">
+    <div class="results"></div>
+  </div>
 </div>
 
 <script>
-  const el = document.querySelector("input.search.main-search");
+  const el = document.querySelector('input.search.main-search')
 
   function setInputValueFromHash() {
-    if (window.location.hash.startsWith("#q=")) {
-      const query = decodeURIComponent(
-        window.location.hash.substring(3)
-      ).trim();
+    if (window.location.hash.startsWith('#q=')) {
+      const query = decodeURIComponent(window.location.hash.substring(3)).trim()
       if (query) {
-        el.value = query;
+        el.value = query
       }
     }
   }
 
   function setHashFromInputValue() {
-    const value = el.value.trim();
+    const value = el.value.trim()
     if (value) {
-      window.location.hash = "#q=" + encodeURIComponent(value);
+      window.location.hash = '#q=' + encodeURIComponent(value)
     }
   }
-  
-  window.addEventListener("load", function () {
-    setInputValueFromHash();
-    el.focus();
-  });
 
-  window.addEventListener("hashchange", function () {
-    setInputValueFromHash();
-  });
+  window.addEventListener('load', function () {
+    setInputValueFromHash()
+    el.focus()
+  })
 
-  el.addEventListener("input", function () {
-    setHashFromInputValue();
-  });
+  window.addEventListener('hashchange', function () {
+    setInputValueFromHash()
+  })
 
-  el.addEventListener("search", function () {
-    const value = el.value.trim();
+  el.addEventListener('input', function () {
+    setHashFromInputValue()
+  })
+
+  el.addEventListener('search', function () {
+    const value = el.value.trim()
     if (value) {
-      window.location.hash = "#q=" + encodeURIComponent(value);
+      window.location.hash = '#q=' + encodeURIComponent(value)
     }
-  });
+  })
 </script>
 
 <%= render('_bottom.html') %>
