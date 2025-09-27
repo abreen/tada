@@ -6,6 +6,7 @@ import { trigger as globalTrigger } from '../global'
 const PLACEHOLDER_DISCLAIMER = ' (requires JavaScript)'
 const QUICK_SEARCH_MAX_RESULTS = 4
 const SEARCH_MAX_RESULTS = 24
+const ACTIVE_RESULT_PREFETCH_DELAY_MS = 350
 
 let mini: MiniSearch | null = null
 
@@ -17,6 +18,8 @@ type State = {
   maxNumResults: number
   results: Result[]
   currentTopResult: Result | null
+  // -1 means no active selection
+  activeIndex: number
 }
 
 function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
@@ -27,6 +30,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
   if (!state.value) {
     state.results = []
     state.currentTopResult = null
+    state.activeIndex = -1
     highlightTopResultHint(container, false)
     renderResults(
       container,
@@ -35,6 +39,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
       state.maxNumResults,
       state.currentTopResult,
       state.value,
+      state.activeIndex,
     )
     return
   }
@@ -80,6 +85,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
     state.maxNumResults,
     state.currentTopResult,
     state.value,
+    state.activeIndex,
   )
 }
 
@@ -121,6 +127,7 @@ function renderResults(
   maxNumResults: number,
   currentTopResult: Result | null,
   value: string,
+  activeIndex: number,
 ) {
   const resultsContainer = parent.querySelector(
     '.results-container',
@@ -131,13 +138,23 @@ function renderResults(
 
   const ol = document.createElement('ol')
 
-  results.slice(0, maxNumResults).forEach(result => {
+  results.slice(0, maxNumResults).forEach((result, i) => {
     const isTopResult = result == currentTopResult
+    const isActive = i === activeIndex
 
     const a = document.createElement('a')
-    a.className = `result${isTopResult ? ' top-result' : ''}`
+    a.className = `result${isTopResult ? ' top-result' : ''}${
+      isActive ? ' is-active' : ''
+    }`
     a.href = result.url
-    a.tabIndex = 0
+    if (activeIndex < 0) {
+      a.tabIndex = 0
+    } else if (isActive) {
+      a.tabIndex = 0
+      a.setAttribute('aria-current', 'true')
+    } else {
+      a.tabIndex = -1
+    }
 
     const titleEl = document.createElement('div')
     titleEl.className = 'title'
@@ -195,7 +212,7 @@ function renderResults(
     resultsContainer.classList.remove('is-hidden')
   }
 
-  highlightTopResultHint(parent, currentTopResult != null)
+  highlightTopResultHint(parent, currentTopResult != null && activeIndex === -1)
 }
 
 function highlightTopResultHint(parent: HTMLElement, highlight: boolean) {
@@ -282,6 +299,7 @@ export default () => {
     maxNumResults: -1,
     results: [],
     currentTopResult: null,
+    activeIndex: -1,
   }
 
   const containers = searchInputs.map(
@@ -295,25 +313,108 @@ export default () => {
       }
 
       state.value = (e.target as HTMLInputElement).value
+      // Reset active selection on input change
+      state.activeIndex = -1
       update(containers[i], isQuickSearch(searchInputs[i]), state)
     }
   })
 
   const keyDownHandlers: Array<(e: KeyboardEvent) => void> = searchInputs.map(
-    _ => {
+    (_, i) => {
       return function handleKeyDown(e: KeyboardEvent) {
         if (window.IS_DEV) {
           console.log('keydown', e)
         }
 
+        if (!state.showResults) {
+          return
+        }
+
         if (e.key === 'Enter') {
+          // Prefer navigating to the active selection if present
+          const hasActive =
+            state.activeIndex >= 0 && state.activeIndex < state.results.length
+          if (hasActive) {
+            const selected = state.results[state.activeIndex]
+            if (selected) {
+              window.location.href = selected.url
+              return
+            }
+          }
           if (state.currentTopResult) {
             window.location.href = state.currentTopResult.url
+            return
           } else if (!onSearchPage) {
             window.location.href = applyBasePath(
               '/search.html#q=' + encodeURIComponent(state.value),
             )
+            return
           }
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          if (window.IS_DEV) {
+            console.log('searchbox arrow up/down')
+          }
+          e.preventDefault()
+          e.stopPropagation()
+
+          const total = state.results.length
+          const visibleCount =
+            state.maxNumResults < 0
+              ? total
+              : Math.min(total, state.maxNumResults)
+          if (visibleCount === 0) {
+            return
+          }
+
+          const currentIndex = state.activeIndex
+          let nextIndex = 0
+          if (e.key === 'ArrowUp') {
+            if (currentIndex === -1) {
+              nextIndex = visibleCount - 1
+            } else if (currentIndex === 0) {
+              // Stay on the first result
+              nextIndex = 0
+            } else {
+              nextIndex = currentIndex - 1
+            }
+          } else if (e.key === 'ArrowDown') {
+            if (currentIndex === -1) {
+              // Initialize to 0 on first ArrowDown
+              nextIndex = 0
+            } else if (currentIndex === visibleCount - 1) {
+              // Stay on the last result
+              nextIndex = visibleCount - 1
+            } else {
+              nextIndex = currentIndex + 1
+            }
+          }
+
+          state.activeIndex = nextIndex
+
+          function prefetchActive(index: number) {
+            if (state.activeIndex < 0) {
+              return
+            }
+
+            const active = state.results[state.activeIndex]
+            if (active) {
+              updatePrefetch(active.url)
+            }
+          }
+
+          // After a short delay, prefetch the currently active selection
+          setTimeout(prefetchActive, ACTIVE_RESULT_PREFETCH_DELAY_MS)
+
+          // Re-render to reflect the active selection without re-running the search
+          renderResults(
+            containers[i],
+            state.results,
+            state.showResults,
+            state.maxNumResults,
+            state.currentTopResult,
+            state.value,
+            state.activeIndex,
+          )
         }
       }
     },
@@ -365,6 +466,7 @@ export default () => {
     if (e.key === 'Escape') {
       state.value = ''
       state.showResults = false
+      state.activeIndex = -1
       containers.forEach((container, i) => {
         searchInputs[i].blur()
         update(container, isQuickSearch(searchInputs[i]), state)
@@ -403,6 +505,7 @@ export default () => {
     }
 
     state.showResults = false
+    state.activeIndex = -1
     containers.forEach((container, i) => {
       update(container, isQuickSearch(searchInputs[i]), state)
       highlightTopResultHint(container, false)

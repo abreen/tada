@@ -50,12 +50,22 @@ export default () => {
   const summary: HTMLElement = getElement(details, 'summary')
   const content: HTMLElement = getElement(details, '.content')
 
+  let main: HTMLElement | null
+  try {
+    main = getElement(document, 'main')
+  } catch {
+    // ignored
+  }
+
   let isExpanding = false,
     isCollapsing = false,
     animation: Animation | null
 
   function finish(isOpen: boolean) {
     details.open = isOpen
+    if (main) {
+      main.inert = isOpen
+    }
     if (isOpen) {
       header.classList.add('is-open')
     } else {
@@ -104,6 +114,9 @@ export default () => {
 
     details.style.height = `${details.offsetHeight}px`
     details.open = true
+    if (main) {
+      main.inert = true
+    }
 
     const expandedHeight = getExpandedHeight(summary, content)
 
