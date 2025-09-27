@@ -37,13 +37,12 @@ function getElementTop(element: HTMLElement): number {
 }
 
 function scrollIfNeeded(element: HTMLElement, options?: any) {
-  const parent = element.parentElement
-  if (parent == null) {
+  const container = getContainer(document.body)
+  if (container == null) {
     return
   }
-
-  const parentHasScrollbar = parent.scrollHeight > parent.clientHeight
-  if (parentHasScrollbar) {
+  const containerHasScrollbar = container.scrollHeight > container.clientHeight
+  if (containerHasScrollbar) {
     element.scrollIntoView(options)
   }
 }
@@ -76,7 +75,7 @@ function renderTable(
   }
 
   const rendered: HTMLAnchorElement[] = []
-  let lastHeadingLevel = '1'
+  let lastHeadingLevel = 1
   const ul = document.createElement('ul')
 
   items.forEach((item, i) => {
@@ -122,7 +121,7 @@ function renderTable(
       rendered.push(a)
 
       li.className = `heading-item level${heading.level}`
-      lastHeadingLevel = heading.level
+      lastHeadingLevel = parseInt(heading.level)
       li.appendChild(a)
     } else {
       const alert = item as Alert
@@ -133,7 +132,7 @@ function renderTable(
 
       rendered.push(a)
 
-      li.className = `alert-item level${lastHeadingLevel} ${alert.type}`
+      li.className = `alert-item level${lastHeadingLevel + 1} ${alert.type}`
       li.appendChild(a)
     }
 
@@ -198,18 +197,24 @@ function alertToTableItem(el: HTMLElement): Alert | null {
   return null
 }
 
-function shouldBeActive(headings: HTMLHeadingElement[] | null) {
+function shouldBeActive(
+  content: HTMLElement | null,
+  headings: HTMLHeadingElement[] | null,
+) {
   if (headings == null || headings.length < 2) {
     return false
   }
 
-  const pageHeight = document.body.clientHeight || -1
-
-  if (pageHeight < MIN_PAGE_HEIGHT_PX) {
+  if (content == null) {
     return false
   }
 
-  // Do the headings cover enough of the page?
+  const height = content.scrollHeight || -1
+  if (height < MIN_PAGE_HEIGHT_PX) {
+    return false
+  }
+
+  // Do the headings cover enough of the content?
   let minY = Infinity,
     maxY = -Infinity
   for (const h of headings) {
@@ -223,14 +228,15 @@ function shouldBeActive(headings: HTMLHeadingElement[] | null) {
   }
 
   const delta = Math.abs(maxY - minY)
-  return 1 - (pageHeight - delta) / pageHeight > MIN_HEADING_COVERAGE_PERCENT
+  return 1 - (height - delta) / height > MIN_HEADING_COVERAGE_PERCENT
 }
 
 export default () => {
   // guaranteed to be in order from document
   const headings = getHeadingElements(document.body)
+  const main: HTMLElement | null = document.querySelector('main')
 
-  if (!shouldBeActive(headings)) {
+  if (!shouldBeActive(main, headings)) {
     return
   } else {
     document.body.classList.add('toc-is-active')

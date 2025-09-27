@@ -2,11 +2,6 @@
 
 :root {
   --header-collapsed-height: 45px;
-  --header-gap: 16px;
-  --theme-hue: 351deg;
-  --theme-color: hsl(var(--theme-hue) 70% 40%);
-  // Used for animations
-  --theme-color-transparent: hsl(var(--theme-hue) 70% 40% / 0%);
   --header-font-size: 18px;
 }
 
@@ -52,9 +47,9 @@ header.is-frozen details summary {
 header nav {
   display: grid;
   @include user-select(none);
-  gap: var(--header-gap);
+  gap: var(--gap);
   grid-template-columns: 1fr 1fr;
-  margin: var(--header-gap);
+  margin: var(--gap);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -202,8 +197,8 @@ header details .search-container {
   .results-container {
     position: absolute;
     top: -40px;
-    left: var(--header-gap);
-    width: calc(100vw - 2 * var(--header-gap) - var(--details-padding));
+    left: var(--gap);
+    width: calc(100vw - 2 * var(--gap) - var(--details-padding));
 
     z-index: 1000;
     pointer-events: none;

@@ -1,11 +1,20 @@
 @import './_mixins.scss';
 
 :root {
+  --theme-hue: 351deg;
+  --theme-color: hsl(var(--theme-hue) 70% 40%);
+  // Used for animations
+  --theme-color-transparent: hsl(var(--theme-hue) 70% 40% / 0%);
+
+  // Background & foreground color tint
   --tint-hue: 20deg;
 
   --link-border-color: hsl(var(--theme-hue) 80% 40%);
   --link-text-color: hsl(var(--theme-hue) 80% 35%);
   --link-active-color: #000;
+
+  --warning-bg-color: hsl(0, 100%, 73%);
+  --note-bg-color: hsl(190, 82%, 55%);
 
   --fg-color: hsl(var(--tint-hue) 8% 8%);
   --fg-color-translucent: hsl(20deg 70% 8% / 33%);
@@ -33,11 +42,11 @@
 
   --box-border-width: 5px;
 
+  --gap: 12px;
   --border-radius: 12px;
   --control-border-width: 2px;
   --label-border-width: 2px;
   --focus-border-width: 3px;
-  --gap: 32px;
   --table-padding: 12px;
   --details-padding: 12px;
   --alert-padding: 12px;
@@ -73,6 +82,9 @@
 
     --link-text-color: hsl(var(--theme-hue) 85% 55%);
     --link-active-color: #fff;
+
+    --warning-bg-color: hsl(0, 56%, 53%);
+    --note-bg-color: hsl(190, 87%, 37%);
   }
 }
 
@@ -147,7 +159,7 @@ aside.author abbr {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--fg-color);
-  margin-bottom: var(--gap);
+  margin-bottom: 32px;
 }
 
 body {
@@ -157,13 +169,6 @@ body {
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   line-height: var(--line-height);
-
-  background: linear-gradient(
-    to bottom,
-    var(--bg2-color) 0%,
-    var(--bg2-color) calc(2 * var(--header-collapsed-height)),
-    var(--bg-color) 400px
-  );
 
   @media (prefers-color-scheme: dark) {
     & {
@@ -177,11 +182,6 @@ body {
 html {
   scrollbar-color: var(--fg2-color) var(--bg-color);
   background: var(--bg-color);
-}
-
-footer.site-footer {
-  height: 4rem;
-  margin-top: var(--gap);
 }
 
 a {
@@ -441,11 +441,12 @@ tbody tr:last-child td {
 }
 
 .alert {
+  background: var(--bg2-color);
+  border-radius: var(--border-radius);
   margin-bottom: 1rem;
   position: relative;
   font-weight: 500;
   margin-bottom: 2rem;
-  border-radius: var(--border-radius);
 }
 
 .alert .title,
@@ -455,7 +456,7 @@ tbody tr:last-child td {
 
 .alert .title::before {
   left: 10px;
-  top: 10px;
+  top: 12px;
   position: absolute;
   width: 32px;
   height: 32px;
@@ -496,11 +497,20 @@ i.warning {
 }
 
 .alert .title {
-  font-weight: 800;
+  font-weight: 600;
   @include user-select(none);
   padding-left: 52px;
   margin: 0;
-  border-bottom: 2px solid var(--fg2-color);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  background: var(--fg2-color);
+}
+
+.alert.warning .title {
+  background: var(--warning-bg-color);
+}
+
+.alert.note .title {
+  background: var(--note-bg-color);
 }
 
 .alert > p:last-child {
@@ -508,12 +518,18 @@ i.warning {
 }
 
 section {
-  background: linear-gradient(
-    65deg,
-    var(--bg2-color) 0%,
-    var(--bg-color) 80%,
-    var(--bg-color) 100%
-  );
+  background: var(--bg2-color);
+  padding: calc(3 * var(--gap)) calc(2 * var(--gap));
+  margin-bottom: 1rem;
+
+  .alert {
+    background: var(--bg-color);
+  }
+}
+
+section h2:first-child {
+  font-style: italic;
+  font-weight: 600;
 }
 
 section > p:last-child,

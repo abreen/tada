@@ -33,6 +33,11 @@ h6.is-highlighted .heading-anchor {
   }
 }
 
+.heading-anchor:focus, .heading-anchor:focus-visible {
+  opacity: 1;
+  color: var(--fg2-color);
+}
+
 .heading-anchor:active {
   color: var(--link-active-color);
 }
