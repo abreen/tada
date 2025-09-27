@@ -65,10 +65,7 @@ body.default > .container {
   }
 }
 
-@media (min-width: 1100px) and (max-width: 1499px) {
-  body.default > .container {
-  }
-
+@media (min-width: 1100px) {
   body.default.toc-is-active > .container {
     display: grid;
     width: 100vw;
@@ -119,33 +116,6 @@ body.default > .container {
       grid-column: 2;
     }
   }
-}
-
-@media (min-width: 1500px) {
-  // body.default > .container {
-  //   grid-template-columns: 1fr 280px 1000px 1fr;
-  //   grid-template-rows: 1fr;
-  // }
-  // body.default main {
-  //   overflow-x: visible;
-  // }
-
-  // body.default .title-and-info,
-  // body.default main {
-  //   grid-column: 3;
-  // }
-
-  // body.default .title-and-info {
-  //   grid-row: 1;
-  // }
-
-  // body.default main {
-  //   grid-row: 2;
-  // }
-
-  // body.default nav.toc {
-  //   grid-column: 2;
-  // }
 }
 
 body.pdf .pdf-container {
