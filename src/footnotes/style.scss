@@ -19,11 +19,14 @@
 
 .footnotes li {
   margin-bottom: 8px;
-  border-radius: var(--border-radius);
 }
 
 sup.footnote-ref {
   vertical-align: super;
+}
+
+.footnotes li, sup.footnote-ref a {
+  border-radius: var(--border-radius);
 }
 
 sup.footnote-ref a,

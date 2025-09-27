@@ -142,17 +142,11 @@ h3,
 h4,
 h5,
 h6 {
-  will-change: border-left, padding-left;
-  border-left: 0px solid var(--theme-color);
-  padding-left: 0px;
-}
-
-.alert.is-highlighted,
-sup.footnote-ref a,
-.footnotes li {
-  will-change: outline;
-  outline: 0 solid var(--theme-color);
-  outline-offset: 2px;
+  will-change: color, background-color, padding;
+  color: var(--fg-color);
+  background-color: transparent;
+  display: inline-block;
+  padding: 6px 0px;
 }
 
 h1.is-highlighted,
@@ -161,16 +155,45 @@ h3.is-highlighted,
 h4.is-highlighted,
 h5.is-highlighted,
 h6.is-highlighted {
-  animation: grow-and-shrink-border 3s ease 1;
+  animation: highlight-heading 3s ease 1;
 }
 
-.alert.is-highlighted,
+@keyframes highlight-heading {
+  0% {
+    padding: 6px 0px;
+    color: var(--fg-color);
+    background-color: var(--theme-color-transparent);
+  }
+  12.5% {
+    padding: 6px 12px 6px 6px;
+    color: #fff;
+    background-color: var(--theme-color);
+  }
+  87.5% {
+    padding: 6px 12px 6px 6px;
+    color: #fff;
+    background-color: var(--theme-color);
+  }
+  100% {
+    padding: 6px 0px;
+    color: var(--fg-color);
+    background-color: var(--theme-color-transparent);
+  }
+}
+
+sup.footnote-ref a,
+.footnotes li {
+  will-change: outline;
+  outline: 0 solid var(--theme-color-transparent);
+  outline-offset: 2px;
+}
+
 sup.footnote-ref a.is-highlighted,
 .footnotes li.is-highlighted {
-  animation: grow-and-shrink 3s ease 1;
+  animation: highlight-footnote 3s ease 1;
 }
 
-@keyframes grow-and-shrink {
+@keyframes highlight-footnote {
   0% {
     outline-width: 0px;
     outline-color: var(--theme-color-transparent);
@@ -189,29 +212,31 @@ sup.footnote-ref a.is-highlighted,
   }
 }
 
-@keyframes grow-and-shrink-border {
+
+.alert {
+  will-change: outline;
+  outline: 0 solid var(--theme-color);
+}
+
+.alert.is-highlighted {
+  animation: highlight-alert 3s ease 1;
+}
+
+@keyframes highlight-alert {
   0% {
-    border-left-width: 0px;
-    border-left-color: var(--theme-color-transparent);
-    padding-left: 0px;
-    color: inherit;
+    outline-width: 0px;
+    outline-color: var(--theme-color-transparent);
   }
   12.5% {
-    border-left-width: 1rem;
-    border-left-color: var(--theme-color);
-    padding-left: 1rem;
-    color: var(--theme-color);
+    outline-width: 4px;
+    outline-color: var(--theme-color);
   }
   87.5% {
-    border-left-width: 1rem;
-    border-left-color: var(--theme-color);
-    padding-left: 1rem;
-    color: var(--theme-color);
+    outline-width: 4px;
+    outline-color: var(--theme-color);
   }
   100% {
-    border-left-width: 0px;
-    border-left-color: var(--theme-color-transparent);
-    padding-left: 0px;
-    color: inherit;
+    outline-width: 0px;
+    outline-color: var(--theme-color-transparent);
   }
 }

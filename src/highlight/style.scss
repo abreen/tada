@@ -12,8 +12,7 @@ pre {
   overflow-x: auto;
   padding: var(--gap);
   scrollbar-color: var(--fg-color) transparent;
-  border-radius: var(--border-radius);
-  border: 2px solid var(--fg-color);
+  margin-bottom: 2rem;
 }
 
 pre::-webkit-scrollbar-thumb {

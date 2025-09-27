@@ -158,8 +158,6 @@ aside.author abbr {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--fg-color);
-  margin-bottom: 32px;
 }
 
 body {
@@ -445,7 +443,6 @@ tbody tr:last-child td {
   border-radius: var(--border-radius);
   margin-bottom: 1rem;
   position: relative;
-  font-weight: 500;
   margin-bottom: 2rem;
 }
 
@@ -518,9 +515,16 @@ i.warning {
 }
 
 section {
-  background: var(--bg2-color);
+  // background: var(--bg2-color);
+  background: linear-gradient(
+    0deg,
+    var(--bg-color) 0,
+    var(--bg2-color) 3rem,
+    var(--bg2-color) calc(100% - 3rem),
+    var(--bg-color) 100%
+  );
   padding: calc(3 * var(--gap)) calc(2 * var(--gap));
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 
   .alert {
     background: var(--bg-color);
