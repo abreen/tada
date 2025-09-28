@@ -24,7 +24,7 @@ h5,
 h6,
 .alert,
 a {
-  scroll-margin-top: calc(var(--header-collapsed-height) + 32px);
+  scroll-margin-top: var(--header-collapsed-height);
 }
 
 body > .container {
