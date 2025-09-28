@@ -1,6 +1,6 @@
 import MiniSearch from 'minisearch'
 import options from './options.json'
-import { applyBasePath } from '../util'
+import { getElement, applyBasePath } from '../util'
 import { trigger as globalTrigger } from '../global'
 
 const PLACEHOLDER_DISCLAIMER = ' (requires JavaScript)'
@@ -22,7 +22,12 @@ type State = {
   activeIndex: number
 }
 
-function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
+function update(
+  input: HTMLInputElement,
+  container: HTMLElement,
+  isQuickSearch: boolean,
+  state: State,
+) {
   if (mini == null) {
     return
   }
@@ -33,6 +38,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
     state.activeIndex = -1
     highlightTopResultHint(container, false)
     renderResults(
+      input,
       container,
       state.results,
       state.showResults,
@@ -79,6 +85,7 @@ function update(container: HTMLElement, isQuickSearch: boolean, state: State) {
   state.results = results
 
   renderResults(
+    input,
     container,
     state.results,
     state.showResults,
@@ -121,6 +128,7 @@ function renderInfo(
 }
 
 function renderResults(
+  input: HTMLInputElement,
   parent: HTMLElement,
   results: Result[],
   showResults: boolean,
@@ -129,12 +137,7 @@ function renderResults(
   value: string,
   activeIndex: number,
 ) {
-  const resultsContainer = parent.querySelector(
-    '.results-container',
-  ) as HTMLElement
-  if (!resultsContainer) {
-    throw new Error('results element must already be in the DOM')
-  }
+  const resultsContainer = getElement(parent, '.results-container')
 
   const ol = document.createElement('ol')
 
@@ -143,20 +146,32 @@ function renderResults(
     const isActive = i === activeIndex
 
     const a = document.createElement('a')
-    a.className = `result${isTopResult ? ' top-result' : ''}${
-      isActive ? ' is-active' : ''
-    }`
+    a.id = `result-${i}`
+    a.role = 'option'
+    a.setAttribute('aria-labelledby', `title-${i}`)
+    a.setAttribute('data-index', String(i))
+
+    const classes = ['result']
+    if (isTopResult) {
+      classes.push('top-result')
+    }
+    if (isActive) {
+      classes.push('is-active')
+    }
+    a.className = classes.join(' ')
+
     a.href = result.url
     if (activeIndex < 0) {
       a.tabIndex = 0
     } else if (isActive) {
       a.tabIndex = 0
-      a.setAttribute('aria-current', 'true')
+      a.setAttribute('aria-selected', 'true')
     } else {
       a.tabIndex = -1
     }
 
     const titleEl = document.createElement('div')
+    titleEl.id = `title-${i}`
     titleEl.className = 'title'
 
     let badges = '',
@@ -210,6 +225,23 @@ function renderResults(
   if (showResults) {
     resultsContainer.setAttribute('aria-hidden', 'false')
     resultsContainer.classList.remove('is-hidden')
+  }
+
+  input.setAttribute('aria-expanded', String(showResults))
+
+  const listboxId = `${input.name}-results`
+  input.setAttribute('aria-controls', listboxId)
+  ol.id = listboxId
+  ol.role = 'listbox'
+
+  if (activeIndex !== -1) {
+    ol.setAttribute('aria-activedescendant', `result-${activeIndex}`)
+  }
+
+  if (currentTopResult != null) {
+    input.setAttribute('aria-keyshortcuts', 'Enter')
+  } else {
+    input.removeAttribute('aria-keyshortcuts')
   }
 
   highlightTopResultHint(parent, currentTopResult != null && activeIndex === -1)
@@ -305,55 +337,73 @@ export default () => {
   const containers = searchInputs.map(
     el => el.parentElement?.parentElement as HTMLDivElement,
   )
+  const resultsContainers = containers.map(el =>
+    getElement(el, '.results-container'),
+  )
 
   const inputHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleInput(e: Event) {
-      if (window.IS_DEV) {
-        console.log('input', e)
+      const value = (e.target as HTMLInputElement).value
+      if (value === state.value) {
+        return
       }
 
-      state.value = (e.target as HTMLInputElement).value
-      // Reset active selection on input change
+      if (window.IS_DEV) {
+        console.info(`searchbox input value: "${value}"`)
+      }
+
+      state.value = value
       state.activeIndex = -1
-      update(containers[i], isQuickSearch(searchInputs[i]), state)
+      searchInputs[i].removeAttribute('aria-activedescendant')
+      update(
+        searchInputs[i],
+        containers[i],
+        isQuickSearch(searchInputs[i]),
+        state,
+      )
     }
   })
 
   const keyDownHandlers: Array<(e: KeyboardEvent) => void> = searchInputs.map(
     (_, i) => {
       return function handleKeyDown(e: KeyboardEvent) {
-        if (window.IS_DEV) {
-          console.log('keydown', e)
-        }
-
         if (!state.showResults) {
           return
         }
 
         if (e.key === 'Enter') {
-          // Prefer navigating to the active selection if present
           const hasActive =
             state.activeIndex >= 0 && state.activeIndex < state.results.length
           if (hasActive) {
             const selected = state.results[state.activeIndex]
             if (selected) {
+              if (window.IS_DEV) {
+                console.info('navigating to active index due to Enter press')
+              }
+
               window.location.href = selected.url
               return
             }
           }
+
           if (state.currentTopResult) {
+            if (window.IS_DEV) {
+              console.info('navigating to top result due to Enter press')
+            }
+
             window.location.href = state.currentTopResult.url
             return
           } else if (!onSearchPage) {
+            if (window.IS_DEV) {
+              console.info('navigating to search page due to Enter press')
+            }
+
             window.location.href = applyBasePath(
               '/search.html#q=' + encodeURIComponent(state.value),
             )
             return
           }
         } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-          if (window.IS_DEV) {
-            console.log('searchbox arrow up/down')
-          }
           e.preventDefault()
           e.stopPropagation()
 
@@ -389,6 +439,12 @@ export default () => {
             }
           }
 
+          if (window.IS_DEV) {
+            console.info(
+              `changing active index to ${nextIndex} due to arrow keys`,
+            )
+          }
+
           state.activeIndex = nextIndex
 
           function prefetchActive(index: number) {
@@ -407,6 +463,7 @@ export default () => {
 
           // Re-render to reflect the active selection without re-running the search
           renderResults(
+            searchInputs[i],
             containers[i],
             state.results,
             state.showResults,
@@ -422,25 +479,73 @@ export default () => {
 
   const focusHandlers: Array<(e: Event) => void> = searchInputs.map((_, i) => {
     return function handleFocus() {
-      if (window.IS_DEV) {
-        console.log('focus')
-      }
+      if (!state.showResults) {
+        if (window.IS_DEV) {
+          console.info('showing search results due to searchbox focus')
+        }
 
-      state.showResults = true
-      update(containers[i], isQuickSearch(searchInputs[i]), state)
+        state.showResults = true
+        update(
+          searchInputs[i],
+          containers[i],
+          isQuickSearch(searchInputs[i]),
+          state,
+        )
+      }
     }
   })
 
   const clickHandlers: Array<(e: MouseEvent) => void> = searchInputs.map(_ => {
     return function handleClick(e: MouseEvent) {
-      if (window.IS_DEV) {
-        console.log('search input click', e)
-      }
-
       // Prevent this click from closing the header <details> element
       e.stopPropagation()
     }
   })
+
+  const mouseOverResultsHandlers: Array<(e: MouseEvent) => void> =
+    resultsContainers.map((_, i) => {
+      return function handleMouseOver(e: MouseEvent) {
+        if (!state.showResults) {
+          return
+        }
+
+        const result = (e.target as HTMLElement).closest('.result')
+        if (!result) {
+          return
+        }
+
+        const resultIndexStr = result.getAttribute('data-index')
+        const resultIndex = resultIndexStr ? parseInt(resultIndexStr) : -1
+
+        if (resultIndex === state.activeIndex) {
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
+
+        if (
+          resultIndex >= 0 &&
+          resultIndex < Math.min(state.maxNumResults, state.results.length)
+        ) {
+          if (window.IS_DEV) {
+            console.info(`changing active index to ${resultIndex} due to hover`)
+          }
+
+          state.activeIndex = resultIndex
+
+          renderResults(
+            searchInputs[i],
+            containers[i],
+            state.results,
+            state.showResults,
+            state.maxNumResults,
+            state.currentTopResult,
+            state.value,
+            state.activeIndex,
+          )
+        }
+      }
+    })
 
   inputHandlers.forEach((handleInput, i) => {
     searchInputs[i].addEventListener('input', handleInput)
@@ -458,18 +563,27 @@ export default () => {
     searchInputs[i].addEventListener('click', handleClick)
   })
 
-  function handleWindowKeyDown(e: KeyboardEvent) {
-    if (window.IS_DEV) {
-      console.log('window keydown', e)
-    }
+  mouseOverResultsHandlers.forEach((handleMouseOver, i) => {
+    resultsContainers[i].addEventListener('mouseover', handleMouseOver)
+  })
 
-    if (e.key === 'Escape') {
+  function handleWindowKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && state.showResults) {
+      if (window.IS_DEV) {
+        console.info('hiding search results due to Esc on window')
+      }
+
       state.value = ''
       state.showResults = false
       state.activeIndex = -1
       containers.forEach((container, i) => {
         searchInputs[i].blur()
-        update(container, isQuickSearch(searchInputs[i]), state)
+        update(
+          searchInputs[i],
+          container,
+          isQuickSearch(searchInputs[i]),
+          state,
+        )
       })
       return
     }
@@ -488,6 +602,10 @@ export default () => {
       }
 
       if (inputToFocus) {
+        if (window.IS_DEV) {
+          console.info('focusing searchbox due to keyboard shortcut')
+        }
+
         e.preventDefault()
         if (!onSearchPage) {
           globalTrigger('searchShortcutInvoked')
@@ -500,16 +618,23 @@ export default () => {
   window.addEventListener('keydown', handleWindowKeyDown)
 
   function handleWindowClick(e: MouseEvent) {
-    if (window.IS_DEV) {
-      console.log('window click', e)
-    }
+    if (state.showResults) {
+      if (window.IS_DEV) {
+        console.info('closing search results due to outside window click')
+      }
 
-    state.showResults = false
-    state.activeIndex = -1
-    containers.forEach((container, i) => {
-      update(container, isQuickSearch(searchInputs[i]), state)
-      highlightTopResultHint(container, false)
-    })
+      state.showResults = false
+      state.activeIndex = -1
+      containers.forEach((container, i) => {
+        update(
+          searchInputs[i],
+          container,
+          isQuickSearch(searchInputs[i]),
+          state,
+        )
+        highlightTopResultHint(container, false)
+      })
+    }
   }
 
   window.addEventListener('click', handleWindowClick)
@@ -518,6 +643,10 @@ export default () => {
     window.removeEventListener('click', handleWindowClick)
 
     window.removeEventListener('keydown', handleWindowKeyDown)
+
+    mouseOverResultsHandlers.forEach((handleMouseOver, i) => {
+      resultsContainers[i].removeEventListener('mouseover', handleMouseOver)
+    })
 
     clickHandlers.forEach((handleClick, i) => {
       searchInputs[i].removeEventListener('click', handleClick)

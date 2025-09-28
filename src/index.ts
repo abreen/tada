@@ -21,13 +21,7 @@ import mountTop from './top'
 import mountAnchor from './anchor'
 import mountFootnotes from './footnotes'
 
-function scheduleTask(fn: () => void) {
-  if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(fn)
-  } else {
-    return setTimeout(fn, 0)
-  }
-}
+import { scheduleTask, formatDuration } from './util'
 
 const COMPONENTS = {
   toc: mountTableOfContents,
@@ -41,31 +35,38 @@ const COMPONENTS = {
   footnotes: mountFootnotes,
 }
 
+let startTime = -1
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const mountPromises = Object.entries(COMPONENTS).map(([name, mount]) => {
-    return new Promise<void>(resolve => {
+  startTime = window.performance.now()
+
+  const entries = Object.entries(COMPONENTS)
+
+  const failed: Record<string, any> = {}
+
+  const mountPromises = entries.map(([name, mount]) => {
+    return new Promise<void>((resolve, reject) => {
       scheduleTask(async () => {
         try {
-          await Promise.resolve(mount())
-
-          if (window.IS_DEV) {
-            console.log(`Mounted ${name} component`)
-          }
-        } catch (err: any) {
-          if (window.IS_DEV) {
-            console.error(`Failed to mount ${name} component: ${err?.message}`)
-            console.error(err)
-          }
-        } finally {
+          mount()
           resolve()
+          return
+        } catch (err) {
+          failed[name] = String(err)
         }
+        reject()
       })
     })
   })
 
-  await Promise.all(mountPromises)
+  await Promise.allSettled(mountPromises)
+
+  for (const [name, reason] of Object.entries(failed)) {
+    console.error(`Failed to mount ${name} component:`, reason)
+  }
 
   if (window.IS_DEV) {
-    console.log('All components mounted')
+    const diff = window.performance.now() - startTime
+    console.info(`Components mounted in ${formatDuration(diff)}`)
   }
 })

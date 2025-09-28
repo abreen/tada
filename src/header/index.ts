@@ -147,26 +147,24 @@ export default () => {
   summary.addEventListener('click', handleSummaryClick)
 
   function handleDetailsClick(e: MouseEvent) {
-    if (window.IS_DEV) {
-      console.log('header details clicked')
-    }
-
     if (details.open && !isCollapsing) {
+      if (window.IS_DEV) {
+        console.log('stopped propagation for expanded header')
+      }
       e.stopPropagation()
     }
   }
   details.addEventListener('click', handleDetailsClick)
 
   function handleWindowClick() {
-    if (window.IS_DEV) {
-      console.log('window click in header')
-    }
-
     if (header.classList.contains('is-frozen')) {
       return
     }
 
     if (details.open && !isCollapsing) {
+      if (window.IS_DEV) {
+        console.info('collapsing header due to outside window click')
+      }
       collapse()
     }
   }

@@ -11,10 +11,11 @@ const listeners: Record<Event, Function[]> = {
 }
 
 export function set(key: Key, value: any) {
+  const previousValue = state[key]
   state[key] = value
 
   if (window.IS_DEV) {
-    console.log(`${key} = ${value}`, state)
+    console.log(`global state change: ${key} = ${previousValue} -> ${value}`)
   }
 }
 
@@ -34,10 +35,6 @@ export function unsetAll() {
 
 export function on(event: Event, fn: Function) {
   listeners[event].push(fn)
-
-  if (window.IS_DEV) {
-    console.log(`Registered ${event} event listener`, fn)
-  }
 }
 
 export function remove(event: Event, fn: Function) {

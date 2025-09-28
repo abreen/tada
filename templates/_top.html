@@ -53,11 +53,17 @@
                 autocomplete="off"
                 name="quick-search"
                 placeholder="Search (requires JavaScript)"
-                aria-keyshortcuts="Control+Space"
-              >
+                aria-autocomplete="list"
+                aria-expanded="false"
+              />
               <%= render('_hints.html') %>
             </div>
-            <div class="results-container is-hidden" role="region" aria-live="polite" aria-hidden="true">
+            <div
+              class="results-container is-hidden"
+              role="region"
+              aria-live="polite"
+              aria-hidden="true"
+            >
               <div class="results"></div>
             </div>
           </div>

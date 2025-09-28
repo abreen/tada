@@ -120,6 +120,7 @@ body.default nav.toc {
 
     nav.toc.is-resizing {
       border-right-color: var(--fg-color);
+      border-right-width: 2px;
     }
 
     .title-and-info,

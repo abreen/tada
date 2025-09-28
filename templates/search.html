@@ -1,7 +1,7 @@
 <%= render('_top.html') %>
 
 <div class="search-container">
-  <p class="beta-warning">Beta feature <i class="warning"></i></p>
+  <p id="search-beta-warning" class="beta-warning">Beta feature <i class="warning"></i></p>
 
   <div class="controls">
     <input
@@ -9,15 +9,20 @@
       class="search main-search"
       tabindex="0"
       autocomplete="off"
-      name="search-string"
-      placeholder="Search (requires JavaScript)" />
-    <%= render('_hints.html') %>
+      name="main-search"
+      placeholder="Search (requires JavaScript)"
+      aria-autocomplete="list"
+      aria-expanded="false"
+      aria-describedby="search-beta-warning"
+    />
+   <%= render('_hints.html') %>
   </div>
   <div
     class="results-container"
     role="region"
     aria-live="polite"
-    aria-hidden="false">
+    aria-hidden="false"
+  >
     <div class="results"></div>
   </div>
 </div>

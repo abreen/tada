@@ -244,10 +244,6 @@ export default () => {
   function resize(e: MouseEvent) {
     const dx = e.x - mouseX
 
-    if (window.IS_DEV) {
-      console.log('resize', { mouseX, dx })
-    }
-
     if (dx === 0) {
       return
     }
@@ -256,6 +252,10 @@ export default () => {
     let newWidth: number = parseInt(computedStyle.width) + dx
 
     if (newWidth < MIN_TOC_WIDTH_PX || newWidth > MAX_TOC_WIDTH_PX) {
+      if (window.IS_DEV) {
+        console.info('cannot resize')
+      }
+
       toc.classList.remove('is-resizing')
       document.documentElement.style.cursor = ''
     } else {
