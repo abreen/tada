@@ -157,7 +157,7 @@ body.pdf .pdf-container .content {
 }
 
 body.pdf .container {
-  padding-top: var(--header-collapsed-height);
+  padding: var(--header-collapsed-height) var(--gap) var(--gap) var(--gap);
 }
 
 @media (min-width: 1000px) {
