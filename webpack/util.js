@@ -379,7 +379,7 @@ function createMarkdown(siteVariables) {
     footnoteRef(...args)
       .replace('<sup class="footnote-ref">', '')
       .replace('</sup>', '')
-      .replace('<a href="', '<a class="footnote-ref" href="');
+      .replace('<a href="', '<a class="footnote-ref" href="')
 
   /*
    * Customize lists (add wrapper element)

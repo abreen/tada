@@ -65,7 +65,8 @@ body.default > .container {
   }
 }
 
-body.default .title-and-info, body.default nav.toc {
+body.default .title-and-info,
+body.default nav.toc {
   margin-bottom: 2rem;
 }
 
@@ -137,7 +138,7 @@ body.pdf .pdf-container .content {
 }
 
 body.pdf .container {
- padding-top: var(--header-collapsed-height);
+  padding-top: var(--header-collapsed-height);
 }
 
 @media (min-width: 1000px) {

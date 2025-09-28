@@ -266,11 +266,12 @@ export default () => {
   }
   const debounced = debounce(handleScroll, LATENCY_MS)
   window.addEventListener('scroll', debounced, { passive: true })
-  window.addEventListener('load', debounced)
+
+  // Call after load to set current item
+  handleScroll()
 
   return () => {
     window.removeEventListener('scroll', debounced)
-    window.removeEventListener('load', debounced)
   }
 }
 

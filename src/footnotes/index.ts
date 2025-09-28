@@ -26,7 +26,7 @@ export default () => {
     }
 
     el.onclick = () => {
-      footnoteEl.focus();
+      footnoteEl.focus()
     }
   })
 
