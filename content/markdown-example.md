@@ -1,6 +1,7 @@
 title: Markdown Example
 author: Alex Breen
 avatar: alex
+description: An example page showing Markdown features.
 
 This example demonstrates the available Markdown features.
 
