@@ -13,6 +13,7 @@
   --link-text-color: hsl(var(--theme-hue) 80% 35%);
   --link-active-color: #000;
 
+  --section-bg-color: hsl(209deg 54% 89%);
   --warning-bg-color: hsl(0, 100%, 73%);
   --note-bg-color: hsl(190, 82%, 55%);
 
@@ -49,7 +50,6 @@
   --focus-border-width: 3px;
   --table-padding: 12px;
   --details-padding: 12px;
-  --alert-padding: 12px;
   --section-padding: 64px;
 
   --main-width: 900px;
@@ -83,6 +83,7 @@
     --link-text-color: hsl(var(--theme-hue) 85% 55%);
     --link-active-color: #fff;
 
+    --section-bg-color: hsl(209, 16%, 20%);
     --warning-bg-color: hsl(0, 56%, 53%);
     --note-bg-color: hsl(190, 87%, 37%);
   }
@@ -178,7 +179,10 @@ body {
 }
 
 html {
-  scrollbar-color: var(--fg2-color) var(--bg-color);
+  scrollbar-color: var(--fg-color) transparent;
+  scrollbar-gutter: stable;
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
   background: var(--bg-color);
 }
 
@@ -446,14 +450,17 @@ tbody tr:last-child td {
   margin-bottom: 2rem;
 }
 
-.alert .title,
+.alert .title {
+  padding: 6px;
+}
+
 .alert .content {
-  padding: var(--alert-padding);
+  padding: 12px;
 }
 
 .alert .title::before {
-  left: 10px;
-  top: 12px;
+  left: 8px;
+  top: 6px;
   position: absolute;
   width: 32px;
   height: 32px;
@@ -494,9 +501,9 @@ i.warning {
 }
 
 .alert .title {
-  font-weight: 600;
+  font-weight: 700;
   @include user-select(none);
-  padding-left: 52px;
+  padding-left: 48px;
   margin: 0;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   background: var(--fg2-color);
@@ -515,12 +522,11 @@ i.warning {
 }
 
 section {
-  // background: var(--bg2-color);
   background: linear-gradient(
     0deg,
     var(--bg-color) 0,
-    var(--bg2-color) 3rem,
-    var(--bg2-color) calc(100% - 3rem),
+    var(--section-bg-color) 3rem,
+    var(--section-bg-color) calc(100% - 3rem),
     var(--bg-color) 100%
   );
   padding: calc(3 * var(--gap)) calc(2 * var(--gap));

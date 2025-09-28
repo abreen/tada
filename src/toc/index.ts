@@ -58,7 +58,7 @@ function renderTable(
 
   const rendered: HTMLAnchorElement[] = []
   let lastHeadingLevel = 1
-  const ul = document.createElement('ul')
+  const ol = document.createElement('ol')
 
   items.forEach((item, i) => {
     const li = document.createElement('li')
@@ -118,11 +118,11 @@ function renderTable(
       li.appendChild(a)
     }
 
-    ul.appendChild(li)
+    ol.appendChild(li)
   })
 
   clearContainer(container)
-  container.appendChild(ul)
+  container.appendChild(ol)
 
   return rendered
 }
