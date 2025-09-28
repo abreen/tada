@@ -52,13 +52,7 @@
     break-inside: avoid;
   }
 
-  sup.footnote-ref a {
-    display: inline;
-    background: none;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-    border: none;
+  a.footnote-ref {
     text-decoration: none;
   }
 

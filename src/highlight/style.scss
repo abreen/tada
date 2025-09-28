@@ -4,13 +4,13 @@ code {
   font-family: var(--mono-font);
   font-weight: 400;
   font-style: normal;
-  font-size: 0.85em;
+  font-size: 0.90em;
 }
 
 pre {
   line-height: 1.7;
   overflow-x: auto;
-  padding: var(--gap);
+  padding: var(--gap) 0 var(--gap) 4px;
   scrollbar-color: var(--fg-color) transparent;
   margin-bottom: 2rem;
 }

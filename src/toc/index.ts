@@ -1,12 +1,9 @@
-import { debounce, removeClass } from '../util'
+import { debounce } from '../util'
 import { trigger as globalTrigger } from '../global'
 
 const LATENCY_MS = 50
 const MIN_PAGE_HEIGHT_PX = 1000
 const MIN_HEADING_COVERAGE_PERCENT = 0.7
-
-// Must match CSS animation duration
-const HIGHLIGHT_DURATION_MS = 3000
 
 type HeadingLevel = '1' | '2' | '3' | '4' | '5' | '6'
 type AlertType = 'warning' | 'note'
@@ -47,24 +44,6 @@ function scrollIfNeeded(element: HTMLElement, options?: any) {
   }
 }
 
-let highlightEl: HTMLElement | null = null
-let highlightTimeout: number | null = null
-export function highlightBriefly(element: HTMLElement) {
-  if (highlightEl && highlightEl != element) {
-    if (highlightTimeout) {
-      window.clearTimeout(highlightTimeout)
-      highlightTimeout = null
-    }
-    removeClass(highlightEl, 'is-highlighted')
-  }
-  element.classList.add('is-highlighted')
-  highlightEl = element
-  highlightTimeout = window.setTimeout(() => {
-    removeClass(element, 'is-highlighted')
-    highlightTimeout = null
-  }, HIGHLIGHT_DURATION_MS)
-}
-
 function renderTable(
   parent: HTMLElement,
   { items, headingsAndAlerts }: Props,
@@ -93,7 +72,7 @@ function renderTable(
           scrollElement.scrollIntoView({ block: 'center' })
         }
         // otherwise, let browser scroll to link target
-        highlightBriefly(highlightElement)
+        highlightElement.focus()
       }
     }
 

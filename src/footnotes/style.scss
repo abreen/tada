@@ -21,17 +21,16 @@
   margin-bottom: 8px;
 }
 
-sup.footnote-ref {
+a.footnote-ref {
   vertical-align: super;
 }
 
-.footnotes li, sup.footnote-ref a {
+.footnotes li, a.footnote-ref {
   border-radius: var(--border-radius);
 }
 
-sup.footnote-ref a,
+a.footnote-ref,
 .footnotes .footnote-backref {
-  border: none;
   display: inline-block;
   @include user-select(none);
 }

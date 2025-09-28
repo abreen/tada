@@ -374,10 +374,12 @@ function createMarkdown(siteVariables) {
     return str.slice(1, str.length - 1)
   }
 
-  // Change appearance of backreference
-  const anchor = markdown.renderer.rules.footnote_anchor
-  markdown.renderer.rules.footnote_anchor = (...args) =>
-    anchor(...args).replace('\u21a9\uFE0E', '⇡')
+  const footnoteRef = markdown.renderer.rules.footnote_ref
+  markdown.renderer.rules.footnote_ref = (...args) =>
+    footnoteRef(...args)
+      .replace('<sup class="footnote-ref">', '')
+      .replace('</sup>', '')
+      .replace('<a href="', '<a class="footnote-ref" href="');
 
   /*
    * Customize lists (add wrapper element)

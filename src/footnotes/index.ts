@@ -1,7 +1,6 @@
 import { trigger as globalTrigger } from '../global'
-import { highlightBriefly } from '../toc'
 
-function getReferenceElements(parent: HTMLElement): HTMLElement[] {
+function getReferenceElements(parent: HTMLElement): HTMLAnchorElement[] {
   return Array.from(parent.querySelectorAll('.footnote-ref'))
 }
 
@@ -21,17 +20,13 @@ export default () => {
   }
 
   referenceElements.forEach(el => {
-    const a = el.querySelector('a')
-    if (a == null) {
-      return
-    }
-    const footnoteEl = document.getElementById(getIdFromHref(a.href))
+    const footnoteEl = document.getElementById(getIdFromHref(el.href))
     if (footnoteEl == null) {
       return
     }
 
-    a.onclick = () => {
-      highlightBriefly(footnoteEl)
+    el.onclick = () => {
+      footnoteEl.focus();
     }
   })
 
@@ -42,10 +37,9 @@ export default () => {
       if (referenceEl == null) {
         return
       }
-      e.preventDefault()
+      e.stopPropagation()
       globalTrigger('pauseBackToTop')
-      referenceEl.scrollIntoView()
-      highlightBriefly(referenceEl)
+      referenceEl.focus()
     }
   })
 
