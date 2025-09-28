@@ -79,6 +79,11 @@ body.default nav.toc {
     margin-bottom: 0;
   }
 
+  body.default > .container {
+    width: 960px;
+    margin: 0 auto;
+  }
+
   body.default.toc-is-active > .container {
     display: grid;
     width: 100vw;
