@@ -35,11 +35,18 @@
 
   main {
     max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   body {
     font-size: var(--print-font-size);
     color: #000;
+  }
+
+  body .container {
+    display: block !important;
   }
 
   pre {

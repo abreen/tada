@@ -58,6 +58,12 @@ body.default main table {
   }
 }
 
+body.default.toc-is-active nav.toc {
+  background: var(--bg2-color);
+  padding: var(--gap);
+  border-radius: var(--border-radius);
+}
+
 body.default > .container {
   padding: var(--gap);
 
@@ -91,6 +97,8 @@ body.default nav.toc {
     grid-gap: var(--gap);
 
     nav.toc {
+      background: none;
+      border-radius: 0;
       grid-row: 1;
       grid-row-end: none;
       grid-column: 1;
@@ -101,7 +109,7 @@ body.default nav.toc {
       height: calc(100vh - var(--header-collapsed-height) - var(--gap));
       width: var(--toc-width);
       margin: var(--gap);
-      padding-right: var(--gap);
+      padding: 0 var(--gap) 0 0;
 
       @media (prefers-reduced-motion: no-preference) {
         scroll-behavior: smooth;

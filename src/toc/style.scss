@@ -28,7 +28,7 @@
 }
 
 .toc ol li:last-child {
-  margin-bottom: calc(4 * var(--gap));
+  margin-bottom: var(--gap);
 }
 
 .toc ol a {
