@@ -15,6 +15,17 @@ export function removeClass(el: HTMLElement, className: string) {
   }
 }
 
+export function getElement(
+  parent: Document | Element,
+  selector: string,
+): HTMLElement {
+  const el = parent.querySelector(selector)
+  if (!el) {
+    throw new Error(`no element matching "${selector}"`)
+  }
+  return el as HTMLElement
+}
+
 export function applyBasePath(subPath: string): string {
   if (!subPath.startsWith('/')) {
     throw new Error('invalid internal path, must start with "/": ' + subPath)

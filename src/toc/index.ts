@@ -1,9 +1,12 @@
-import { debounce } from '../util'
+import { getElement, debounce } from '../util'
 import { trigger as globalTrigger } from '../global'
 
 const LATENCY_MS = 50
 const MIN_PAGE_HEIGHT_PX = 1000
 const MIN_HEADING_COVERAGE_PERCENT = 0.7
+const RESIZE_RADIUS_PX = 10
+const MIN_TOC_WIDTH_PX = 150
+const MAX_TOC_WIDTH_PX = 450
 
 type HeadingLevel = '1' | '2' | '3' | '4' | '5' | '6'
 type AlertType = 'warning' | 'note'
@@ -211,8 +214,9 @@ function shouldBeActive(
 }
 
 export default () => {
-  // guaranteed to be in order from document
+  // Guaranteed to be in order from document
   const headings = getHeadingElements(document.body)
+  const toc = getElement(document.body, 'nav.toc')
   const main: HTMLElement | null = document.querySelector('main')
 
   if (!shouldBeActive(main, headings)) {
@@ -234,13 +238,73 @@ export default () => {
     })
     .filter(obj => obj != null)
 
-  // keep track of the elements just rendered
   const elements = renderTable(document.body, { items, headingsAndAlerts })
+
+  let mouseX: number
+  function resize(e: MouseEvent) {
+    const dx = e.x - mouseX
+
+    if (window.IS_DEV) {
+      console.log('resize', { mouseX, dx })
+    }
+
+    if (dx === 0) {
+      return
+    }
+
+    const computedStyle = getComputedStyle(toc)
+    let newWidth: number = parseInt(computedStyle.width) + dx
+
+    if (newWidth < MIN_TOC_WIDTH_PX || newWidth > MAX_TOC_WIDTH_PX) {
+      toc.classList.remove('is-resizing')
+      document.documentElement.style.cursor = ''
+    } else {
+      toc.classList.add('is-resizing')
+      document.documentElement.style.cursor = 'ew-resize'
+
+      if (main) {
+        main.inert = true
+      }
+      toc.inert = true
+
+      document.documentElement.style.setProperty('--toc-width', `${newWidth}px`)
+    }
+
+    mouseX = e.x
+  }
+
+  function handleMouseDown(e: MouseEvent) {
+    mouseX = e.x
+
+    const rect = toc.getBoundingClientRect()
+    const diff = Math.abs(rect.x + rect.width - e.x)
+
+    if (diff < RESIZE_RADIUS_PX) {
+      resize(e)
+      document.addEventListener('mousemove', resize)
+    }
+  }
+
+  document.addEventListener('mousedown', handleMouseDown)
+
+  function stopHandlingResize() {
+    toc.classList.remove('is-resizing')
+    document.documentElement.style.cursor = ''
+
+    if (main) {
+      main.inert = false
+    }
+    toc.inert = false
+
+    document.removeEventListener('mousemove', resize)
+  }
+
+  document.addEventListener('mouseup', stopHandlingResize)
 
   function handleScroll() {
     const headerOffset = getHeaderOffset()
 
-    // find the first element not out of view & obscured by floating header
+    // Find the first element not out of view & obscured by floating header
     let i = 0
     while (
       i < headingsAndAlerts.length &&
@@ -272,6 +336,8 @@ export default () => {
 
   return () => {
     window.removeEventListener('scroll', debounced)
+    document.addEventListener('mouseup', stopHandlingResize)
+    document.removeEventListener('mousedown', handleMouseDown)
   }
 }
 

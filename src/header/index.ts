@@ -1,4 +1,4 @@
-import { removeClass } from '../util'
+import { getElement, removeClass } from '../util'
 import { on as globalOn, set as globalSet } from '../global'
 
 const DURATION_MS = 250
@@ -34,14 +34,6 @@ function getExpandedHeight(summary: HTMLElement, content: HTMLElement) {
   }
 
   return Math.ceil(totalHeight)
-}
-
-function getElement(parent: Document | Element, selector: string): HTMLElement {
-  const el = parent.querySelector(selector)
-  if (!el) {
-    throw new Error(`no element matching "${selector}"`)
-  }
-  return el as HTMLElement
 }
 
 export default () => {
