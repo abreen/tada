@@ -14,10 +14,10 @@
   <g
      id="layer1"
      transform="translate(-145.47162,-82.111753)">
-    <text
+    <path
+       d="m 145.47163,86.215256 2.06587,-3.138309 0.28787,-0.296333 -0.36407,0.01976 h -1.397 l 0.0847,-0.688621 h 2.81657 l -2.08844,3.174997 -0.22578,0.265289 0.40076,-0.0254 h 1.33773 l -0.0847,0.688622 z"
+       id="text12"
        style="font-style:italic;font-weight:600;font-size:5.64444px;font-family:'Spline Sans Mono';-inkscape-font-specification:'Spline Sans Mono Semi-Bold Italic';fill:#ffffff;stroke-width:0.264583"
-       x="145.40672"
-       y="86.215256"
-       id="text12">Z</text>
+       aria-label="Z" />
   </g>
 </svg>

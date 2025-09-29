@@ -14,10 +14,10 @@
   <g
      id="layer1"
      transform="translate(-98.484469,-82.111753)">
-    <text
+    <path
+       d="m 98.484467,86.215256 0.513644,-4.103508 h 0.804333 l -0.479778,3.82693 -0.395111,-0.4318 h 2.156175 l -0.0903,0.708378 z"
+       id="text26"
        style="font-style:italic;font-weight:600;font-size:5.64444px;font-family:'Spline Sans Mono';-inkscape-font-specification:'Spline Sans Mono Semi-Bold Italic';fill:#ffffff;stroke-width:0.264583"
-       x="97.993401"
-       y="86.215256"
-       id="text26">L</text>
+       aria-label="L" />
   </g>
 </svg>
