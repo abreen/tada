@@ -4,5 +4,7 @@
   "courseCode": "CS 100",
   "courseTitle": "Introduction to CS",
   "fullCourseName": "CS 100 Intro to CS",
-  "titlePostfix": " - CS 100"
+  "titlePostfix": " - CS 100",
+  "faviconColor": "hsl(351 70% 40%)",
+  "faviconSymbol": "100"
 }
