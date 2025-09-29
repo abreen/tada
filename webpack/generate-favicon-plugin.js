@@ -49,7 +49,7 @@ function createFaviconSvg(size, color, symbol) {
   }
 
   const n = symbol.length
-  const pad = size * 0.1
+  const pad = size * 0.15
   const kerning = Math.max(1, size * 0.02)
   const contentW = Math.max(0, size - pad * 2)
   const glyphCellW = contentW / n
