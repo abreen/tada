@@ -77,7 +77,7 @@ function createFaviconSvg(size, color, symbol) {
 class GenerateFaviconPlugin {
   constructor(siteVariables, options = {}) {
     this.options = {
-      sizes: options.sizes || [16, 32, 48, 64, 128, 192, 256, 512],
+      sizes: options.sizes || [16, 32, 48, 64, 128, 192, 256, 512, 1024],
       svgSize: options.svgSize || 512,
       filenameBase: options.filenameBase || 'favicon',
       color: siteVariables.faviconColor,

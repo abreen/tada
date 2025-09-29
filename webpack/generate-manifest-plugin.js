@@ -53,6 +53,12 @@ function createManifest(siteVariables) {
         purpose: 'any',
       },
       {
+        src: 'favicon-1024.png',
+        sizes: '1024x1024',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
         src: 'favicon-512.png',
         sizes: '512x512',
         type: 'image/png',
@@ -99,6 +105,11 @@ function createManifest(siteVariables) {
         sizes: '16x16',
         type: 'image/png',
         purpose: 'any',
+      },
+      {
+        src: 'favicon.ico',
+        sizes: '16x16 32x32 48x48 64x64 128x128 192x192 256x256',
+        type: 'image/x-icon',
       },
     ],
   }
