@@ -77,7 +77,7 @@ function createFaviconSvg(size, color, symbol) {
 class GenerateFaviconPlugin {
   constructor(siteVariables, options = {}) {
     this.options = {
-      sizes: options.sizes || [16, 32, 48, 64, 128, 192, 256],
+      sizes: options.sizes || [16, 32, 48, 64, 128, 192, 256, 512],
       svgSize: options.svgSize || 512,
       filenameBase: options.filenameBase || 'favicon',
       color: siteVariables.faviconColor,
@@ -136,7 +136,10 @@ class GenerateFaviconPlugin {
 
             // Convert and save .ico file versions
             const icoBuffer = await toIco(
-              pngBuffers.sort((a, b) => a.size - b.size).map(x => x.buf),
+              pngBuffers
+                .filter(b => b.size <= 256)
+                .sort((a, b) => a.size - b.size)
+                .map(x => x.buf),
             )
             compilation.emitAsset(
               `${filenameBase}.ico`,
