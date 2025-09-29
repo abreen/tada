@@ -44,7 +44,6 @@ function createManifest(siteVariables) {
     name: siteVariables.courseCode,
     start_url: applyBasePath('/'),
     display: 'minimal-ui',
-    theme_color: siteVariables.faviconColor,
     icons: [
       {
         src: 'favicon.svg',
