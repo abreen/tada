@@ -28,8 +28,6 @@ function json(fileName) {
   return jsonData[fileName]
 }
 
-function printRenderError(fileName, err) {}
-
 function render(fileName, params) {
   log.debug`Rendering ${fileName} with params ${params}`
   if (params != null) {

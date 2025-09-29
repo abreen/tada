@@ -4,6 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MiniSearchIndexPlugin = require('./minisearch-index-plugin')
 const GenerateFaviconPlugin = require('./generate-favicon-plugin')
+const GenerateManifestPlugin = require('./generate-manifest-plugin')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const { getDistDir, createHtmlPlugins, createDefinePlugin } = require('./util')
 const { getDevSiteVariables } = require('./site-variables')
@@ -57,6 +58,7 @@ module.exports = async () => {
       new CopyPlugin({ patterns: [{ from: 'public', to: '.' }] }),
       new MiniSearchIndexPlugin(siteVariables),
       new GenerateFaviconPlugin(siteVariables),
+      new GenerateManifestPlugin(siteVariables),
       new WebpackShellPlugin({
         onBuildEnd: {
           scripts: ['npx quick-lint-js src/**/*.ts webpack/*.js || true'],
