@@ -41,8 +41,7 @@ function createManifest(siteVariables) {
   const applyBasePath = createApplyBasePath(siteVariables)
 
   return {
-    name: siteVariables.courseTitle,
-    short_name: siteVariables.courseCode,
+    name: siteVariables.courseCode,
     start_url: applyBasePath('/'),
     display: 'minimal-ui',
     theme_color: siteVariables.faviconColor,
