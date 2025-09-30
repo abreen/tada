@@ -280,6 +280,12 @@ export default () => {
     } else {
       toc.classList.add('is-resizing')
       document.documentElement.style.cursor = 'ew-resize'
+
+      if (main) {
+        main.inert = true
+      }
+      toc.inert = true
+
       document.documentElement.style.setProperty('--toc-width', `${newWidth}px`)
     }
 
@@ -293,16 +299,7 @@ export default () => {
     const diff = Math.abs(rect.x + rect.width - e.x)
 
     if (diff < RESIZE_RADIUS_PX) {
-      e.preventDefault()
-
       toc.classList.add('is-resizing')
-      document.documentElement.style.cursor = 'ew-resize'
-
-      if (main) {
-        main.inert = true
-      }
-      toc.inert = true
-
       document.addEventListener('mousemove', resize)
     }
   }
