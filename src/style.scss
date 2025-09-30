@@ -533,7 +533,7 @@ section {
     var(--bg-color) 100%
   );
   padding: calc(3 * var(--gap)) calc(2 * var(--gap));
-  margin-bottom: 2rem;
+  margin: 0 calc(-1 * var(--gap)) 2rem calc(-1 * var(--gap));
 
   .alert {
     background: var(--bg-color);

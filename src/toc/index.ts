@@ -4,7 +4,6 @@ import { trigger as globalTrigger } from '../global'
 const LATENCY_MS = 50
 const MIN_PAGE_HEIGHT_PX = 1000
 const MIN_HEADING_COVERAGE_PERCENT = 0.7
-const RESIZE_RADIUS_PX = 10
 const MIN_TOC_WIDTH_PX = 150
 const MAX_TOC_WIDTH_PX = 450
 
@@ -242,6 +241,8 @@ export default () => {
 
   let mouseX: number
   function resize(e: MouseEvent) {
+    e.preventDefault()
+
     const dx = e.x - mouseX
 
     if (dx === 0) {
@@ -281,11 +282,6 @@ export default () => {
       toc.classList.add('is-resizing')
       document.documentElement.style.cursor = 'ew-resize'
 
-      if (main) {
-        main.inert = true
-      }
-      toc.inert = true
-
       document.documentElement.style.setProperty('--toc-width', `${newWidth}px`)
     }
 
@@ -296,9 +292,18 @@ export default () => {
     mouseX = e.x
 
     const rect = toc.getBoundingClientRect()
-    const diff = Math.abs(rect.x + rect.width - e.x)
 
-    if (diff < RESIZE_RADIUS_PX) {
+    const style = getComputedStyle(toc)
+    const borderRightWidth =
+      parseInt(style.getPropertyValue('border-right-width')) || 0
+
+    const right = rect.x + rect.width
+    const diff = right - e.x
+
+    if (diff >= 0 && diff < borderRightWidth) {
+      e.preventDefault()
+
+      // Clicked on the right border
       toc.classList.add('is-resizing')
       document.addEventListener('mousemove', resize)
     }
@@ -309,16 +314,33 @@ export default () => {
   function stopHandlingResize() {
     toc.classList.remove('is-resizing')
     document.documentElement.style.cursor = ''
-
-    if (main) {
-      main.inert = false
-    }
-    toc.inert = false
-
     document.removeEventListener('mousemove', resize)
   }
 
   document.addEventListener('mouseup', stopHandlingResize)
+
+  function handleMouseMove(e: MouseEvent) {
+    const rect = toc.getBoundingClientRect()
+    const right = rect.x + rect.width
+
+    const style = getComputedStyle(toc)
+    const borderRightWidth =
+      parseInt(style.getPropertyValue('border-right-width')) || 0
+
+    if (e.x <= right && e.x > right - borderRightWidth) {
+      toc.classList.add('is-border-hovering')
+    } else {
+      toc.classList.remove('is-border-hovering')
+    }
+  }
+
+  toc.addEventListener('mousemove', handleMouseMove)
+
+  function handleMouseLeave() {
+    toc.classList.remove('is-border-hovering')
+  }
+
+  toc.addEventListener('mouseleave', handleMouseLeave)
 
   function handleScroll() {
     const headerOffset = getHeaderOffset()
@@ -355,6 +377,8 @@ export default () => {
 
   return () => {
     window.removeEventListener('scroll', debounced)
+    toc.removeEventListener('mouseleave', handleMouseLeave)
+    toc.removeEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', stopHandlingResize)
     document.removeEventListener('mousedown', handleMouseDown)
   }

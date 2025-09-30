@@ -5,10 +5,9 @@
 hr {
   border: none;
   height: var(--thematic-break-margin);
-  margin: var(--section-padding) 0;
+  margin: var(--section-padding) calc(-1 * var(--gap));
   padding-top: 64px;
   border: none;
-  border-radius: var(--border-radius);
   text-align: center;
   letter-spacing: -2px;
   line-height: 13px;
