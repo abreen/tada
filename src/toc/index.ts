@@ -248,8 +248,27 @@ export default () => {
       return
     }
 
-    const computedStyle = getComputedStyle(toc)
-    let newWidth: number = parseInt(computedStyle.width) + dx
+    const rect = toc.getBoundingClientRect()
+    const style = getComputedStyle(toc)
+
+    const borderWidth =
+      parseInt(style.getPropertyValue('border-right-width')) || 1
+    const horizontalMargin =
+      (parseInt(style.getPropertyValue('margin-left')) || 0) +
+      (parseInt(style.getPropertyValue('margin-right')) || 0)
+
+    const scrollbarWidth = rect.width - toc.scrollWidth - borderWidth
+    const newWidth: number = e.x - borderWidth - horizontalMargin + dx
+
+    if (window.IS_DEV) {
+      console.info({
+        dx,
+        borderWidth,
+        width: rect.width,
+        scrollWidth: toc.scrollWidth,
+        scrollbarWidth,
+      })
+    }
 
     if (newWidth < MIN_TOC_WIDTH_PX || newWidth > MAX_TOC_WIDTH_PX) {
       if (window.IS_DEV) {
@@ -280,7 +299,7 @@ export default () => {
     const diff = Math.abs(rect.x + rect.width - e.x)
 
     if (diff < RESIZE_RADIUS_PX) {
-      resize(e)
+      toc.classList.add('is-resizing')
       document.addEventListener('mousemove', resize)
     }
   }

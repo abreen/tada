@@ -89,7 +89,7 @@ body.default nav.toc {
 
   body.default.toc-is-active > .container {
     display: grid;
-    width: 100vw;
+    width: 100%;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     padding: 0;
