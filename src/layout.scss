@@ -102,7 +102,7 @@ body.default nav.toc {
       grid-row: 1;
       grid-row-end: none;
       grid-column: 1;
-      overflow-y: scroll;
+      overflow-y: auto;
       scrollbar-color: var(--fg2-color) transparent;
       position: fixed;
       top: var(--header-collapsed-height);
