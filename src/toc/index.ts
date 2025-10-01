@@ -280,7 +280,7 @@ export default () => {
       document.documentElement.style.cursor = ''
     } else {
       toc.classList.add('is-resizing')
-      document.documentElement.style.cursor = 'ew-resize'
+      document.documentElement.style.cursor = 'col-resize'
 
       document.documentElement.style.setProperty('--toc-width', `${newWidth}px`)
     }

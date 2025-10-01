@@ -121,7 +121,7 @@ body.default nav.toc {
 
     nav.toc.is-border-hovering {
       border-right-color: var(--fg2-color);
-      cursor: ew-resize;
+      cursor: col-resize;
     }
 
     nav.toc.is-resizing {
